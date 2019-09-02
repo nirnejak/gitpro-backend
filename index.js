@@ -30,6 +30,11 @@ app.use(sassMiddleware({
   response: false
 }))
 
+// Static File Server
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'))
+})
+
 app.get('/', (req, res) => {
   let context = {
     title: 'GitHub Supreme'
