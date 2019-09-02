@@ -1,0 +1,35 @@
+{
+  "name": "github-supreme",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nirnejak/github-supreme.git"
+  },
+  "keywords": [
+    "Github",
+    "Contributor",
+    "Management"
+  ],
+  "author": "Jitendra Nirnejak <jeetnirnejak@gmail.com> (https://nirnejak.com/)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nirnejak/github-supreme/issues"
+  },
+  "homepage": "https://github.com/nirnejak/github-supreme#readme",
+  "devDependencies": {
+    "nodemon": "^1.19.1"
+  },
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "chalk": "^2.4.2",
+    "change-case": "^3.1.0",
+    "express": "^4.17.1",
+    "moment": "^2.24.0"
+  }
+}
