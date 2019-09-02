@@ -34,6 +34,7 @@
     "jsonwebtoken": "^8.5.1",
     "moment": "^2.24.0",
     "node-sass-middleware": "^0.11.0",
+    "passport": "^0.4.0",
     "passport-github": "^1.1.0"
   }
 }

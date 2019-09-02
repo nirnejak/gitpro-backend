@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken')
 const path = require('path')
 const exphbs = require('express-handlebars')
 const sassMiddleware = require('node-sass-middleware')
+const passport = require('passport')
 
 const { logger } = require('./middlewares/logger')
 
@@ -30,10 +31,36 @@ app.use(sassMiddleware({
   response: false
 }))
 
-// Static File Server
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'))
-})
+// Set a static folder using Middleware
+app.use(express.static(path.join(__dirname, 'public')))
+
+// Using Routes for API
+app.use('/api/users', require('./routes/api/users'))
+
+const GitHubStrategy = require('passport-github').Strategy;
+passport.use(new GitHubStrategy({
+  clientID: '28670f88156e4ce590f5',
+  clientSecret: 'f5317bea7a4dff327b1087fe8dde607b3ba096af',
+  callbackURL: "http://127.0.0.1:5000/auth/github/callback",
+  
+},
+  function (accessToken, refreshToken, profile, cb) {
+    User.findOrCreate({ githubId: profile.id }, function (err, user) {
+      return cb(err, user);
+    });
+  }
+));
+
+app.get('/auth/github', passport.authenticate('github'));
+app.get('/auth/github/callback',
+  passport.authenticate('github', { failureRedirect: '/login' }),
+  function (req, res) {
+    // Successful authentication, redirect home.
+    res.redirect('/');
+  });
+
+
+
 
 app.get('/', (req, res) => {
   let context = {
