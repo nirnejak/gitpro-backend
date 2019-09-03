@@ -6,11 +6,38 @@
 }
 
 body {
+  font-family: "Circular Std";
   background: #f4f4f4;
 }
 
 .bg-white {
   background: white;
+}
+
+.sidebar-links .sidebar-link {
+  display: block;
+  width: 100%;
+  border-radius: 5px;
+  margin: 5px 0px;
+  padding: 7px 15px;
+  background: transparent;
+  color: #0e57ff;
+}
+
+.sidebar-links .sidebar-link i {
+  margin-right: 5px;
+}
+
+.sidebar-links .sidebar-link.active {
+  background: #0e57ff;
+  color: white;
+}
+
+.sidebar-footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
 }
 
 .border-radius-5 {
@@ -1749,7 +1776,5 @@ body {
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
-  padding-top: 80%;
-  width: 80%;
 }
 /*# sourceMappingURL=style.css.map */
