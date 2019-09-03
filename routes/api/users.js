@@ -1,7 +1,7 @@
 const express = require('express')
 const mongoose = require('mongoose')
 
-const userModel = require('../../models/users')
+const Users = require('../../models/users')
 
 // mongoose.connect(process.env.MONGO_URI || 'mongodb://ram:fakepass1@ds157742.mlab.com:57742/gitsupreme')
 //   .then(() => {
