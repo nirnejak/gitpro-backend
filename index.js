@@ -2,6 +2,7 @@ const express = require('express')
 const chalk = require('chalk')
 const jwt = require('jsonwebtoken')
 const path = require('path')
+const session = require('express-session')
 const exphbs = require('express-handlebars')
 const sassMiddleware = require('node-sass-middleware')
 const mongoose = require('mongoose')
@@ -22,6 +23,11 @@ app.use(logger)
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.use(passport.initialize())
+app.use(session({ 
+  secret: process.env.SESSION_SECRET || 'THIS_IS_MY_SESSION_SECRET', 
+  resave: true, 
+  saveUninitialized: true
+}))
 
 // Template Settings
 app.engine('handlebars', exphbs({ defaultLayout: 'main' }))
@@ -56,5 +62,5 @@ app.get('/login', (req, res) => {
 
 const PORT = process.env.PORT || 5000
 app.listen(PORT, () => {
-  console.log(chalk.green.inverse(`Server started at PORT: ${PORT}`))
+  console.log(chalk.green(`👍 Server started at PORT: ${PORT}`))
 })
