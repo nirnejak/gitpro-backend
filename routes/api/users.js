@@ -1,4 +1,13 @@
 const express = require('express')
+const mongoose = require('mongoose')
+
+const userModel = require('../../models/users')
+
+// mongoose.connect(process.env.MONGO_URI || 'mongodb://ram:fakepass1@ds157742.mlab.com:57742/gitsupreme')
+//   .then(() => {
+//     console.log(chalk.green('MongoDB Connected...'))
+//   })
+//   .catch(err => console.log(chalk.red(err)))
 
 const router = express.Router();
 

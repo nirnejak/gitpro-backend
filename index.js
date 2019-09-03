@@ -27,7 +27,7 @@ app.use(sassMiddleware({
   dest: path.join(__dirname, 'public', 'css'),
   prefix: '/css',
   outputStyle: "compressed",
-  debug: true,
+  debug: process.env.NODE_ENV !== 'production',
   response: false
 }))
 
@@ -39,8 +39,8 @@ app.use('/api/users', require('./routes/api/users'))
 
 const GitHubStrategy = require('passport-github').Strategy;
 passport.use(new GitHubStrategy({
-  clientID: process.env.GITHUB_CLIENT_ID || '28670f88156e4ce590f5',
-  clientSecret: process.env.GITHUB_CLIENT_SECRET || 'ca52a60c219893f9f7500641549951812fc97bf8',
+  clientID: process.env.GITHUB_CLIENT_ID || '9eef2cf40dfd04593ad0' || '28670f88156e4ce590f5',
+  clientSecret: process.env.GITHUB_CLIENT_SECRET || 'a599171516a2fb04941c8a3a3d06862dbbaca7d8' || 'ca52a60c219893f9f7500641549951812fc97bf8',
   callbackURL: "http://127.0.0.1:5000/auth/github/callback",
 
 },
@@ -52,23 +52,23 @@ passport.use(new GitHubStrategy({
 ));
 
 app.get('/auth/github', passport.authenticate('github'));
-app.get('/auth/github/callback',
-  passport.authenticate('github', { failureRedirect: '/login' }),
-  function (req, res) {
-    res.redirect('/');
-  });
+app.get('/auth/github/callback', passport.authenticate('github', { failureRedirect: '/login' }), (req, res) => {
+  res.redirect('/dashboard');
+});
 
 
 
 
 app.get('/', (req, res) => {
-  let context = {
-    title: 'GitHub Supreme'
-  }
+  let context = { title: 'GitHub Supreme' }
   res.render('index', context)
+})
+
+app.get('/login', (req, res) => {
+  res.render('login')
 })
 
 const PORT = process.env.PORT || 5000
 app.listen(PORT, () => {
-  console.log(chalk.green(`Server started at PORT: ${PORT}`))
+  console.log(chalk.green.inverse(`Server started at PORT: ${PORT}`))
 })
