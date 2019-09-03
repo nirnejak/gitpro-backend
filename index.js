@@ -39,10 +39,10 @@ app.use('/api/users', require('./routes/api/users'))
 
 const GitHubStrategy = require('passport-github').Strategy;
 passport.use(new GitHubStrategy({
-  clientID: '28670f88156e4ce590f5',
-  clientSecret: 'f5317bea7a4dff327b1087fe8dde607b3ba096af',
+  clientID: process.env.GITHUB_CLIENT_ID || '28670f88156e4ce590f5',
+  clientSecret: process.env.GITHUB_CLIENT_SECRET || 'ca52a60c219893f9f7500641549951812fc97bf8',
   callbackURL: "http://127.0.0.1:5000/auth/github/callback",
-  
+
 },
   function (accessToken, refreshToken, profile, cb) {
     User.findOrCreate({ githubId: profile.id }, function (err, user) {
@@ -55,7 +55,6 @@ app.get('/auth/github', passport.authenticate('github'));
 app.get('/auth/github/callback',
   passport.authenticate('github', { failureRedirect: '/login' }),
   function (req, res) {
-    // Successful authentication, redirect home.
     res.redirect('/');
   });
 
