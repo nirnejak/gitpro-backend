@@ -10,11 +10,13 @@ const cookieParser = require('cookie-parser')
 const mongoose = require('mongoose')
 const passport = require('passport')
 
+const config = require('./config')
+
 const { logger } = require('./middlewares/logger')
 
 app = express()
 
-mongoose.connect(process.env.MONGO_URI || 'mongodb+srv://user:user1234@cluster0-xnkdm.mongodb.net/gitsupreme', {
+mongoose.connect(config.MONGO_URI, {
   useNewUrlParser: true
 })
   .then(() => console.log(chalk.green('🔥  MongoDB Connected...')))
@@ -27,7 +29,7 @@ app.use(express.static(path.join(__dirname, 'public')))
 app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser());
 app.use(session({ 
-  secret: process.env.SESSION_SECRET || 'THIS_IS_MY_SESSION_SECRET',
+  secret: config.SESSION_SECRET,
   resave: true, 
   saveUninitialized: true
 }))
@@ -46,7 +48,8 @@ app.use(sassMiddleware({
   dest: path.join(__dirname, 'public', 'css'),
   prefix: '/css',
   outputStyle: "compressed",
-  debug: process.env.NODE_ENV !== 'production',
+  // debug: config.NODE_ENV !== 'production',
+  debug: false,
   response: false
 }))
 
@@ -68,7 +71,6 @@ app.get('/dashboard', (req, res) => {
   res.render('dashboard')
 })
 
-const PORT = process.env.PORT || 5000
-app.listen(PORT, () => {
-  console.log(chalk.green(`👍  Server started at PORT: ${PORT}`))
+app.listen(config.PORT, () => {
+  console.log(chalk.green(`👍  Server started at PORT: ${config.PORT}`))
 })
