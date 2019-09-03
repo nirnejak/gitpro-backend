@@ -8,6 +8,9 @@ const router = express.Router();
 
 const GitHubStrategy = require('passport-github2').Strategy;
 
+passport.serializeUser((user, done) => done(null, user))
+passport.deserializeUser((obj, done) => done(null, obj))
+
 passport.use(new GitHubStrategy({
   clientID: process.env.GITHUB_CLIENT_ID || '9eef2cf40dfd04593ad0',
   clientSecret: process.env.GITHUB_CLIENT_SECRET || 'a599171516a2fb04941c8a3a3d06862dbbaca7d8',
@@ -22,7 +25,7 @@ passport.use(new GitHubStrategy({
     })
     user.save()
       .then(user => done(null, user))
-      .catch(err => done(null, false))
+      .catch(err => done(err))
   }
 ));
 router.get('/github', passport.authenticate('github', { scope: ['user:email'] }));

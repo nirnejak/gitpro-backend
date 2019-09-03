@@ -5,6 +5,8 @@ const path = require('path')
 const session = require('express-session')
 const exphbs = require('express-handlebars')
 const sassMiddleware = require('node-sass-middleware')
+
+const cookieParser = require('cookie-parser')
 const mongoose = require('mongoose')
 const passport = require('passport')
 
@@ -15,19 +17,24 @@ app = express()
 mongoose.connect(process.env.MONGO_URI || 'mongodb+srv://user:user1234@cluster0-xnkdm.mongodb.net/gitsupreme', {
   useNewUrlParser: true
 })
-  .then(() => console.log(chalk.green('🔥 MongoDB Connected...')))
+  .then(() => console.log(chalk.green('🔥  MongoDB Connected...')))
   .catch(err => console.log(chalk.red(err)))
 
 // Middlewares
 app.use(logger)
 app.use(express.json())
+app.use(express.static(path.join(__dirname, 'public')))
 app.use(express.urlencoded({ extended: false }))
-app.use(passport.initialize())
+app.use(cookieParser());
 app.use(session({ 
-  secret: process.env.SESSION_SECRET || 'THIS_IS_MY_SESSION_SECRET', 
+  secret: process.env.SESSION_SECRET || 'THIS_IS_MY_SESSION_SECRET',
   resave: true, 
   saveUninitialized: true
 }))
+
+app.use(passport.initialize())
+app.use(passport.session())
+
 
 // Template Settings
 app.engine('handlebars', exphbs({ defaultLayout: 'main' }))
@@ -43,9 +50,6 @@ app.use(sassMiddleware({
   response: false
 }))
 
-// Set a static folder using Middleware
-app.use(express.static(path.join(__dirname, 'public')))
-
 // Using Routes for API
 app.use('/api/users', require('./routes/api/users'))
 app.use('/auth', require('./routes/api/auth'))
@@ -60,7 +64,11 @@ app.get('/login', (req, res) => {
   res.render('login')
 })
 
+app.get('/dashboard', (req, res) => {
+  res.render('dashboard')
+})
+
 const PORT = process.env.PORT || 5000
 app.listen(PORT, () => {
-  console.log(chalk.green(`👍 Server started at PORT: ${PORT}`))
+  console.log(chalk.green(`👍  Server started at PORT: ${PORT}`))
 })
