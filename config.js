@@ -1,8 +1,8 @@
 module.exports = {
   NODE_ENV: process.env.NODE_ENV || 'dev',
   PORT: process.env.PORT || 5000,
-  SESSION_SECRET: process.env.SESSION_SECRET || 'THIS_IS_MY_SESSION_SECRET',
-  
+  SESSION_SECRET: process.env.SESSION_SECRET || '894f40f9ee92e4c4c7ffd56d781f4167',
+
   MONGO_URI: process.env.MONGO_URI || 'mongodb+srv://user:user1234@cluster0-xnkdm.mongodb.net/gitsupreme',
 
   GITHUB_CLIENT_ID: process.env.GITHUB_CLIENT_ID || '9eef2cf40dfd04593ad0',

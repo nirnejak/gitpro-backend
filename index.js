@@ -48,28 +48,14 @@ app.use(sassMiddleware({
   dest: path.join(__dirname, 'public', 'css'),
   prefix: '/css',
   outputStyle: "compressed",
-  // debug: config.NODE_ENV !== 'production',
-  debug: false,
+  debug: config.NODE_ENV === 'dev',
   response: false
 }))
 
 // Using Routes for API
+app.use('/', require('./routes/pages'))
 app.use('/api/users', require('./routes/api/users'))
 app.use('/auth', require('./routes/api/auth'))
-
-
-app.get('/', (req, res) => {
-  let context = { title: 'GitHub Supreme' }
-  res.render('index', context)
-})
-
-app.get('/login', (req, res) => {
-  res.render('login')
-})
-
-app.get('/dashboard', (req, res) => {
-  res.render('dashboard')
-})
 
 app.listen(config.PORT, () => {
   console.log(chalk.green(`👍  Server started at PORT: ${config.PORT}`))

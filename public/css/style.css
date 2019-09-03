@@ -40,6 +40,146 @@ body {
   width: 100%;
 }
 
+.position-static {
+  position: static !important;
+}
+
+.position-fixed {
+  position: fixed !important;
+}
+
+.position-relative {
+  position: relative !important;
+}
+
+.position-absolute {
+  position: absolute !important;
+}
+
+.position-sticky {
+  position: -webkit-sticky !important;
+  position: sticky !important;
+}
+
+.d-none {
+  display: none !important;
+}
+
+.d-block {
+  display: block !important;
+}
+
+.d-inline {
+  display: inline !important;
+}
+
+.d-inline-block {
+  display: inline-block !important;
+}
+
+.d-flex {
+  display: -webkit-box !important;
+  display: -ms-flexbox !important;
+  display: flex !important;
+}
+
+.d-grid {
+  display: -ms-grid !important;
+  display: grid !important;
+}
+
+.border-radius-0 {
+  border-radius: 0px !important;
+}
+
+.h-0vh {
+  min-height: 0vh !important;
+}
+
+.h-0 {
+  height: 0% !important;
+}
+
+.w-0 {
+  width: 0% !important;
+}
+
+.t-0 {
+  top: 0px !important;
+}
+
+.r-0 {
+  right: 0px !important;
+}
+
+.b-0 {
+  bottom: 0px !important;
+}
+
+.l-0 {
+  left: 0px !important;
+}
+
+.p-0 {
+  padding: 0px !important;
+}
+
+.pt-0 {
+  padding-top: 0px !important;
+}
+
+.pb-0 {
+  padding-bottom: 0px !important;
+}
+
+.pl-0 {
+  padding-left: 0px !important;
+}
+
+.pr-0 {
+  padding-right: 0px !important;
+}
+
+.px-0 {
+  padding-right: 0px !important;
+  padding-left: 0px !important;
+}
+
+.py-0 {
+  padding-top: 0px !important;
+  padding-bottom: 0px !important;
+}
+
+.m-0 {
+  margin: 0px !important;
+}
+
+.mt-0 {
+  margin-top: 0px !important;
+}
+
+.mb-0 {
+  margin-bottom: 0px !important;
+}
+
+.ml-0 {
+  margin-left: 0px !important;
+}
+
+.mr-0 {
+  margin-right: 0px !important;
+}
+
+.mx-0 {
+  margin-right: 0px !important;
+  margin-left: 0px !important;
+}
+
+.my-0 {
+  margin-top: 0px !important;
+  margin-bottom: 0px !important;
+}
+
 .border-radius-5 {
   border-radius: 5px !important;
 }
@@ -92,6 +232,16 @@ body {
   padding-right: 5px !important;
 }
 
+.px-5 {
+  padding-right: 5px !important;
+  padding-left: 5px !important;
+}
+
+.py-5 {
+  padding-top: 5px !important;
+  padding-bottom: 5px !important;
+}
+
 .m-5 {
   margin: 5px !important;
 }
@@ -110,6 +260,16 @@ body {
 
 .mr-5 {
   margin-right: 5px !important;
+}
+
+.mx-5 {
+  margin-right: 5px !important;
+  margin-left: 5px !important;
+}
+
+.my-5 {
+  margin-top: 5px !important;
+  margin-bottom: 5px !important;
 }
 
 .border-radius-10 {
@@ -164,6 +324,16 @@ body {
   padding-right: 10px !important;
 }
 
+.px-10 {
+  padding-right: 10px !important;
+  padding-left: 10px !important;
+}
+
+.py-10 {
+  padding-top: 10px !important;
+  padding-bottom: 10px !important;
+}
+
 .m-10 {
   margin: 10px !important;
 }
@@ -182,6 +352,16 @@ body {
 
 .mr-10 {
   margin-right: 10px !important;
+}
+
+.mx-10 {
+  margin-right: 10px !important;
+  margin-left: 10px !important;
+}
+
+.my-10 {
+  margin-top: 10px !important;
+  margin-bottom: 10px !important;
 }
 
 .border-radius-15 {
@@ -236,6 +416,16 @@ body {
   padding-right: 15px !important;
 }
 
+.px-15 {
+  padding-right: 15px !important;
+  padding-left: 15px !important;
+}
+
+.py-15 {
+  padding-top: 15px !important;
+  padding-bottom: 15px !important;
+}
+
 .m-15 {
   margin: 15px !important;
 }
@@ -254,6 +444,16 @@ body {
 
 .mr-15 {
   margin-right: 15px !important;
+}
+
+.mx-15 {
+  margin-right: 15px !important;
+  margin-left: 15px !important;
+}
+
+.my-15 {
+  margin-top: 15px !important;
+  margin-bottom: 15px !important;
 }
 
 .border-radius-20 {
@@ -308,6 +508,16 @@ body {
   padding-right: 20px !important;
 }
 
+.px-20 {
+  padding-right: 20px !important;
+  padding-left: 20px !important;
+}
+
+.py-20 {
+  padding-top: 20px !important;
+  padding-bottom: 20px !important;
+}
+
 .m-20 {
   margin: 20px !important;
 }
@@ -326,6 +536,16 @@ body {
 
 .mr-20 {
   margin-right: 20px !important;
+}
+
+.mx-20 {
+  margin-right: 20px !important;
+  margin-left: 20px !important;
+}
+
+.my-20 {
+  margin-top: 20px !important;
+  margin-bottom: 20px !important;
 }
 
 .border-radius-25 {
@@ -380,6 +600,16 @@ body {
   padding-right: 25px !important;
 }
 
+.px-25 {
+  padding-right: 25px !important;
+  padding-left: 25px !important;
+}
+
+.py-25 {
+  padding-top: 25px !important;
+  padding-bottom: 25px !important;
+}
+
 .m-25 {
   margin: 25px !important;
 }
@@ -398,6 +628,16 @@ body {
 
 .mr-25 {
   margin-right: 25px !important;
+}
+
+.mx-25 {
+  margin-right: 25px !important;
+  margin-left: 25px !important;
+}
+
+.my-25 {
+  margin-top: 25px !important;
+  margin-bottom: 25px !important;
 }
 
 .border-radius-30 {
@@ -452,6 +692,16 @@ body {
   padding-right: 30px !important;
 }
 
+.px-30 {
+  padding-right: 30px !important;
+  padding-left: 30px !important;
+}
+
+.py-30 {
+  padding-top: 30px !important;
+  padding-bottom: 30px !important;
+}
+
 .m-30 {
   margin: 30px !important;
 }
@@ -470,6 +720,16 @@ body {
 
 .mr-30 {
   margin-right: 30px !important;
+}
+
+.mx-30 {
+  margin-right: 30px !important;
+  margin-left: 30px !important;
+}
+
+.my-30 {
+  margin-top: 30px !important;
+  margin-bottom: 30px !important;
 }
 
 .border-radius-35 {
@@ -524,6 +784,16 @@ body {
   padding-right: 35px !important;
 }
 
+.px-35 {
+  padding-right: 35px !important;
+  padding-left: 35px !important;
+}
+
+.py-35 {
+  padding-top: 35px !important;
+  padding-bottom: 35px !important;
+}
+
 .m-35 {
   margin: 35px !important;
 }
@@ -542,6 +812,16 @@ body {
 
 .mr-35 {
   margin-right: 35px !important;
+}
+
+.mx-35 {
+  margin-right: 35px !important;
+  margin-left: 35px !important;
+}
+
+.my-35 {
+  margin-top: 35px !important;
+  margin-bottom: 35px !important;
 }
 
 .border-radius-40 {
@@ -596,6 +876,16 @@ body {
   padding-right: 40px !important;
 }
 
+.px-40 {
+  padding-right: 40px !important;
+  padding-left: 40px !important;
+}
+
+.py-40 {
+  padding-top: 40px !important;
+  padding-bottom: 40px !important;
+}
+
 .m-40 {
   margin: 40px !important;
 }
@@ -614,6 +904,16 @@ body {
 
 .mr-40 {
   margin-right: 40px !important;
+}
+
+.mx-40 {
+  margin-right: 40px !important;
+  margin-left: 40px !important;
+}
+
+.my-40 {
+  margin-top: 40px !important;
+  margin-bottom: 40px !important;
 }
 
 .border-radius-45 {
@@ -668,6 +968,16 @@ body {
   padding-right: 45px !important;
 }
 
+.px-45 {
+  padding-right: 45px !important;
+  padding-left: 45px !important;
+}
+
+.py-45 {
+  padding-top: 45px !important;
+  padding-bottom: 45px !important;
+}
+
 .m-45 {
   margin: 45px !important;
 }
@@ -686,6 +996,16 @@ body {
 
 .mr-45 {
   margin-right: 45px !important;
+}
+
+.mx-45 {
+  margin-right: 45px !important;
+  margin-left: 45px !important;
+}
+
+.my-45 {
+  margin-top: 45px !important;
+  margin-bottom: 45px !important;
 }
 
 .border-radius-50 {
@@ -740,6 +1060,16 @@ body {
   padding-right: 50px !important;
 }
 
+.px-50 {
+  padding-right: 50px !important;
+  padding-left: 50px !important;
+}
+
+.py-50 {
+  padding-top: 50px !important;
+  padding-bottom: 50px !important;
+}
+
 .m-50 {
   margin: 50px !important;
 }
@@ -758,6 +1088,16 @@ body {
 
 .mr-50 {
   margin-right: 50px !important;
+}
+
+.mx-50 {
+  margin-right: 50px !important;
+  margin-left: 50px !important;
+}
+
+.my-50 {
+  margin-top: 50px !important;
+  margin-bottom: 50px !important;
 }
 
 .border-radius-55 {
@@ -812,6 +1152,16 @@ body {
   padding-right: 55px !important;
 }
 
+.px-55 {
+  padding-right: 55px !important;
+  padding-left: 55px !important;
+}
+
+.py-55 {
+  padding-top: 55px !important;
+  padding-bottom: 55px !important;
+}
+
 .m-55 {
   margin: 55px !important;
 }
@@ -830,6 +1180,16 @@ body {
 
 .mr-55 {
   margin-right: 55px !important;
+}
+
+.mx-55 {
+  margin-right: 55px !important;
+  margin-left: 55px !important;
+}
+
+.my-55 {
+  margin-top: 55px !important;
+  margin-bottom: 55px !important;
 }
 
 .border-radius-60 {
@@ -884,6 +1244,16 @@ body {
   padding-right: 60px !important;
 }
 
+.px-60 {
+  padding-right: 60px !important;
+  padding-left: 60px !important;
+}
+
+.py-60 {
+  padding-top: 60px !important;
+  padding-bottom: 60px !important;
+}
+
 .m-60 {
   margin: 60px !important;
 }
@@ -902,6 +1272,16 @@ body {
 
 .mr-60 {
   margin-right: 60px !important;
+}
+
+.mx-60 {
+  margin-right: 60px !important;
+  margin-left: 60px !important;
+}
+
+.my-60 {
+  margin-top: 60px !important;
+  margin-bottom: 60px !important;
 }
 
 .border-radius-65 {
@@ -956,6 +1336,16 @@ body {
   padding-right: 65px !important;
 }
 
+.px-65 {
+  padding-right: 65px !important;
+  padding-left: 65px !important;
+}
+
+.py-65 {
+  padding-top: 65px !important;
+  padding-bottom: 65px !important;
+}
+
 .m-65 {
   margin: 65px !important;
 }
@@ -974,6 +1364,16 @@ body {
 
 .mr-65 {
   margin-right: 65px !important;
+}
+
+.mx-65 {
+  margin-right: 65px !important;
+  margin-left: 65px !important;
+}
+
+.my-65 {
+  margin-top: 65px !important;
+  margin-bottom: 65px !important;
 }
 
 .border-radius-70 {
@@ -1028,6 +1428,16 @@ body {
   padding-right: 70px !important;
 }
 
+.px-70 {
+  padding-right: 70px !important;
+  padding-left: 70px !important;
+}
+
+.py-70 {
+  padding-top: 70px !important;
+  padding-bottom: 70px !important;
+}
+
 .m-70 {
   margin: 70px !important;
 }
@@ -1046,6 +1456,16 @@ body {
 
 .mr-70 {
   margin-right: 70px !important;
+}
+
+.mx-70 {
+  margin-right: 70px !important;
+  margin-left: 70px !important;
+}
+
+.my-70 {
+  margin-top: 70px !important;
+  margin-bottom: 70px !important;
 }
 
 .border-radius-75 {
@@ -1100,6 +1520,16 @@ body {
   padding-right: 75px !important;
 }
 
+.px-75 {
+  padding-right: 75px !important;
+  padding-left: 75px !important;
+}
+
+.py-75 {
+  padding-top: 75px !important;
+  padding-bottom: 75px !important;
+}
+
 .m-75 {
   margin: 75px !important;
 }
@@ -1118,6 +1548,16 @@ body {
 
 .mr-75 {
   margin-right: 75px !important;
+}
+
+.mx-75 {
+  margin-right: 75px !important;
+  margin-left: 75px !important;
+}
+
+.my-75 {
+  margin-top: 75px !important;
+  margin-bottom: 75px !important;
 }
 
 .border-radius-80 {
@@ -1172,6 +1612,16 @@ body {
   padding-right: 80px !important;
 }
 
+.px-80 {
+  padding-right: 80px !important;
+  padding-left: 80px !important;
+}
+
+.py-80 {
+  padding-top: 80px !important;
+  padding-bottom: 80px !important;
+}
+
 .m-80 {
   margin: 80px !important;
 }
@@ -1190,6 +1640,16 @@ body {
 
 .mr-80 {
   margin-right: 80px !important;
+}
+
+.mx-80 {
+  margin-right: 80px !important;
+  margin-left: 80px !important;
+}
+
+.my-80 {
+  margin-top: 80px !important;
+  margin-bottom: 80px !important;
 }
 
 .border-radius-85 {
@@ -1244,6 +1704,16 @@ body {
   padding-right: 85px !important;
 }
 
+.px-85 {
+  padding-right: 85px !important;
+  padding-left: 85px !important;
+}
+
+.py-85 {
+  padding-top: 85px !important;
+  padding-bottom: 85px !important;
+}
+
 .m-85 {
   margin: 85px !important;
 }
@@ -1262,6 +1732,16 @@ body {
 
 .mr-85 {
   margin-right: 85px !important;
+}
+
+.mx-85 {
+  margin-right: 85px !important;
+  margin-left: 85px !important;
+}
+
+.my-85 {
+  margin-top: 85px !important;
+  margin-bottom: 85px !important;
 }
 
 .border-radius-90 {
@@ -1316,6 +1796,16 @@ body {
   padding-right: 90px !important;
 }
 
+.px-90 {
+  padding-right: 90px !important;
+  padding-left: 90px !important;
+}
+
+.py-90 {
+  padding-top: 90px !important;
+  padding-bottom: 90px !important;
+}
+
 .m-90 {
   margin: 90px !important;
 }
@@ -1334,6 +1824,16 @@ body {
 
 .mr-90 {
   margin-right: 90px !important;
+}
+
+.mx-90 {
+  margin-right: 90px !important;
+  margin-left: 90px !important;
+}
+
+.my-90 {
+  margin-top: 90px !important;
+  margin-bottom: 90px !important;
 }
 
 .border-radius-95 {
@@ -1388,6 +1888,16 @@ body {
   padding-right: 95px !important;
 }
 
+.px-95 {
+  padding-right: 95px !important;
+  padding-left: 95px !important;
+}
+
+.py-95 {
+  padding-top: 95px !important;
+  padding-bottom: 95px !important;
+}
+
 .m-95 {
   margin: 95px !important;
 }
@@ -1406,6 +1916,16 @@ body {
 
 .mr-95 {
   margin-right: 95px !important;
+}
+
+.mx-95 {
+  margin-right: 95px !important;
+  margin-left: 95px !important;
+}
+
+.my-95 {
+  margin-top: 95px !important;
+  margin-bottom: 95px !important;
 }
 
 .border-radius-100 {
@@ -1460,6 +1980,16 @@ body {
   padding-right: 100px !important;
 }
 
+.px-100 {
+  padding-right: 100px !important;
+  padding-left: 100px !important;
+}
+
+.py-100 {
+  padding-top: 100px !important;
+  padding-bottom: 100px !important;
+}
+
 .m-100 {
   margin: 100px !important;
 }
@@ -1478,6 +2008,16 @@ body {
 
 .mr-100 {
   margin-right: 100px !important;
+}
+
+.mx-100 {
+  margin-right: 100px !important;
+  margin-left: 100px !important;
+}
+
+.my-100 {
+  margin-top: 100px !important;
+  margin-bottom: 100px !important;
 }
 
 .border-radius-105 {
@@ -1532,6 +2072,16 @@ body {
   padding-right: 105px !important;
 }
 
+.px-105 {
+  padding-right: 105px !important;
+  padding-left: 105px !important;
+}
+
+.py-105 {
+  padding-top: 105px !important;
+  padding-bottom: 105px !important;
+}
+
 .m-105 {
   margin: 105px !important;
 }
@@ -1550,6 +2100,16 @@ body {
 
 .mr-105 {
   margin-right: 105px !important;
+}
+
+.mx-105 {
+  margin-right: 105px !important;
+  margin-left: 105px !important;
+}
+
+.my-105 {
+  margin-top: 105px !important;
+  margin-bottom: 105px !important;
 }
 
 .border-radius-110 {
@@ -1604,6 +2164,16 @@ body {
   padding-right: 110px !important;
 }
 
+.px-110 {
+  padding-right: 110px !important;
+  padding-left: 110px !important;
+}
+
+.py-110 {
+  padding-top: 110px !important;
+  padding-bottom: 110px !important;
+}
+
 .m-110 {
   margin: 110px !important;
 }
@@ -1622,6 +2192,16 @@ body {
 
 .mr-110 {
   margin-right: 110px !important;
+}
+
+.mx-110 {
+  margin-right: 110px !important;
+  margin-left: 110px !important;
+}
+
+.my-110 {
+  margin-top: 110px !important;
+  margin-bottom: 110px !important;
 }
 
 .border-radius-115 {
@@ -1676,6 +2256,16 @@ body {
   padding-right: 115px !important;
 }
 
+.px-115 {
+  padding-right: 115px !important;
+  padding-left: 115px !important;
+}
+
+.py-115 {
+  padding-top: 115px !important;
+  padding-bottom: 115px !important;
+}
+
 .m-115 {
   margin: 115px !important;
 }
@@ -1694,6 +2284,16 @@ body {
 
 .mr-115 {
   margin-right: 115px !important;
+}
+
+.mx-115 {
+  margin-right: 115px !important;
+  margin-left: 115px !important;
+}
+
+.my-115 {
+  margin-top: 115px !important;
+  margin-bottom: 115px !important;
 }
 
 .border-radius-120 {
@@ -1748,6 +2348,16 @@ body {
   padding-right: 120px !important;
 }
 
+.px-120 {
+  padding-right: 120px !important;
+  padding-left: 120px !important;
+}
+
+.py-120 {
+  padding-top: 120px !important;
+  padding-bottom: 120px !important;
+}
+
 .m-120 {
   margin: 120px !important;
 }
@@ -1766,6 +2376,16 @@ body {
 
 .mr-120 {
   margin-right: 120px !important;
+}
+
+.mx-120 {
+  margin-right: 120px !important;
+  margin-left: 120px !important;
+}
+
+.my-120 {
+  margin-top: 120px !important;
+  margin-bottom: 120px !important;
 }
 
 .rounded-circle {

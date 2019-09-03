@@ -39,7 +39,21 @@ body {
   width: 100%;
 }
 
-$spaceamounts: (5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100, 105, 110, 115, 120);
+$positions: ("static", "fixed", "relative", "absolute", "sticky");
+@each $position in $positions {
+  .position-#{$position} {
+    position: #{$position} !important;
+  }
+}
+
+$displays: ("none", "block", "inline", "inline-block", "flex", "grid");
+@each $display in $displays {
+  .d-#{$display} {
+    display: #{$display} !important;
+  }
+}
+
+$spaceamounts: (0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100, 105, 110, 115, 120);
 
 @each $space in $spaceamounts {
   .border-radius-#{$space} {
@@ -83,6 +97,14 @@ $spaceamounts: (5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 8
   .pr-#{$space} {
     padding-right: #{$space}px !important;
   }
+  .px-#{$space} {
+    padding-right: #{$space}px !important;
+    padding-left: #{$space}px !important;
+  }
+  .py-#{$space} {
+    padding-top: #{$space}px !important;
+    padding-bottom: #{$space}px !important;
+  }
 
   .m-#{$space} {
     margin: #{$space}px !important;
@@ -98,6 +120,14 @@ $spaceamounts: (5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 8
   }
   .mr-#{$space} {
     margin-right: #{$space}px !important;
+  }
+  .mx-#{$space} {
+    margin-right: #{$space}px !important;
+    margin-left: #{$space}px !important;
+  }
+  .my-#{$space} {
+    margin-top: #{$space}px !important;
+    margin-bottom: #{$space}px !important;
   }
 }
 
