@@ -17,7 +17,7 @@ passport.deserializeUser((obj, done) => done(null, obj))
 passport.use(new GitHubStrategy({
   clientID: config.GITHUB_CLIENT_ID,
   clientSecret: config.GITHUB_CLIENT_SECRET,
-  callbackURL: "http://127.0.0.1:5000/auth/github/callback"
+  callbackURL: config.GITHUB_CALLBACK_URL
 },
   function (accessToken, refreshToken, profile, done) {
     User.findOne({ githubId: profile.id }, (err, db_user) => {
@@ -29,6 +29,7 @@ passport.use(new GitHubStrategy({
           githubId: profile.id,
           avatar_url: profile._json.avatar_url
         })
+        // TODO: Start Fetching the Repositories and Contributors
         user.save()
           .then(user => done(null, user))
           .catch(err => done(err))

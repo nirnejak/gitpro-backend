@@ -22,6 +22,9 @@ body {
     padding: 7px 15px;
     background: transparent;
     color: #0e57ff;
+    &:hover {
+      background: #D5E1FF;
+    }
     i {
       margin-right: 5px;
     }

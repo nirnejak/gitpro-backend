@@ -9,23 +9,23 @@
     <p class="text-dark is-center">nirnejak</p>
   </div>
   <div class="sidebar-links p-50" style="padding-top: 30px !important;">
-    <a href="/dashboard" class="sidebar-link active">
+    <a href="/dashboard" class="sidebar-link {{# if dashboard }}active{{/if}}">
       <i class="fas fa-chart-line"></i>
       Dashboard
     </a>
-    <a href="/teams" class="sidebar-link">
+    <a href="/teams" class="sidebar-link {{# if teams }}active{{/if}}">
       <i class="fas fa-users"></i>
       Teams
     </a>
-    <a href="/contributors" class="sidebar-link">
+    <a href="/contributors" class="sidebar-link {{# if contributors }}active{{/if}}">
       <i class="fas fa-user"></i>
       Contributors
     </a>
-    <a href="/repositories" class="sidebar-link">
+    <a href="/repositories" class="sidebar-link {{# if repositories }}active{{/if}}">
       <i class="fas fa-code-branch"></i>
       Repositories
     </a>
-    <a href="/settings" class="sidebar-link">
+    <a href="/settings" class="sidebar-link {{# if setting }}active{{/if}}">
       <i class="fas fa-cog"></i>
       Settings
     </a>

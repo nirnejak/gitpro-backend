@@ -16,9 +16,7 @@ const { logger } = require('./middlewares/logger')
 
 app = express()
 
-mongoose.connect(config.MONGO_URI, {
-  useNewUrlParser: true
-})
+mongoose.connect(config.MONGO_URI, { useNewUrlParser: true })
   .then(() => console.log(chalk.green('🔥  MongoDB Connected...')))
   .catch(err => console.log(chalk.red(err)))
 
@@ -28,9 +26,9 @@ app.use(express.json())
 app.use(express.static(path.join(__dirname, 'public')))
 app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser());
-app.use(session({ 
+app.use(session({
   secret: config.SESSION_SECRET,
-  resave: true, 
+  resave: true,
   saveUninitialized: true
 }))
 
