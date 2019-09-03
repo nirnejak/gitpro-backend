@@ -1,13 +1,6 @@
 const express = require('express')
-const mongoose = require('mongoose')
 
-const Users = require('../../models/users')
-
-// mongoose.connect(process.env.MONGO_URI || 'mongodb://ram:fakepass1@ds157742.mlab.com:57742/gitsupreme')
-//   .then(() => {
-//     console.log(chalk.green('MongoDB Connected...'))
-//   })
-//   .catch(err => console.log(chalk.red(err)))
+const Users = require('../../models/user')
 
 const router = express.Router();
 
@@ -31,4 +24,4 @@ router.delete('/:id', (req, res) => {
   res.send("Delete a User")
 })
 
-module.exports = router 
+module.exports = router

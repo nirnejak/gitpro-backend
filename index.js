@@ -1,19 +1,21 @@
 const express = require('express')
 const chalk = require('chalk')
-const bodyParser = require('body-parser')
 const jwt = require('jsonwebtoken')
 const path = require('path')
 const exphbs = require('express-handlebars')
 const sassMiddleware = require('node-sass-middleware')
+const mongoose = require('mongoose')
 
 const { logger } = require('./middlewares/logger')
-const { Users } = require('./models/users')
 
 app = express()
 
+mongoose.connect(process.env.MONGO_URI || 'mongodb+srv://user:user1234@cluster0-xnkdm.mongodb.net/gitsupreme')
+  .then(() => console.log(chalk.green('MongoDB Connected...')))
+  .catch(err => console.log(chalk.red(err)))
+
 // Middlewares
 app.use(logger)
-app.use(bodyParser.json())
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 

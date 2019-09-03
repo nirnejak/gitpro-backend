@@ -1,5 +1,8 @@
 const express = require('express')
 const passport = require('passport')
+const chalk = require('chalk')
+
+const User = require('../../models/user')
 
 const router = express.Router();
 
@@ -11,9 +14,15 @@ passport.use(new GitHubStrategy({
 
 },
   function (accessToken, refreshToken, profile, cb) {
-    User.findOrCreate({ githubId: profile.id }, function (err, user) {
-      return cb(err, user);
-    });
+    let user = new User({
+      name: profile.displayName,
+      login: profile.username,
+      token: accessToken,
+      githubId: profile.id
+    })
+    user.save()
+      .then((err, user) => cb(err, user))
+      .catch(err => console.log(chalk.red(err)))
   }
 ));
 
