@@ -17,16 +17,23 @@ passport.use(new GitHubStrategy({
   callbackURL: "http://127.0.0.1:5000/auth/github/callback"
 },
   function (accessToken, refreshToken, profile, done) {
-    let user = new User({
-      name: profile.displayName,
-      login: profile.username,
-      token: accessToken,
-      githubId: profile.id,
-      avatar_url: profile._json.avatar_url
+    User.findOne({ githubId: profile.id }, (err, db_user) => {
+      if (err) {
+        let user = new User({
+          name: profile.displayName,
+          login: profile.username,
+          token: accessToken,
+          githubId: profile.id,
+          avatar_url: profile._json.avatar_url
+        })
+        user.save()
+          .then(user => done(null, user))
+          .catch(err => done(err))
+      } else {
+        done(null, db_user)
+      }
     })
-    user.save()
-      .then(user => done(null, user))
-      .catch(err => done(err))
+
   }
 ));
 router.get('/github', passport.authenticate('github', { scope: ['user:email'] }));
