@@ -8,12 +8,13 @@ const userSchema = mongoose.Schema({
   created_at: { type: Date, default: Date.now() },
   updated_at: { type: Date, default: Date.now() },
   contributors: [{ login: String }],
+  avatar_url: { type: String },
   meta: {
     includePublic: { type: Boolean, default: false }
   }
 });
 
-userSchema.pre('save', function(next) {
+userSchema.pre('save', function (next) {
   this.updated_at = Date.now()
   next()
 })

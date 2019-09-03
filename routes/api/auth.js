@@ -21,7 +21,8 @@ passport.use(new GitHubStrategy({
       name: profile.displayName,
       login: profile.username,
       token: accessToken,
-      githubId: profile.id
+      githubId: profile.id,
+      avatar_url: profile._json.avatar_url
     })
     user.save()
       .then(user => done(null, user))
