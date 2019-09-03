@@ -5,19 +5,23 @@ const path = require('path')
 const exphbs = require('express-handlebars')
 const sassMiddleware = require('node-sass-middleware')
 const mongoose = require('mongoose')
+const passport = require('passport')
 
 const { logger } = require('./middlewares/logger')
 
 app = express()
 
-mongoose.connect(process.env.MONGO_URI || 'mongodb+srv://user:user1234@cluster0-xnkdm.mongodb.net/gitsupreme')
-  .then(() => console.log(chalk.green('MongoDB Connected...')))
+mongoose.connect(process.env.MONGO_URI || 'mongodb+srv://user:user1234@cluster0-xnkdm.mongodb.net/gitsupreme', {
+  useNewUrlParser: true
+})
+  .then(() => console.log(chalk.green('🔥 MongoDB Connected...')))
   .catch(err => console.log(chalk.red(err)))
 
 // Middlewares
 app.use(logger)
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
+app.use(passport.initialize())
 
 // Template Settings
 app.engine('handlebars', exphbs({ defaultLayout: 'main' }))
