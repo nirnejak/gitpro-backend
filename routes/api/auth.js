@@ -64,6 +64,7 @@ passport.use(new GitHubStrategy({
                               }))
                               user.collaborators = [...user.collaborators, ...collaborators]
                             }
+                            // Saving instance on the last iteration
                             if (saved_user.repositories.length - 1 === index) {
                               user.save()
                                 .then(saved_user => console.log(chalk.green("✅  Data Fetched")))

@@ -15,6 +15,8 @@ const userSchema = mongoose.Schema({
   collaborators: [
     {
       login: { type: String },
+      id: { type: Number },
+      type: { type: String },
       repositories: [
         {
           id: { type: Number },
