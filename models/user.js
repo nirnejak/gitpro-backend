@@ -13,10 +13,29 @@ const userSchema = mongoose.Schema({
     includePublic: { type: Boolean, default: false },
     active: { type: Boolean, default: true }
   },
+  contributors: [
+    {
+      login: { type: String },
+      repositories: [
+        {
+          id: { type: Number },
+          node_id: { type: String },
+          name: { type: String },
+          private: { type: Boolean },
+          description: { type: String },
+          language: { type: String }
+        }
+      ]
+    }
+  ],
   repositories: [
     {
+      id: { type: Number },
+      node_id: { type: String },
       name: { type: String },
-      id: { type: String },
+      private: { type: Boolean },
+      description: { type: String },
+      language: { type: String },
       contributors: [{ login: String }]
     }
   ]

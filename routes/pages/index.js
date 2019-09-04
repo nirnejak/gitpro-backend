@@ -19,8 +19,8 @@ router.get('/teams', (req, res) => {
   res.render('teams')
 })
 
-router.get('/contributors', (req, res) => {
-  res.render('contributors')
+router.get('/collaborators', (req, res) => {
+  res.render('collaborators')
 })
 
 router.get('/repositories', (req, res) => {
