@@ -1,0 +1,28 @@
+.sidebar-links {
+  .sidebar-link {
+    display: block;
+    width: 100%;
+    border-radius: 5px;
+    margin: 5px 0px;
+    padding: 7px 15px;
+    background: transparent;
+    color: #0e57ff;
+    &:hover {
+      background: #D5E1FF;
+    }
+    i {
+      margin-right: 5px;
+    }
+  }
+  .sidebar-link.active {
+    background: #0e57ff;
+    color: white;
+  }
+}
+
+.sidebar-footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+}
