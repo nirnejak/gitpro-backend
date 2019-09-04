@@ -23,6 +23,7 @@ function isLoggedIn(req, res, next) {
 }
 
 router.get('/dashboard', isLoggedIn, (req, res) => {
+  console.log(req.user)
   User.findOne({ login: req.user.login }, (err, user) => {
     if (err) {
       res.redirect('/login')
