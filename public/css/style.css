@@ -6,7 +6,7 @@
 }
 
 body {
-  font-family: "Circular Std";
+  font-family: "Circular Std", -apple-system, BlinkMacSystemFont, Avenir, "Avenir Next", "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
   background: #f4f4f4;
 }
 
