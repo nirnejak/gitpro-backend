@@ -53,17 +53,16 @@ passport.use(new GitHubStrategy({
                     .then(saved_user => {
                       saved_user.repositories.forEach(repository => {
                         axios
-                          .get(`https://api.github.com/repos/${saved_user.login}/${repository.name}/contributors`, { headers: { Authorization: `Bearer ${accessToken}`, } })
+                          .get(`https://api.github.com/repos/${saved_user.login}/${repository.name}/collaborators`, { headers: { Authorization: `Bearer ${accessToken}`, } })
                           .then(res => {
                             if (res.data.length > 1) {
-                              let contributors = res.data.filter(contributor => contributor.login !== saved_user.login)
-                              contributors = contributors.map(contributor => ({
+                              let collaborators = res.data.filter(contributor => contributor.login !== saved_user.login)
+                              collaborators = collaborators.map(contributor => ({
                                 login: contributor.login,
                                 id: contributor.id,
-                                type: contributor.type,
-                                contributions: contributor.contributions
+                                type: contributor.type
                               }))
-                              // TODO: Store Contributors in MongoDB Database
+                              // TODO: Store Collaborators in MongoDB Database
                             }
                           })
                       })
