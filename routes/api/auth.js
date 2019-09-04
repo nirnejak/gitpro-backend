@@ -35,9 +35,8 @@ passport.use(new GitHubStrategy({
           })
           user.save()
             .then(user_item => {
-              axios.get(`https://api.github.com/users/${profile.username}/repos`)
+              axios.get(`https://api.github.com/user/repos`, { headers: { Authorization: `Bearer ${accessToken}`, } })
                 .then(res => {
-                  console.log(user)
                   user.repositories = res.data.map(repo => {
                     return {
                       id: repo.id,
