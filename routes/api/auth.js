@@ -22,6 +22,7 @@ passport.use(new GitHubStrategy({
   function (accessToken, refreshToken, profile, done) {
     User.findOne({ githubId: profile.id }, (err, db_user) => {
       if (err) {
+        done(err)
       } else {
         if (db_user) {
           done(null, db_user)
@@ -38,14 +39,8 @@ passport.use(new GitHubStrategy({
               axios.get(`https://api.github.com/user/repos`, { headers: { Authorization: `Bearer ${accessToken}`, } })
                 .then(res => {
                   user.repositories = res.data.map(repo => {
-                    return {
-                      id: repo.id,
-                      node_id: repo.node_id,
-                      name: repo.name,
-                      private: repo.private,
-                      description: repo.description,
-                      language: repo.language,
-                    }
+                    const { id, node_id, name, private, description, language } = repo;
+                    return { id, node_id, name, private, description, language }
                   })
                   user.save()
                     .then(user_item => {

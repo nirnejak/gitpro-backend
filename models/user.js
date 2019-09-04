@@ -7,13 +7,12 @@ const userSchema = mongoose.Schema({
   githubId: { type: String },
   created_at: { type: Date, default: Date.now() },
   updated_at: { type: Date, default: Date.now() },
-  contributors: [{ login: String }],
   avatar_url: { type: String },
   meta: {
     includePublic: { type: Boolean, default: false },
     active: { type: Boolean, default: true }
   },
-  contributors: [
+  collaborators: [
     {
       login: { type: String },
       repositories: [
@@ -36,7 +35,7 @@ const userSchema = mongoose.Schema({
       private: { type: Boolean },
       description: { type: String },
       language: { type: String },
-      contributors: [{ login: String }]
+      collaborators: [{ login: String }]
     }
   ]
 });

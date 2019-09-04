@@ -3,9 +3,9 @@
 }
 
 .bg-cover {
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center;
+  background-repeat: no-repeat !important;
+  background-size: cover !important;
+  background-position: center !important;
 }
 .bg-white {
   background: white;
@@ -29,13 +29,6 @@ $cursors: ("default", "pointer", "not-allowed", "context-menu");
 @each $cursor in $cursors {
   .cursor-#{$cursor} {
     cursor: #{$cursor} !important;
-  }
-}
-
-$aligns: ("left", "right", "center", "justify");
-@each $align in $aligns {
-  .text-#{$align} {
-    text-align: #{$align} !important;
   }
 }
 

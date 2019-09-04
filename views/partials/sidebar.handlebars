@@ -1,11 +1,11 @@
 <div class="col-3 bg-white h-100vh">
   <div class="pr-50 pl-50 pt-50 pb-10 is-horizontal-align">
-    <div class="bg-white rounded-circle bg-cover w-70" style="background-image: url(https://source.unsplash.com/daily?face/500x500); padding-top: 70%;">
+    <div class="bg-white rounded-circle bg-cover w-70" style="background-image: url({{# if user}} {{user.avatar_url}} {{/if}}); padding-top: 70%;">
     </div>
   </div>
   <div>
-    <h4 class="is-center mb-0">Jitendra Nirnejak</h4>
-    <p class="text-dark is-center">nirnejak</p>
+    <h4 class="is-center mb-0">{{# if user}} {{user.name}} {{/if}}</h4>
+    <p class="text-dark is-center">{{# if user}} {{user.login}} {{/if}}</p>
   </div>
   <div class="sidebar-links p-50" style="padding-top: 30px !important;">
     <a href="/dashboard" class="sidebar-link {{# if dashboard }}active{{/if}}">
