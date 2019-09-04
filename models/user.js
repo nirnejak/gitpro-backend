@@ -10,8 +10,16 @@ const userSchema = mongoose.Schema({
   contributors: [{ login: String }],
   avatar_url: { type: String },
   meta: {
-    includePublic: { type: Boolean, default: false }
-  }
+    includePublic: { type: Boolean, default: false },
+    active: { type: Boolean, default: true }
+  },
+  repositories: [
+    {
+      name: { type: String },
+      id: { type: String },
+      contributors: [{ login: String }]
+    }
+  ]
 });
 
 userSchema.pre('save', function (next) {
