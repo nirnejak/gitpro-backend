@@ -17,7 +17,7 @@ passport.deserializeUser((obj, done) => done(null, obj))
 passport.use(new GitHubStrategy({
   clientID: config.GITHUB_CLIENT_ID,
   clientSecret: config.GITHUB_CLIENT_SECRET,
-  callbackURL: config.GITHUB_CALLBACK_URL
+  callbackURL: config.GITHUB_CALLBACK_URL,
 },
   function (accessToken, refreshToken, profile, done) {
     User.findOne({ githubId: profile.id }, (err, db_user) => {
@@ -51,9 +51,9 @@ passport.use(new GitHubStrategy({
                   })
                   user.save()
                     .then(saved_user => {
-                      saved_user.repositories.forEach(repository => {
+                      saved_user.repositories.forEach((repository, index) => {
                         axios
-                          .get(`https://api.github.com/repos/${saved_user.login}/${repository.name}/collaborators`, { headers: { Authorization: `Bearer ${accessToken}`, } })
+                          .get(`https://api.github.com/repos/${saved_user.login}/${repository.name}/collaborators`, { headers: { Authorization: `Bearer ${saved_user.token}`, } })
                           .then(res => {
                             if (res.data.length > 1) {
                               let collaborators = res.data.filter(contributor => contributor.login !== saved_user.login)
@@ -62,9 +62,15 @@ passport.use(new GitHubStrategy({
                                 id: contributor.id,
                                 type: contributor.type
                               }))
-                              // TODO: Store Collaborators in MongoDB Database
+                              user.collaborators = [...user.collaborators, ...collaborators]
+                            }
+                            if (saved_user.repositories.length - 1 === index) {
+                              user.save()
+                                .then(saved_user => console.log(chalk.green("✅  Data Fetched")))
+                                .catch(err => console.log(chalk.red(err)))
                             }
                           })
+                          .catch(err => console.log(chalk.red(err)))
                       })
                     })
                 })
@@ -84,7 +90,7 @@ passport.use(new GitHubStrategy({
 
   }
 ));
-router.get('/github', passport.authenticate('github', { scope: ['user:email'] }));
+router.get('/github', passport.authenticate('github', { scope: ['user:email', 'repo', 'admin'] }));
 router.get('/github/callback', passport.authenticate('github', { failureRedirect: '/login' }), (req, res) => {
   res.redirect('/dashboard');
 });
