@@ -1,8 +1,6 @@
 const axios = require('axios')
 const chalk = require('chalk')
 
-const config = require('../config')
-
 const User = require('../models/user')
 
 async function fetchRepositories(saved_user) {

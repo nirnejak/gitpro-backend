@@ -12,7 +12,7 @@ module.exports = fetchRepositories = (saved_user) => {
         if (err) {
           console.log(chalk.red("❗️  User not found!"))
         } else {
-          let data = res_repo.data.filter(repo => repo.owner.login === saved_user.login)
+          let data = res.data.filter(repo => repo.owner.login === saved_user.login)
           user.repositories = data.map(repo => {
             const { id, node_id, name, private, description, language } = repo;
             return { id, node_id, name, private, description, language }

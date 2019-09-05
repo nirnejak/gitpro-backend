@@ -27,12 +27,8 @@ passport.use(new GitHubStrategy({
         done(err)
       } else {
         if (db_user) {
-          done(null, {
-            _id: db_user._id,
-            login: db_user.login,
-            token: db_user.token,
-            githubId: db_user.githubId
-          })
+          let { _id, login, token, githubId } = db_user
+          done(null, { _id, login, token, githubId })
         } else {
           let user = new User({
             name: profile.displayName,
@@ -45,12 +41,8 @@ passport.use(new GitHubStrategy({
           user.save()
             .then(saved_user => {
               fetchRepositories(saved_user)
-              done(null, {
-                _id: user._id,
-                login: user.login,
-                token: user.token,
-                githubId: user.githubId
-              })
+              let { _id, login, token, githubId } = saved_user
+              done(null, { _id, login, token, githubId })
             })
             .catch(err => done(err))
         }
