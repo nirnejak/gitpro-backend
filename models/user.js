@@ -17,6 +17,9 @@ const userSchema = mongoose.Schema({
       login: { type: String },
       id: { type: Number },
       type: { type: String },
+      name: { type: String },
+      avatar_url: { type: String },
+      email: { type: String },
       repositories: [
         {
           id: { type: Number },

@@ -1,8 +1,23 @@
 <div class="row">
-  {{> sidebar collaborators='collaborators'}}
+  {{> sidebar collaborators='collaborators' user=user}}
   <div class="col-9-lg pt-70">
     <div class="px-20">
       <h1>Collaborators</h1>
+      <div class="row">
+        {{# each user.collaborators}}
+        <div class="col-2 p-5">
+          <div class="bg-white rounded-circle bg-cover w-100"
+            style="background-image: url({{this.avatar_url}}); padding-top: 100%;">
+          </div>
+          <p class="is-text-center text-dark mt-10">
+            {{this.name}}
+          </p>
+          <small class="is-text-center text-dark is-center">
+            {{this.login}}
+          </small>
+        </div>
+        {{/each}}
+      </div>
     </div>
   </div>
 </div>

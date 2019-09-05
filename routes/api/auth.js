@@ -6,6 +6,8 @@ const chalk = require('chalk')
 const config = require('../../config')
 
 const User = require('../../models/user')
+const fetchRepositories = require('../../tasks/fetchRepositories')
+
 const router = express.Router();
 
 
@@ -37,46 +39,12 @@ passport.use(new GitHubStrategy({
             login: profile.username,
             token: accessToken,
             githubId: profile.id,
-            avatar_url: profile._json.avatar_url
+            avatar_url: profile._json.avatar_url,
+            email: profile.email
           })
           user.save()
-            .then(user_item => {
-              // TODO: Move HTTP Call into a Message Queue or Background Process
-              axios
-                .get("https://api.github.com/user/repos", { headers: { Authorization: `Bearer ${accessToken}`, } })
-                .then(res => {
-                  user.repositories = res.data.map(repo => {
-                    const { id, node_id, name, private, description, language } = repo;
-                    return { id, node_id, name, private, description, language }
-                  })
-                  user.save()
-                    .then(saved_user => {
-                      saved_user.repositories.forEach((repository, index) => {
-                        axios
-                          .get(`https://api.github.com/repos/${saved_user.login}/${repository.name}/collaborators`, { headers: { Authorization: `Bearer ${saved_user.token}`, } })
-                          .then(res => {
-                            if (res.data.length > 1) {
-                              let collaborators = res.data.filter(contributor => contributor.login !== saved_user.login)
-                              collaborators = collaborators.map(contributor => ({
-                                login: contributor.login,
-                                id: contributor.id,
-                                type: contributor.type
-                              }))
-                              user.collaborators = [...user.collaborators, ...collaborators]
-                            }
-                            // Saving instance on the last iteration
-                            if (saved_user.repositories.length - 1 === index) {
-                              user.save()
-                                .then(saved_user => console.log(chalk.green("✅  Data Fetched")))
-                                .catch(err => console.log(chalk.red(err)))
-                            }
-                          })
-                          .catch(err => console.log(chalk.red(err)))
-                      })
-                    })
-                })
-                .catch(err => console.log(chalk.red(err)))
-
+            .then(saved_user => {
+              fetchRepositories(saved_user)
               done(null, {
                 _id: user._id,
                 login: user.login,

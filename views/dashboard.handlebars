@@ -13,12 +13,16 @@
         </div>
         <div class="col-4 p-5">
           <div class="bg-white border-radius-10 p-20">
-            <br><br><br><br>
+            <i class="fas fa-user mr-5"></i>
+            {{user.total_collaborators}}
+            Total Collaborators
           </div>
         </div>
         <div class="col-4 p-5">
           <div class="bg-white border-radius-10 p-20">
-            <br><br><br><br>
+            <i class="fas fa-user mr-5"></i>
+            {{user.total_collaborators}}
+            Total Collaborators
           </div>
         </div>
       </div>
@@ -28,11 +32,15 @@
         </div>
         {{# each user.collaborators}}
         <div class="col-2 p-5">
-          <div class="bg-white rounded-circle bg-cover w-100" style="background-image: url(https://source.unsplash.com/weekly?water/500x500); padding-top: 100%;">
+          <div class="bg-white rounded-circle bg-cover w-100"
+            style="background-image: url({{this.avatar_url}}); padding-top: 100%;">
           </div>
           <p class="is-text-center text-dark mt-10">
-            {{this.login}}
+            {{this.name}}
           </p>
+          <small class="is-text-center text-dark is-center">
+            {{this.login}}
+          </small>
         </div>
         {{/each}}
       </div>

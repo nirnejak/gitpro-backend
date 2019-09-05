@@ -28,7 +28,7 @@ router.get('/dashboard', isLoggedIn, (req, res) => {
       res.redirect('/login')
     } else {
       user["total_repositories"] = user.repositories.length
-      user["collaborators"]
+      user["total_collaborators"] = user.collaborators.length
       res.render('dashboard', { user })
     }
   })
@@ -39,7 +39,6 @@ router.get('/teams', isLoggedIn, (req, res) => {
     if (err) {
       res.redirect('/login')
     } else {
-      user["total_repositories"] = user.repositories.length
       res.render('teams', { user })
     }
   })
@@ -50,7 +49,6 @@ router.get('/collaborators', isLoggedIn, (req, res) => {
     if (err) {
       res.redirect('/login')
     } else {
-      user["total_repositories"] = user.repositories.length
       res.render('collaborators', { user })
     }
   })
