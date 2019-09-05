@@ -6,14 +6,14 @@ const config = require('../config')
 const User = require('../models/user')
 
 module.exports = fetchRepositories = (saved_user) => {
-  axios
-    .get("https://api.github.com/user/repos", { headers: { Authorization: `Bearer ${saved_user.token}`, } })
+  axios.get("https://api.github.com/user/repos?per_page=100", { headers: { Authorization: `Bearer ${saved_user.token}`, } })
     .then(res => {
       User.findOne({ login: saved_user.login }, (err, user) => {
         if (err) {
           console.log(chalk.red("❗️  User not found!"))
         } else {
-          user.repositories = res.data.map(repo => {
+          let data = res_repo.data.filter(repo => repo.owner.login === saved_user.login)
+          user.repositories = data.map(repo => {
             const { id, node_id, name, private, description, language } = repo;
             return { id, node_id, name, private, description, language }
           })
@@ -62,6 +62,4 @@ module.exports = fetchRepositories = (saved_user) => {
       })
     })
     .catch(err => console.log(chalk.red(err)))
-
-    Promise.all().then(values => console.log("All the Promises Resolved"))
 }
