@@ -1,0 +1,22 @@
+.overlay {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
+  width: 100%;
+  opacity: 0;
+  background-image: linear-gradient(to top, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.1));
+  cursor: pointer;
+}
+
+.collaborator-avatar-container {
+  transform: translateY(10px);
+  transition: transform 0.5s ease;
+}
+
+.collaborator-avatar:hover .overlay {
+  transition: 0.5s ease;
+  opacity: 1;
+}

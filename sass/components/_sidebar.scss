@@ -3,11 +3,14 @@
     display: block;
     width: 100%;
     border-radius: 5px;
+    
     margin: 5px 0px;
     padding: 7px 15px;
+    
     background: transparent;
     color: #0e57ff;
     &:hover {
+      transition: 0.3s ease;
       background: #D5E1FF;
     }
     i {

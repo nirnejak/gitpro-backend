@@ -48,8 +48,8 @@ body {
 .tgl + .tgl-btn {
   outline: 0;
   display: block;
-  width: 4em;
-  height: 2em;
+  width: 3.1em;
+  height: 1.8em;
   position: relative;
   cursor: pointer;
   -webkit-user-select: none;
@@ -116,6 +116,8 @@ body {
 }
 
 .sidebar-links .sidebar-link:hover {
+  -webkit-transition: 0.3s ease;
+  transition: 0.3s ease;
   background: #D5E1FF;
 }
 
@@ -133,6 +135,35 @@ body {
   bottom: 0;
   left: 0;
   width: 100%;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
+  width: 100%;
+  opacity: 0;
+  background-image: -webkit-gradient(linear, left bottom, left top, from(rgba(0, 0, 0, 0.6)), to(rgba(0, 0, 0, 0.1)));
+  background-image: linear-gradient(to top, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.1));
+  cursor: pointer;
+}
+
+.collaborator-avatar-container {
+  -webkit-transform: translateY(10px);
+          transform: translateY(10px);
+  -webkit-transition: -webkit-transform 0.5s ease;
+  transition: -webkit-transform 0.5s ease;
+  transition: transform 0.5s ease;
+  transition: transform 0.5s ease, -webkit-transform 0.5s ease;
+}
+
+.collaborator-avatar:hover .overlay {
+  -webkit-transition: 0.5s ease;
+  transition: 0.5s ease;
+  opacity: 1;
 }
 
 .rounded-circle {

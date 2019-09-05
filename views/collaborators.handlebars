@@ -5,9 +5,12 @@
       <h1>Collaborators</h1>
       <div class="row">
         {{# each user.collaborators}}
-        <div class="col-2 p-5">
-          <div class="bg-white rounded-circle bg-cover w-100"
-            style="background-image: url({{this.avatar_url}}); padding-top: 100%;">
+        <div class="col-2 p-5 collaborator-avatar-container">
+          <div class="collaborator-avatar position-relative">
+            <div class="bg-white rounded-circle bg-cover w-100"
+              style="background-image: url({{this.avatar_url}}); padding-top: 100%;">
+            </div>
+            <div class="overlay rounded-circle"></div>
           </div>
           <p class="is-text-center text-dark mt-10">
             {{this.name}}
