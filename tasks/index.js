@@ -22,35 +22,28 @@ async function boot() {
         JobLock: {}
       },
       perform: async (saved_user) => {
-        axios
-          .get("https://api.github.com/user/repos", { headers: { Authorization: `Bearer ${saved_user.token}`, } })
-          .then(res => {
-            User.findOne({ login: saved_user.login }, (err, user) => {
-              if (err) {
-                console.log(chalk.red("❗️  User not found!"))
-              } else {
-                user.repositories = res.data.map(repo => {
-                  const { id, node_id, name, private, description, language } = repo;
-                  return { id, node_id, name, private, description, language }
-                })
-                user.save()
-                  .then(saved_user => saved_user)
-              }
+        const res = await axios.get("https://api.github.com/user/repos", { headers: { Authorization: `Bearer ${saved_user.token}`, } })
+        User.findOne({ login: saved_user.login }, (err, user) => {
+          if (err) {
+            console.log(chalk.red("❗️  User not found!"))
+          } else {
+            user.repositories = res.data.map(repo => {
+              const { id, node_id, name, private, description, language } = repo;
+              return { id, node_id, name, private, description, language }
             })
-          })
-          .catch(err => console.log(chalk.red(err)))
+            user.save().then(saved_user => saved_user)
+          }
+        })
       }
     },
     'fetchCollaborators': {
       perform: (user) => {
-        let answer = a - b
-        return answer
+        return user
       }
     },
     'fetchCollaboratorDetails': {
       perform: (user) => {
-        let answer = a - b
-        return answer
+        return user
       }
     }
   }

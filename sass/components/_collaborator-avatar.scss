@@ -16,7 +16,11 @@
   transition: transform 0.5s ease;
 }
 
-.collaborator-avatar:hover .overlay {
+.collaborator-avatar:hover {
+  transform: translateY(-5px);
   transition: 0.5s ease;
-  opacity: 1;
+  & .overlay {
+    transition: 0.5s ease;
+    opacity: 1;
+  }
 }
