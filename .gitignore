@@ -6,3 +6,6 @@ dist
 
 package-lock.json
 .env
+
+# Redis Dump 
+dump.rdb

@@ -1,5 +1,9 @@
+const axios = require('axios')
+const chalk = require('chalk')
+
 module.exports = fetchRepositories = async (saved_user) => {
-  User.findOne({ login: saved_user.login }, (err, user) => {
+  console.log(chalk.yellow.inverted("🏃‍  Started worker fetchRepositories"))
+  User.findOne({ login: saved_user.login }, async (err, user) => {
     if (err) {
       console.log(chalk.red("❗️  User not found!"))
     } else {
@@ -10,7 +14,9 @@ module.exports = fetchRepositories = async (saved_user) => {
         const { id, node_id, name, private, description, language } = repo;
         return { id, node_id, name, private, description, language }
       })
-      return await user.save()
+      saved_user = await user.save()
+      console.log(chalk.yellow.inverted("✅  Completed worker fetchRepositories"))
+      return saved_user
     }
   })
 }

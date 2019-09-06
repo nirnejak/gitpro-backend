@@ -22,20 +22,21 @@ async function boot() {
   const jobs = {
     'fetchRepositories': {
       plugins: ['JobLock'],
-      pluginOptions: {
-        JobLock: {}
-      },
+      pluginOptions: { JobLock: {} },
       perform: fetchRepositories
     },
-    'fetchCollaborators': {
-      perform: fetchCollaborators
-    },
-    'fetchCollaboratorDetails': {
-      perform: fetchCollaboratorDetails
-    }
+    'fetchCollaborators': { perform: fetchCollaborators },
+    'fetchCollaboratorDetails': { perform: fetchCollaboratorDetails }
   }
-
-  const worker = new NodeResque.Worker({ connection: connectionDetails, queues: ['fetchRepositories'] })
+  console.log(chalk.blue.inverse("Here"))
+  const worker = new NodeResque.Worker({ connection: connectionDetails }, jobs)
   await worker.connect()
   worker.start()
+
+  worker.on('start', () => console.log(chalk.yellow("👍  Worker Started")))
+  worker.on('end', () => console.log(chalk.yellow("Worker Ended")))
+  worker.on('job', (queue, job) => console.log(chalk.yellow(`Working ${job} of ${queue}`)))
+  worker.on('error', (queue, job, error) => console.log(chalk.red(`Error in ${job} of ${queue} : ${error}`)))
 }
+
+module.exports = boot
