@@ -6,7 +6,7 @@ const chalk = require('chalk')
 const config = require('../../config')
 
 const User = require('../../models/user')
-const fetchRepositories = require('../../tasks/fetchRepositories')
+const fetchData = require('../../tasks/fetchData')
 
 const router = express.Router();
 
@@ -40,7 +40,7 @@ passport.use(new GitHubStrategy({
           })
           user.save()
             .then(saved_user => {
-              fetchRepositories(saved_user)
+              fetchData(saved_user)
               let { _id, login, token, githubId } = saved_user
               done(null, { _id, login, token, githubId })
             })
