@@ -1,5 +1,6 @@
 const NodeResque = require('node-resque')
 const chalk = require('chalk')
+const mongoose = require('mongoose')
 
 const config = require('../config')
 
@@ -7,7 +8,7 @@ const fetchRepositories = require('./fetchRepositories')
 const fetchCollaborators = require('./fetchCollaborators')
 const fetchCollaboratorDetails = require('./fetchCollaboratorDetails')
 
-async function boot() {
+async function boot(user) {
   const connectionDetails = {
     pkg: 'ioredis',
     host: config.REDIS_HOST,
@@ -17,10 +18,6 @@ async function boot() {
   }
 
   let jobsToComplete = 0
-
-  let user = {
-    login: 'nirnejak'
-  }
 
   const jobs = {
     'fetchRepositories': {
@@ -40,5 +37,18 @@ async function boot() {
   worker.on('job', (queue, job) => console.log(chalk.yellow(`Working ${job} of ${queue}`)))
   worker.on('error', (queue, job, error) => console.log(chalk.red(`Error in ${job} of ${queue} : ${error}`)))
 }
+
+// Call the Worker if file is executed directly
+mongoose.connect(config.MONGO_URI, { useNewUrlParser: true })
+  .then(() => {
+    console.log(chalk.green('🔥  MongoDB Connected...'))
+    User.find({}, async (err, users) => {
+      if (err) {
+        console.log(chalk.red("❗️  User not found!"))
+      } else {
+        users.forEach(user => boot(user))
+      }
+    })
+  })
 
 module.exports = boot

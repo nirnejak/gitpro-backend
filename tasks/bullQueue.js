@@ -119,19 +119,17 @@ fetchRepositoriesQueue.process((job, done) => {
   })
 })
 
-const user = {
-  login: 'nirnejak',
-  email: 'jeetnirnejak@gmail.com',
-  token: '67584b6ddd9110f5ea6874a3938476c3f6a06da3',
-  githubId: '14347543'
-}
-
-// For running it directly
+// Call the Worker if file is executed directly
 mongoose.connect(config.MONGO_URI, { useNewUrlParser: true })
   .then(() => {
     console.log(chalk.green('🔥  MongoDB Connected...'))
-    // Adding a Task in Queue
-    fetchRepositoriesQueue.add(user)
+    User.find({}, async (err, users) => {
+      if (err) {
+        console.log(chalk.red("❗️  User not found!"))
+      } else {
+        users.forEach(user => fetchRepositoriesQueue.add(user))
+      }
+    })
   })
   .catch(err => console.log(chalk.red(err)))
 
