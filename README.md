@@ -14,3 +14,13 @@ npm start
 ```sh
 npm run dev
 ```
+
+**Start Background Process**
+```sh
+npm run task
+```
+
+**Start Background Process(in Development Mode)**
+```sh
+npm run task-dev
+```
