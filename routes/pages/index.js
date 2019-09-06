@@ -1,5 +1,6 @@
 const express = require('express')
 
+const isLoggedIn = require('../../middlewares/auth')
 const User = require('../../models/user')
 
 const router = express.Router()
@@ -12,15 +13,6 @@ router.get('/', (req, res) => {
 router.get('/login', (req, res) => {
   res.render('login')
 })
-
-
-function isLoggedIn(req, res, next) {
-  if (req.user) {
-    next()
-  } else {
-    res.redirect('/login')
-  }
-}
 
 router.get('/dashboard', isLoggedIn, (req, res) => {
   User.findOne({ login: req.user.login }, (err, user) => {

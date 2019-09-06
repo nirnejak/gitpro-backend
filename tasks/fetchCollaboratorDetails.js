@@ -22,7 +22,7 @@ module.exports = fetchCollaboratorDetails = async (saved_user) => {
           }
         }
 
-        if (user.collaborators.length = 0) {
+        if (user.collaborators.length === 0) {
           console.log(chalk.yellow("✅  Completed worker fetchCollaboratorDetails, No Collaborators"))
         }
       } catch (err) {

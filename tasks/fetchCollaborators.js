@@ -21,16 +21,15 @@ module.exports = fetchCollaborators = async (saved_user) => {
             }))
             user.collaborators = [...user.collaborators, ...collaborators]
           }
-
           // Saving instance on the last iteration
-          if (user.repositories.length - 1 === j) {
+          if (j === user.repositories.length - 1) {
             saved_user = await user.save()
             console.log(chalk.yellow("✅  Completed worker fetchCollaborators"))
             return saved_user
           }
         }
-        
-        if (user.repositories.length = 0) {
+
+        if (user.repositories.length === 0) {
           console.log(chalk.yellow("✅  Completed worker fetchCollaborators, No Repositories"))
         }
       } catch (err) {

@@ -14,8 +14,8 @@ const userSchema = mongoose.Schema({
   },
   collaborators: [
     {
-      login: { type: String },
       id: { type: Number },
+      login: { type: String },
       type: { type: String },
       name: { type: String },
       avatar_url: { type: String },
