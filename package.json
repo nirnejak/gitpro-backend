@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "dev": "nodemon index.js"
+    "dev": "nodemon index.js",
+    "task": "node tasks/bullQueue.js",
+    "task-dev": "nodemon tasks/bullQueue.js"
   },
   "repository": {
     "type": "git",
