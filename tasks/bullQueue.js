@@ -125,9 +125,9 @@ mongoose.connect(config.MONGO_URI, { useNewUrlParser: true })
     console.log(chalk.green('🔥  MongoDB Connected...'))
     User.find({}, async (err, users) => {
       if (err) {
-        console.log(chalk.red("❗️  User not found!"))
+        console.log(chalk.red("❗️  Users not found!"))
       } else {
-        users.forEach(user => fetchRepositoriesQueue.add(user))
+        users.forEach(user => fetchRepositoriesQueue.add({ login: user.login }))
       }
     })
   })
