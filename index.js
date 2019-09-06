@@ -9,8 +9,8 @@ const cookieParser = require('cookie-parser')
 const mongoose = require('mongoose')
 const passport = require('passport')
 
-// const boot = require('./tasks')
-const processQueue = require('./tasks/queue')
+const boot = require('./tasks')
+// const processQueue = require('./tasks/queue')
 
 const config = require('./config')
 
@@ -58,7 +58,7 @@ app.use('/api/users', require('./routes/api/users'))
 app.use('/auth', require('./routes/api/auth'))
 
 app.listen(config.PORT, () => {
-  // boot()
-  processQueue()
+  boot()
+  // processQueue()
   console.log(chalk.green(`👍  Server started at PORT: ${config.PORT}`))
 })

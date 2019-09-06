@@ -1,5 +1,4 @@
 const NodeResque = require('node-resque')
-const axios = require('axios')
 const chalk = require('chalk')
 
 const config = require('../config')
@@ -19,16 +18,19 @@ async function boot() {
 
   let jobsToComplete = 0
 
+  let user = {
+    login: 'nirnejak'
+  }
+
   const jobs = {
     'fetchRepositories': {
       plugins: ['JobLock'],
       pluginOptions: { JobLock: {} },
-      perform: fetchRepositories
+      perform: fetchRepositories(user)
     },
-    'fetchCollaborators': { perform: fetchCollaborators },
-    'fetchCollaboratorDetails': { perform: fetchCollaboratorDetails }
+    'fetchCollaborators': { perform: fetchCollaborators(user) },
+    'fetchCollaboratorDetails': { perform: fetchCollaboratorDetails(user) }
   }
-  console.log(chalk.blue.inverse("Here"))
   const worker = new NodeResque.Worker({ connection: connectionDetails }, jobs)
   await worker.connect()
   worker.start()
