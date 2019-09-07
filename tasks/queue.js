@@ -57,7 +57,6 @@ async function processQueue(user) {
 
     worker.on('error', (queue, job, error) => console.log(chalk.red(error)))
   })
-  console.log(queue)
 }
 
 // Call the Worker if file is executed directly
