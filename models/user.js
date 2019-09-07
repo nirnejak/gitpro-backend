@@ -12,6 +12,7 @@ const userSchema = mongoose.Schema({
     includePublic: { type: Boolean, default: false },
     active: { type: Boolean, default: true }
   },
+  // TODO: Create a Reference to Collaborator Collection
   collaborators: [
     {
       id: { type: Number },
@@ -32,6 +33,7 @@ const userSchema = mongoose.Schema({
       ]
     }
   ],
+  // TODO: Create a Reference to Repository Collection
   repositories: [
     {
       id: { type: Number },
