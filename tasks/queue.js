@@ -48,7 +48,7 @@ async function processQueue(user) {
       console.log(chalk.blue(data))
     })
 
-    const worker = new NodeResque.Worker({ connection: connectionDetails, queues: ['fetchRepositoriesQueue', 'fetchCollaboratorsQueue', 'fetchCollaboratorDetailsQueue'] }, jobs)
+    const worker = new NodeResque.Worker({ connection: connectionDetails, queues: ['fetchRepositoriesQueue', 'fetchCollaboratorsQueue', 'fetchCollaboratorDetailsQueue'] })
 
     worker.connect(() => {
       worker.workerCleanup()

@@ -19,7 +19,14 @@ module.exports = fetchCollaborators = async (saved_user) => {
               id: contributor.id,
               type: contributor.type
             }))
-            user.collaborators = [...user.collaborators, ...collaborators]
+            let user_collaborators = user.collaborators.map(collaborator => ({
+              login: collaborator.login,
+              id: collaborator.id,
+              type: collaborator.type
+            }))
+            collaborators = collaborators.filter(collaborator => !user_collaborators.includes(collaborators))
+            user.collaborators = [...user_collaborators, ...collaborators]
+            // console.log(JSON.stringify(user.collaborators, null, 4))
           }
           // Saving instance on the last iteration
           if (j === user.repositories.length - 1) {
