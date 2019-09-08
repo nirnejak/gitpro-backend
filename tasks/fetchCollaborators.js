@@ -2,6 +2,7 @@ const axios = require('axios')
 const chalk = require('chalk')
 
 const User = require('../models/user')
+const Collaborator = require('../models/collaborator')
 
 module.exports = fetchCollaborators = async (saved_user) => {
   console.log(chalk.yellow("🏃‍  Started worker fetchCollaborators"))

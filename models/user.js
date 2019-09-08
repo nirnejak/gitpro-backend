@@ -21,16 +21,7 @@ const userSchema = mongoose.Schema({
       name: { type: String },
       avatar_url: { type: String },
       email: { type: String },
-      repositories: [
-        {
-          id: { type: Number },
-          node_id: { type: String },
-          name: { type: String },
-          private: { type: Boolean },
-          description: { type: String },
-          language: { type: String }
-        }
-      ]
+      repositories: []
     }
   ],
   // TODO: Create a Reference to Repository Collection
@@ -41,8 +32,7 @@ const userSchema = mongoose.Schema({
       name: { type: String },
       private: { type: Boolean },
       description: { type: String },
-      language: { type: String },
-      collaborators: [{ login: String }]
+      language: { type: String }
     }
   ]
 });
