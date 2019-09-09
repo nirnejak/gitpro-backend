@@ -5,6 +5,10 @@
   padding: 0px;
 }
 
+:root {
+  --color-primary: #0e57ff;
+}
+
 body {
   font-family: "Circular Std", -apple-system, BlinkMacSystemFont, Avenir, "Avenir Next", "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
   background: #f4f4f4;
@@ -112,13 +116,13 @@ body {
   margin: 5px 0px;
   padding: 7px 15px;
   background: transparent;
-  color: #0e57ff;
+  color: var(--color-primary);
 }
 
 .sidebar-links .sidebar-link:hover {
   -webkit-transition: 0.3s ease;
   transition: 0.3s ease;
-  background: #D5E1FF;
+  background: #d5e1ff;
 }
 
 .sidebar-links .sidebar-link i {
@@ -126,7 +130,7 @@ body {
 }
 
 .sidebar-links .sidebar-link.active {
-  background: #0e57ff;
+  background: var(--color-primary);
   color: white;
 }
 
@@ -171,6 +175,22 @@ body {
   -webkit-transition: 0.5s ease;
   transition: 0.5s ease;
   opacity: 1;
+}
+
+label.repo-checkbox {
+  cursor: pointer;
+}
+
+label.repo-checkbox > div {
+  border: white 1px solid;
+}
+
+input[type="checkbox"]:checked + label.repo-checkbox > div {
+  border: var(--color-primary) 1px solid;
+}
+
+input[type="checkbox"]:checked + label.repo-checkbox > div > div > div > i.fa-check-circle {
+  color: var(--color-primary) !important;
 }
 
 .rounded-circle {
@@ -2549,5 +2569,15 @@ body {
 .my-120 {
   margin-top: 120px !important;
   margin-bottom: 120px !important;
+}
+
+.no-gutters {
+  margin: 0px !important;
+  padding: 0px !important;
+}
+
+.no-gutters > div {
+  margin: 0px !important;
+  padding: 0px !important;
 }
 /*# sourceMappingURL=style.css.map */

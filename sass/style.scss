@@ -4,6 +4,10 @@
   padding: 0px;
 }
 
+:root {
+  --color-primary: #0e57ff;
+}
+
 body {
   font-family: "Circular Std", -apple-system, BlinkMacSystemFont, Avenir, "Avenir Next", "Segoe UI", "Roboto", "Oxygen",
     "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
@@ -13,5 +17,19 @@ body {
 @import "components/toggleBtn";
 @import "components/sidebar";
 @import "components/collaborator-avatar";
+
+label.repo-checkbox {
+  cursor: pointer;
+  & > div {
+    border: white 1px solid;
+  }
+}
+
+input[type="checkbox"]:checked + label.repo-checkbox > div {
+  border: var(--color-primary) 1px solid;
+  & > div > div > i.fa-check-circle {
+    color: var(--color-primary) !important;
+  }
+}
 
 @import "utils";

@@ -3,22 +3,22 @@
     display: block;
     width: 100%;
     border-radius: 5px;
-    
+
     margin: 5px 0px;
     padding: 7px 15px;
-    
+
     background: transparent;
-    color: #0e57ff;
+    color: var(--color-primary);
     &:hover {
       transition: 0.3s ease;
-      background: #D5E1FF;
+      background: #d5e1ff;
     }
     i {
       margin-right: 5px;
     }
   }
   .sidebar-link.active {
-    background: #0e57ff;
+    background: var(--color-primary);
     color: white;
   }
 }

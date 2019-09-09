@@ -1,4 +1,5 @@
 const express = require('express')
+const chalk = require('chalk')
 
 const isLoggedIn = require('../../middlewares/auth')
 const User = require('../../models/user')
@@ -42,6 +43,20 @@ router.get('/collaborators', isLoggedIn, (req, res) => {
       res.redirect('/login')
     } else {
       res.render('collaborators', { user })
+    }
+  })
+})
+
+router.get('/collaborators/:login', isLoggedIn, (req, res) => {
+  User.findOne({ login: req.user.login }, (err, user) => {
+    if (err) {
+      res.redirect('/login')
+    } else {
+      let collaborator = user.collaborators.filter(collaborator => collaborator.login === req.params.login)
+      if (collaborator.length >= 1) {
+        collaborator = collaborator[0]
+        res.render('collaborator-details', { user, collaborator })
+      }
     }
   })
 })
