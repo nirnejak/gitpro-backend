@@ -15,10 +15,6 @@ const { logger } = require('./middlewares/logger')
 
 app = express()
 
-mongoose.connect(config.MONGO_URI, { useNewUrlParser: true })
-  .then(() => console.log(chalk.green('🔥  MongoDB Connected...')))
-  .catch(err => console.log(chalk.red(err)))
-
 // Middlewares
 app.use(logger)
 app.use(express.json())
@@ -59,8 +55,13 @@ app.use('/admin', require('./admin/'))
 // const boot = require('./tasks')
 // const processQueue = require('./tasks/queue')
 
-app.listen(config.PORT, () => {
-  // boot()
-  // processQueue()
-  console.log(chalk.green(`👍  Server started at PORT: ${config.PORT}`))
-})
+mongoose.connect(config.MONGO_URI, { useNewUrlParser: true })
+  .then(() => {
+    console.log(chalk.green('🔥  MongoDB Connected...'))
+    app.listen(config.PORT, () => {
+      // boot()
+      // processQueue()
+      console.log(chalk.green(`👍  Server started at PORT: ${config.PORT}`))
+    })
+  })
+  .catch(err => console.log(chalk.red(err)))

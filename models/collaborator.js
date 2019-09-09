@@ -8,8 +8,7 @@ const collaboratorsSchema = mongoose.Schema({
   name: { type: String },
   avatar_url: { type: String },
   email: { type: String },
-  repositories: [{ id: String }]
-  // TODO: Create a Reference to Repository Collection
+  repositories: [{ name: String }]
 })
 
 module.exports = Collaborator = mongoose.model('Collaborator', collaboratorsSchema);
