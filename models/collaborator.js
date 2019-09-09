@@ -8,7 +8,7 @@ const collaboratorsSchema = mongoose.Schema({
   name: { type: String },
   avatar_url: { type: String },
   email: { type: String },
-  repositories: [{ name: String }]
+  repositories: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Repository' }]
 })
 
 module.exports = Collaborator = mongoose.model('Collaborator', collaboratorsSchema);

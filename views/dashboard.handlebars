@@ -2,6 +2,12 @@
   {{> sidebar dashboard='dashboard' user=user }}
   <div class="col-9-lg pt-70">
     <div class="px-20">
+      {{# if msg}}
+      <div class="card bg-error text-white" id="message-container">
+        {{msg}}
+        <i class="fas fa-times pull-right mt-5 cursor-pointer" id="hide-message-btn"></i>
+      </div>
+      {{/if}}
       <h1>Dashboard</h1>
       <div class="row">
         <div class="col-4 p-5">
@@ -55,3 +61,12 @@
   </div>
 </div>
 </div>
+
+<script>
+  const hideMessageBtn = document.querySelector("#hide-message-btn")
+  const messageContainer = document.querySelector("#message-container")
+
+  hideMessageBtn.addEventListener('click', () => {
+    messageContainer.classList.add("d-none")
+  })
+</script>

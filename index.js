@@ -52,6 +52,10 @@ app.use('/auth', require('./routes/api/auth'))
 app.use('/auth', require('./routes/api/auth'))
 app.use('/admin', require('./admin/'))
 
+app.get('*', function (req, res) {
+  res.status(404).render('error', { not_found: true, msg: 'Not Found' });
+});
+
 // const boot = require('./tasks')
 // const processQueue = require('./tasks/queue')
 
