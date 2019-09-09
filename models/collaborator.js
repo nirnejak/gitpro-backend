@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const collaboratorsSchema = mongoose.Schema({
   owner: { type: String },
-  id: { type: Number },
+  githubId: { type: Number },
   login: { type: String },
   type: { type: String },
   name: { type: String },
