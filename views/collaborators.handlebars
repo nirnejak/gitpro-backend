@@ -6,9 +6,9 @@
       <div class="row">
         {{# each user.collaborators}}
         <div class="col-2 p-5 collaborator-avatar-container" onclick="window.location='/collaborators/{{this.login}}'">
-          <div class="collaborator-avatar position-relative">
-            <div class="bg-white rounded-circle bg-cover w-100"
-              style="background-image: url({{this.avatar_url}}); padding-top: 100%;">
+          <div class="collaborator-avatar position-relative is-center">
+            <div class="bg-white rounded-circle bg-cover"
+              style="background-image: url({{this.avatar_url}}); width: 150px; padding-top: 150px;">
             </div>
             <div class="overlay rounded-circle"></div>
           </div>

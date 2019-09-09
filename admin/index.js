@@ -3,10 +3,29 @@ const AdminBroExpress = require('admin-bro-expressjs')
 const AdminBroMongoose = require('admin-bro-mongoose')
 
 const User = require('../models/user')
+const Collaborator = require('../models/collaborator')
+const Repository = require('../models/repository')
 
 AdminBro.registerAdapter(AdminBroMongoose)
 const adminBro = new AdminBro({
-  resources: [User],
+  resources: [
+    {
+      resource: User,
+      options: {
+        properties: {
+          token: { isVisible: { list: false, filter: false, show: true, edit: false } },
+          avatar_url: { isVisible: { list: false, filter: false, show: true, edit: false } },
+          githubId: { isVisible: { list: false, filter: false, show: true, edit: false } },
+          meta: { isVisible: { list: false, filter: false, show: true, edit: false } },
+        }
+      }
+    },
+    Collaborator,
+    Repository
+  ],
+  branding: {
+    companyName: 'GitSupreme'
+  },
   rootPath: '/admin'
 })
 
