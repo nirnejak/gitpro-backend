@@ -53,6 +53,8 @@ app.use(sassMiddleware({
 app.use('/', require('./routes/pages'))
 app.use('/api/users', require('./routes/api/users'))
 app.use('/auth', require('./routes/api/auth'))
+app.use('/auth', require('./routes/api/auth'))
+app.use('/admin', require('./admin/'))
 
 // const boot = require('./tasks')
 // const processQueue = require('./tasks/queue')
