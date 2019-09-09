@@ -21,8 +21,8 @@
               Remove Collaborator
             </a>
             <br><br>
-            {{!-- TODO: Add button options for GitHub/Bitbucket/Gitlab --}}
-            <a href="#" class="sidebar-link pr-20">
+            {{!-- TODO: Add Links for GitHub/Bitbucket/Gitlab --}}
+            <a href="http://github.com/{{collaborator.login}}" class="sidebar-link pr-20" target="_blank">
               <i class="fas fa-external-link-alt"></i>&nbsp;
               View on GitHub
             </a>
@@ -46,7 +46,7 @@
           <label for="{{this.name}}" class="repo-checkbox">
             <div class="bg-white border-radius-5 p-20 my-5">
               <div class="row">
-                <div class="col-10" style="text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">
+                <div class="col-10 text-overflow-ellipsis">
                   <i class="fas fa-code-branch"></i>
                   {{this.name}}
                 </div>

@@ -56,6 +56,11 @@ router.get('/collaborators/:login', isLoggedIn, (req, res) => {
       if (collaborator.length >= 1) {
         collaborator = collaborator[0]
         res.render('collaborator-details', { user, collaborator })
+      } else {
+        user["total_repositories"] = user.repositories.length
+        user["total_collaborators"] = user.collaborators.length
+        msg = "Collaborator not Found"
+        res.render('dashboard', { user, msg })
       }
     }
   })
@@ -67,6 +72,25 @@ router.get('/repositories', isLoggedIn, (req, res) => {
       res.redirect('/login')
     } else {
       res.render('repositories', { user })
+    }
+  })
+})
+
+router.get('/repositories/:name', isLoggedIn, (req, res) => {
+  User.findOne({ login: req.user.login }, (err, user) => {
+    if (err) {
+      res.redirect('/login')
+    } else {
+      let repository = user.repositories.filter(repository => repository.name === req.params.name)
+      if (repository.length >= 1) {
+        repository = repository[0]
+        res.render('repository-details', { user, repository })
+      } else {
+        user["total_repositories"] = user.repositories.length
+        user["total_collaborators"] = user.collaborators.length
+        msg = "Repository not Found"
+        res.render('dashboard', { user, msg })
+      }
     }
   })
 })

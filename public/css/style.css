@@ -177,6 +177,18 @@ body {
   opacity: 1;
 }
 
+input[type="checkbox"] + label.collaborator-check-label {
+  position: absolute;
+  z-index: 999;
+  right: 0;
+  top: 0;
+  cursor: pointer;
+}
+
+input[type="checkbox"]:checked + label.collaborator-check-label > i {
+  color: var(--color-primary) !important;
+}
+
 label.repo-checkbox {
   cursor: pointer;
 }
@@ -2579,5 +2591,15 @@ input[type="checkbox"]:checked + label.repo-checkbox > div > div > div > i.fa-ch
 .no-gutters > div {
   margin: 0px !important;
   padding: 0px !important;
+}
+
+.text-overflow-ellipsis {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.text-black {
+  color: black;
 }
 /*# sourceMappingURL=style.css.map */
