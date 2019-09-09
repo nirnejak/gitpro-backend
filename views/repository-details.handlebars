@@ -28,20 +28,22 @@
         <div class="col-4-lg is-right">
           <button class="button primary outline">
             <i class="fas fa-times"></i>&nbsp;
-            Remove Access
+            Revoke Access
           </button>
         </div>
         {{# each user.collaborators}}
         <div class="col-2 p-5 collaborator-avatar-container">
-          <input type="checkbox" name="{{this.login}}" id="{{this.login}}" class="d-none">
-          <label for="{{this.login}}" class="collaborator-check-label">
-            <i class="fas fa-check-circle text-light"></i>
-          </label>
-          <div class="collaborator-avatar position-relative">
-            <div class="bg-white rounded-circle bg-cover w-100"
-              style="background-image: url({{this.avatar_url}}); padding-top: 100%;">
+          <div class="is-center">
+            <input type="checkbox" name="{{this.login}}" id="{{this.login}}" class="d-none">
+            <label for="{{this.login}}" class="collaborator-check-label">
+              <i class="fas fa-check-circle text-light"></i>
+            </label>
+            <div class="collaborator-avatar position-relative">
+              <div class="bg-white rounded-circle bg-cover"
+                style="background-image: url({{this.avatar_url}}); width: var(--avatar-dimension); padding-top: var(--avatar-dimension);">
+              </div>
+              <div class="overlay rounded-circle"></div>
             </div>
-            <div class="overlay rounded-circle"></div>
           </div>
           <p class="is-text-center mt-10" onclick="window.location='/collaborators/{{this.login}}'">
             {{this.name}}

@@ -7,6 +7,7 @@
 
 :root {
   --color-primary: #0e57ff;
+  --avatar-dimension: 150px;
 }
 
 body {
@@ -147,8 +148,8 @@ body {
   bottom: 0;
   left: 0;
   right: 0;
-  height: 150px;
-  width: 150px;
+  height: var(--avatar-dimension);
+  width: var(--avatar-dimension);
   opacity: 0;
   background-image: -webkit-gradient(linear, left bottom, left top, from(rgba(0, 0, 0, 0.6)), to(rgba(0, 0, 0, 0.1)));
   background-image: linear-gradient(to top, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.1));
