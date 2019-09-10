@@ -57,7 +57,7 @@ router.get('/github/callback', passport.authenticate('github', { failureRedirect
     res.redirect('https://github-supreme.netlify.com/dashboard');
   } else {
     let user = req.user;
-    jwt.sign({ user }, config.JWT_TOKEN_SECRET, { expiresIn: '30s' }, (err, token) => {
+    jwt.sign({ user }, config.JWT_TOKEN_SECRET, { expiresIn: '2 days' }, (err, token) => {
       // TODO: Find a way to send User data and jwtToken - token
       user["jwtToken"] = token
       res.redirect(`http://localhost:8080/dashboard?token=${token}&login=${user.login}`)

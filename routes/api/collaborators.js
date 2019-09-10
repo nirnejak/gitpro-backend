@@ -8,7 +8,7 @@ const router = express.Router();
 router.get('/', (req, res) => {
   // console.log(req.query.name)
   // TODO: replace hardcoded login with req.user.login
-  User.findOne({ login: "nirnejak" }, (err, user) => {
+  User.findOne({ login: req.user.login }, (err, user) => {
     if (err) {
       res.status(404).json({ message: "User not Found" })
     } else {
@@ -19,7 +19,7 @@ router.get('/', (req, res) => {
 
 router.get('/:login', (req, res) => {
   // TODO: replace hardcoded login with req.user.login
-  User.findOne({ login: "nirnejak" }, (err, user) => {
+  User.findOne({ login: req.user.login }, (err, user) => {
     if (err) {
       res.status(404).json({ message: "User not Found" })
     } else {
