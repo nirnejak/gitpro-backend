@@ -32,15 +32,15 @@ router.get('/:name', (req, res) => {
 })
 
 router.post('/', (req, res) => {
-  res.send("Create a Repository")
+  res.status(501).send("Create a Repository")
 })
 
 router.put('/:name', (req, res) => {
-  res.send("Update a Repository")
+  res.status(501).send("Update a Repository")
 })
 
 router.delete('/:name', (req, res) => {
-  res.send("Delete a Repository")
+  res.status(501).send("Delete a Repository")
 })
 
 module.exports = router

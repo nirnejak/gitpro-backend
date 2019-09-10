@@ -22,15 +22,15 @@ router.get('/:login', (req, res) => {
 })
 
 router.post('/', (req, res) => {
-  res.send("Create a User")
+  res.status(501).send("Create a User")
 })
 
 router.put('/:login', (req, res) => {
-  res.send("Update a User")
+  res.status(501).send("Update a User")
 })
 
 router.delete('/:login', (req, res) => {
-  res.send("Delete a User")
+  res.status(501).send("Delete a User")
 })
 
 module.exports = router

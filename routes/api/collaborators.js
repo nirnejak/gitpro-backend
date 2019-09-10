@@ -32,15 +32,15 @@ router.get('/:login', (req, res) => {
 })
 
 router.post('/', (req, res) => {
-  res.send("Create a Collaborator")
+  res.status(501).send("Create a Collaborator")
 })
 
 router.put('/:login', (req, res) => {
-  res.send("Update a Collaborator")
+  res.status(501) / send("Update a Collaborator")
 })
 
 router.delete('/:login', (req, res) => {
-  res.send("Delete a Collaborator")
+  res.status(501).send("Delete a Collaborator")
 })
 
 module.exports = router
