@@ -1,7 +1,5 @@
 const express = require('express')
 const passport = require('passport')
-const axios = require('axios')
-const chalk = require('chalk')
 
 const config = require('../../config')
 

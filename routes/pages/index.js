@@ -1,5 +1,4 @@
 const express = require('express')
-const chalk = require('chalk')
 
 const isLoggedIn = require('../../middlewares/auth')
 const User = require('../../models/user')
@@ -59,7 +58,7 @@ router.get('/collaborators/:login', isLoggedIn, (req, res) => {
       } else {
         user["total_repositories"] = user.repositories.length
         user["total_collaborators"] = user.collaborators.length
-        msg = "Collaborator not Found"
+        msg = "Collaborator not found"
         res.render('dashboard', { user, msg })
       }
     }
@@ -88,7 +87,7 @@ router.get('/repositories/:name', isLoggedIn, (req, res) => {
       } else {
         user["total_repositories"] = user.repositories.length
         user["total_collaborators"] = user.collaborators.length
-        msg = "Repository not Found"
+        msg = "Repository not found"
         res.render('dashboard', { user, msg })
       }
     }

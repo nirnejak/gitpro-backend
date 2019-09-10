@@ -48,6 +48,8 @@ app.use(sassMiddleware({
 // Using Routes for API
 app.use('/', require('./routes/pages'))
 app.use('/api/users', require('./routes/api/users'))
+app.use('/api/collaborators', require('./routes/api/collaborators'))
+app.use('/api/repositories', require('./routes/api/repositories'))
 app.use('/auth', require('./routes/api/auth'))
 app.use('/auth', require('./routes/api/auth'))
 app.use('/admin', require('./admin/'))
