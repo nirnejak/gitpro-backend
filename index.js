@@ -3,8 +3,6 @@ const chalk = require('chalk')
 const jwt = require('jsonwebtoken')
 const path = require('path')
 const session = require('express-session')
-const exphbs = require('express-handlebars')
-const sassMiddleware = require('node-sass-middleware')
 const cookieParser = require('cookie-parser')
 const cors = require('cors')
 const mongoose = require('mongoose')
@@ -49,16 +47,14 @@ app.get('*', function (req, res) {
   res.status(404).render('error', { not_found: true, msg: 'Not Found' });
 });
 
+mongoose.connect(config.MONGO_URI, { useNewUrlParser: true })
+  .then(() => console.log(chalk.green('🔥  MongoDB Connected...')))
+  .catch(err => console.log(chalk.red(err)))
+
 // const boot = require('./tasks')
 // const processQueue = require('./tasks/queue')
-
-mongoose.connect(config.MONGO_URI, { useNewUrlParser: true })
-  .then(() => {
-    console.log(chalk.green('🔥  MongoDB Connected...'))
-    app.listen(config.PORT, () => {
-      // boot()
-      // processQueue()
-      console.log(chalk.green(`👍  Server started at PORT: ${config.PORT}`))
-    })
-  })
-  .catch(err => console.log(chalk.red(err)))
+app.listen(config.PORT, () => {
+  // boot()
+  // processQueue()
+  console.log(chalk.green(`👍  Server started at PORT: ${config.PORT}`))
+})
