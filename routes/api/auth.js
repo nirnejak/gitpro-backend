@@ -1,5 +1,6 @@
 const express = require('express')
 const passport = require('passport')
+const jwt = require('jsonwebtoken')
 const url = require('url')
 
 const config = require('../../config')
@@ -55,9 +56,11 @@ router.get('/github/callback', passport.authenticate('github', { failureRedirect
   if (config.NODE_ENV === 'production') {
     res.redirect('https://github-supreme.netlify.com/dashboard');
   } else {
-    // TODO: Find a way to send User data
     let user = req.user;
-    res.cookie('user', user).redirect('http://localhost:8080/dashboard')
+    jwt.sign({ user }, config.JWT_TOKEN_SECRET, { expiresIn: '30s' }, (err, token) => {
+      // TODO: Find a way to send User data and jwtToken - token
+      res.cookie('user', user).redirect('http://localhost:8080/dashboard')
+    })
   }
 });
 

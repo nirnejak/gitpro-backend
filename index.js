@@ -11,11 +11,13 @@ const passport = require('passport')
 const config = require('./config')
 
 const { logger } = require('./middlewares/logger')
+const { authMiddleware } = require('./middlewares/auth')
 
 app = express()
 
 // Middlewares
 app.use(logger)
+app.use(authMiddleware)
 app.use(cors())
 app.use(express.json())
 app.use(express.static(path.join(__dirname, 'public')))
@@ -26,7 +28,6 @@ app.use(session({
   resave: true,
   saveUninitialized: true
 }))
-
 app.use(passport.initialize())
 app.use(passport.session())
 
@@ -34,7 +35,6 @@ app.use(passport.session())
 app.use('/api/users', require('./routes/api/users'))
 app.use('/api/collaborators', require('./routes/api/collaborators'))
 app.use('/api/repositories', require('./routes/api/repositories'))
-app.use('/auth', require('./routes/api/auth'))
 app.use('/auth', require('./routes/api/auth'))
 app.use('/admin', require('./admin/'))
 
