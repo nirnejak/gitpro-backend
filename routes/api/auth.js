@@ -59,6 +59,7 @@ router.get('/github/callback', passport.authenticate('github', { failureRedirect
     let user = req.user;
     jwt.sign({ user }, config.JWT_TOKEN_SECRET, { expiresIn: '30s' }, (err, token) => {
       // TODO: Find a way to send User data and jwtToken - token
+      user["jwtToken"] = token
       res.cookie('user', user).redirect('http://localhost:8080/dashboard')
     })
   }

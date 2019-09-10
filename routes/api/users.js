@@ -1,5 +1,4 @@
 const express = require('express')
-const jwt = require('jsonwebtoken')
 
 const Users = require('../../models/user')
 
@@ -10,13 +9,17 @@ router.get('/', (req, res) => {
 })
 
 router.get('/:login', (req, res) => {
+  // TODO: replace hardcoded login with req.user.login
   User.findOne({ login: req.params.login }, (err, user) => {
     if (err) {
       res.status(404).json({ message: "User not Found" })
     } else {
-      user["total_repositories"] = user.repositories.length
-      user["total_collaborators"] = user.collaborators.length
-      res.json(user)
+      let data = {
+        total_repositories: user.repositories.length,
+        total_collaborators: user.collaborators.length
+      }
+      data = { ...data, ...user._doc }
+      res.json(data)
     }
   })
 })

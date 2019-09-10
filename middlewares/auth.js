@@ -1,7 +1,9 @@
+const jwt = require('jsonwebtoken')
+
 const config = require('../config')
 
 exports.authMiddleware = (req, res, next) => {
-  if (req.url.includes("/api") && ["GET", "POST", "PUT", "DELETE"].includes(req.method)) {
+  if (req.url.includes("/api") && ["POST", "PUT", "DELETE"].includes(req.method)) {
     const bearerHeader = req.headers['authorization'];
 
     if (typeof bearerHeader !== "undefined") {

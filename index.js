@@ -1,6 +1,5 @@
 const express = require('express')
 const chalk = require('chalk')
-const jwt = require('jsonwebtoken')
 const path = require('path')
 const session = require('express-session')
 const cookieParser = require('cookie-parser')
@@ -16,9 +15,9 @@ const { authMiddleware } = require('./middlewares/auth')
 app = express()
 
 // Middlewares
+app.use(cors())
 app.use(logger)
 app.use(authMiddleware)
-app.use(cors())
 app.use(express.json())
 app.use(express.static(path.join(__dirname, 'public')))
 app.use(express.urlencoded({ extended: false }))
