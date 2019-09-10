@@ -8,7 +8,16 @@ router.get('/', (req, res) => {
   res.send("Get Users")
 })
 
-router.get('/:id', (req, res) => {
+router.get('/:login', (req, res) => {
+  User.findOne({ login: req.params.login }, (err, user) => {
+    if (err) {
+      res.status(404).json({ message: "User not Found" })
+    } else {
+      user["total_repositories"] = user.repositories.length
+      user["total_collaborators"] = user.collaborators.length
+      res.json(user)
+    }
+  })
   res.send("Get a User")
 })
 

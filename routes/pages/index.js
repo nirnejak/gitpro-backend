@@ -99,7 +99,6 @@ router.get('/settings', isLoggedIn, (req, res) => {
     if (err) {
       res.redirect('/login')
     } else {
-      user["total_repositories"] = user.repositories.length
       res.render('settings', { user })
     }
   })
