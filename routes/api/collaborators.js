@@ -37,11 +37,11 @@ router.post('/', (req, res) => {
   res.send("Create a Collaborator")
 })
 
-router.put('/:id', (req, res) => {
+router.put('/:login', (req, res) => {
   res.send("Update a Collaborator")
 })
 
-router.delete('/:id', (req, res) => {
+router.delete('/:login', (req, res) => {
   res.send("Delete a Collaborator")
 })
 

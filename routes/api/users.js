@@ -18,18 +18,17 @@ router.get('/:login', (req, res) => {
       res.json(user)
     }
   })
-  res.send("Get a User")
 })
 
 router.post('/', (req, res) => {
   res.send("Create a User")
 })
 
-router.put('/:id', (req, res) => {
+router.put('/:login', (req, res) => {
   res.send("Update a User")
 })
 
-router.delete('/:id', (req, res) => {
+router.delete('/:login', (req, res) => {
   res.send("Delete a User")
 })
 
