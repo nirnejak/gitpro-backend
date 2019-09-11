@@ -1,4 +1,5 @@
 const express = require('express')
+const chalk = require('chalk')
 
 const isAuthenticated = require('../../middlewares/auth')
 
@@ -19,6 +20,16 @@ router.get('/', isAuthenticated, (req, res) => {
 })
 
 router.get('/:login', isAuthenticated, (req, res) => {
+  // TODO: New Query Based on New Model
+  // Collaborator.findOne({ login: req.params.login })
+  //   .populate("repo")
+  //   .then(collaborator => {
+  //     res.json(collaborator)
+  //   })
+  //   .catch(err => {
+  //     console.log(chalk.red(err))
+  //     res.status(404).json({ message: "Collaborator not Found" })
+  //   })
   User.findOne({ login: req.user.login }, (err, user) => {
     if (err) {
       res.status(404).json({ message: "User not Found" })

@@ -6,8 +6,6 @@ const mongoose = require('mongoose')
 const config = require('../config')
 
 const User = require('../models/user')
-const Repository = require('../models/repository')
-const Collaborator = require('../models/collaborator')
 
 const queueConfig = {
   redis: {
@@ -102,73 +100,41 @@ fetchCollaboratorsQueue.process((job, done) => {
 
 fetchRepositoriesQueue.process((job, done) => {
   console.log(chalk.yellow("🏃‍  Started Processing fetchRepositoriesQueue"))
-  axios.get("https://api.github.com/user/repos?per_page=100", { headers: { Authorization: `Bearer ${job.data.token}`, } })
-    .then(res => {
+  User.findOne({ login: job.data.login }, async (err, user) => {
+    if (err) {
+      console.log(chalk.red("❗️  User not found!"))
+    } else {
+      const res = await axios.get("https://api.github.com/user/repos?per_page=100", { headers: { Authorization: `Bearer ${user.token}`, } })
       // Filtering User's repositories only, omitting repositories shared with him/her
-      let repositories = res.data.filter(repo => repo.owner.login === job.data.login)
-      repositories = repositories.map(repo => {
+      let data = res.data.filter(repo => repo.owner.login === user.login)
+      user.repositories = data.map(repo => {
         const { id, node_id, name, private, description, language } = repo;
-        return { githubId: id, node_id, name, private, description, language }
+        return { id, node_id, name, private, description, language }
       })
-      repositories.forEach((repo, index) => {
-        Repository.findOne({ githubId: repo.githubId }, (err, repository) => {
-          if (err) {
-            console.log(chalk.red(err))
-          } else {
-            if (repository) {
-              // TODO: If repo is older than 5 hours then only Update
-              repository.node_id = repo.node_id
-              repository.name = repo.name
-              repository.private = repo.private
-              repository.description = repo.description
-              repository.language = repo.language
-              repository.save()
-                .then(repository => {
-                  if (index === repositories.length - 1) {
-                    console.log(chalk.yellow("✅  Completed Processing fetchRepositoriesQueue"))
-                    fetchCollaboratorsQueue.add(job.data)
-                    done()
-                  }
-                })
-                .catch(err => console.log(chalk.red(err)))
-            } else {
-              let repository = new Repository(repo)
-              repository.save()
-                .then(repository => {
-                  if (index === repositories.length - 1) {
-                    console.log(chalk.yellow("✅  Completed Processing fetchRepositoriesQueue"))
-                    fetchCollaboratorsQueue.add(job.data)
-                    done()
-                  }
-                })
-                .catch(err => console.log(chalk.red(err)))
-            }
-          }
-        })
-      })
-    })
-    .catch(err => console.log(chalk.red.inverse(err)))
+      saved_user = await user.save()
+      console.log(chalk.yellow("✅  Completed Processing fetchRepositoriesQueue"))
+      fetchCollaboratorsQueue.add(job.data)
+      done()
+    }
+  })
 })
 
 // Call the Worker if file is executed directly
 mongoose.connect(config.MONGO_URI, { useNewUrlParser: true })
   .then(() => {
     console.log(chalk.green('🔥  MongoDB Connected...'))
-    User.find({}, (err, users) => {
+    User.find({}, async (err, users) => {
       if (err) {
         console.log(chalk.red("❗️  Users not found!"))
       } else {
-        users.forEach(user => {
-          console.log(user.token)
-          fetchRepositoriesQueue.add({ login: user.login, token: user.token })
-        })
+        users.forEach(user => fetchRepositoriesQueue.add({ login: user.login }))
       }
     })
   })
   .catch(err => console.log(chalk.red(err)))
 
-// module.exports = {
-//   fetchRepositoriesQueue,
-//   fetchCollaboratorsQueue,
-//   fetchCollaboratorDetailsQueue
-// }
+module.exports = {
+  fetchRepositoriesQueue,
+  fetchCollaboratorsQueue,
+  fetchCollaboratorDetailsQueue
+}
