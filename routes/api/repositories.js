@@ -1,11 +1,13 @@
 const express = require('express')
 
-const Users = require('../../models/user')
-const Repositories = require('../../models/repository')
+const isAuthenticated = require('../../middlewares/auth')
+
+const User = require('../../models/user')
+const Repository = require('../../models/repository')
 
 const router = express.Router();
 
-router.get('/', (req, res) => {
+router.get('/', isAuthenticated, (req, res) => {
   User.findOne({ login: req.user.login }, (err, user) => {
     if (err) {
       res.status(404).json({ message: "User not Found" })
@@ -15,7 +17,7 @@ router.get('/', (req, res) => {
   })
 })
 
-router.get('/:name', (req, res) => {
+router.get('/:name', isAuthenticated, (req, res) => {
   User.findOne({ login: req.user.login }, (err, user) => {
     if (err) {
       res.status(404).json({ message: "User not Found" })
@@ -31,15 +33,15 @@ router.get('/:name', (req, res) => {
   })
 })
 
-router.post('/', (req, res) => {
+router.post('/', isAuthenticated, (req, res) => {
   res.status(501).send("Create a Repository")
 })
 
-router.put('/:name', (req, res) => {
+router.put('/:name', isAuthenticated, (req, res) => {
   res.status(501).send("Update a Repository")
 })
 
-router.delete('/:name', (req, res) => {
+router.delete('/:name', isAuthenticated, (req, res) => {
   res.status(501).send("Delete a Repository")
 })
 

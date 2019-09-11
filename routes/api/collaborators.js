@@ -1,13 +1,14 @@
 const express = require('express')
 
-const Users = require('../../models/user')
-const Collaborators = require('../../models/collaborator')
+const isAuthenticated = require('../../middlewares/auth')
+
+const User = require('../../models/user')
+const Collaborator = require('../../models/collaborator')
 
 const router = express.Router();
 
-router.get('/', (req, res) => {
+router.get('/', isAuthenticated, (req, res) => {
   // console.log(req.query.name)
-  // TODO: replace hardcoded login with req.user.login
   User.findOne({ login: req.user.login }, (err, user) => {
     if (err) {
       res.status(404).json({ message: "User not Found" })
@@ -17,8 +18,7 @@ router.get('/', (req, res) => {
   })
 })
 
-router.get('/:login', (req, res) => {
-  // TODO: replace hardcoded login with req.user.login
+router.get('/:login', isAuthenticated, (req, res) => {
   User.findOne({ login: req.user.login }, (err, user) => {
     if (err) {
       res.status(404).json({ message: "User not Found" })
@@ -34,15 +34,15 @@ router.get('/:login', (req, res) => {
   })
 })
 
-router.post('/', (req, res) => {
+router.post('/', isAuthenticated, (req, res) => {
   res.status(501).send("Create a Collaborator")
 })
 
-router.put('/:login', (req, res) => {
+router.put('/:login', isAuthenticated, (req, res) => {
   res.status(501) / send("Update a Collaborator")
 })
 
-router.delete('/:login', (req, res) => {
+router.delete('/:login', isAuthenticated, (req, res) => {
   res.status(501).send("Delete a Collaborator")
 })
 

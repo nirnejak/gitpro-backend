@@ -1,15 +1,16 @@
 const express = require('express')
 
+const isAuthenticated = require('../../middlewares/auth')
+
 const Users = require('../../models/user')
 
 const router = express.Router();
 
-router.get('/', (req, res) => {
+router.get('/', isAuthenticated, (req, res) => {
   res.send("Get Users")
 })
 
-router.get('/:login', (req, res) => {
-  // TODO: replace hardcoded login with req.user.login
+router.get('/:login', isAuthenticated, (req, res) => {
   User.findOne({ login: req.params.login }, (err, user) => {
     if (err) {
       res.status(404).json({ message: "User not Found" })
@@ -24,15 +25,15 @@ router.get('/:login', (req, res) => {
   })
 })
 
-router.post('/', (req, res) => {
+router.post('/', isAuthenticated, (req, res) => {
   res.status(501).send("Create a User")
 })
 
-router.put('/:login', (req, res) => {
+router.put('/:login', isAuthenticated, (req, res) => {
   res.status(501).send("Update a User")
 })
 
-router.delete('/:login', (req, res) => {
+router.delete('/:login', isAuthenticated, (req, res) => {
   res.status(501).send("Delete a User")
 })
 
