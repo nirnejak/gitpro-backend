@@ -8,27 +8,21 @@ const Repository = require('../../models/repository')
 const router = express.Router();
 
 router.get('/', isAuthenticated, (req, res) => {
-  User.findOne({ login: req.user.login }, (err, user) => {
+  Repository.find({ owner: req.user.login }, (err, repositories) => {
     if (err) {
-      res.status(404).json({ message: "User not Found" })
+      res.status(404).json({ message: "Repositories not Found" })
     } else {
-      res.json(user.repositories)
+      res.json(repositories)
     }
   })
 })
 
 router.get('/:name', isAuthenticated, (req, res) => {
-  User.findOne({ login: req.user.login }, (err, user) => {
+  Repository.findOne({ owner: req.user.login, name: req.params.name }, (err, repository) => {
     if (err) {
-      res.status(404).json({ message: "User not Found" })
+      res.status(404).json({ message: "Repository not found" })
     } else {
-      let repository = user.repositories.filter(repository => repository.name === req.params.name)
-      if (repository.length >= 1) {
-        repository = repository[0]
-        res.json(repository)
-      } else {
-        res.status(404).json({ message: "Repository not found" })
-      }
+      res.json(repository)
     }
   })
 })

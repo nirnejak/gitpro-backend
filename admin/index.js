@@ -20,8 +20,15 @@ const adminBro = new AdminBro({
         }
       }
     },
+    {
+      resource: Repository,
+      options: {
+        properties: {
+          node_id: { isVisible: { list: false, filter: false, show: true, edit: false } },
+        }
+      }
+    },
     Collaborator,
-    Repository
   ],
   branding: {
     companyName: 'GitSupreme'

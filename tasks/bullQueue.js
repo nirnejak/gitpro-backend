@@ -117,6 +117,7 @@ fetchRepositoriesQueue.process((job, done) => {
           } else {
             if (repository) {
               // TODO: If repo is older than 5 hours then only Update
+              repository.owner = job.data.login
               repository.node_id = repo.node_id
               repository.name = repo.name
               repository.private = repo.private
@@ -132,7 +133,7 @@ fetchRepositoriesQueue.process((job, done) => {
                 })
                 .catch(err => console.log(chalk.red(err)))
             } else {
-              let repository = new Repository(repo)
+              let repository = new Repository({ ...repo, owner: job.data.login })
               repository.save()
                 .then(repository => {
                   if (index === repositories.length - 1) {
