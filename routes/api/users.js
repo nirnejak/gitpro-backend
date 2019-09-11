@@ -1,20 +1,24 @@
 const express = require('express')
+const chalk = require('chalk')
 
 const isAuthenticated = require('../../middlewares/auth')
 
-const Users = require('../../models/user')
+const User = require('../../models/user')
 
 const router = express.Router();
 
 router.get('/', isAuthenticated, (req, res) => {
-  res.send("Get Users")
+  User.find({})
+    .then(users => res.json(users))
+    .catch(err => {
+      console.log(chalk.red(err))
+      res.status(500).json({ message: "Something went wrong!" })
+    })
 })
 
 router.get('/:login', isAuthenticated, (req, res) => {
-  User.findOne({ login: req.params.login }, (err, user) => {
-    if (err) {
-      res.status(500).json({ message: "Something went wrong!" })
-    } else {
+  User.findOne({ login: req.params.login })
+    .then(user => {
       if (user) {
         let data = {
           total_repositories: user.repositories.length,
@@ -25,8 +29,11 @@ router.get('/:login', isAuthenticated, (req, res) => {
       } else {
         res.status(404).json({ message: "User not Found" })
       }
-    }
-  })
+    })
+    .catch(err => {
+      console.log(chalk.red(err))
+      res.status(500).json({ message: "Something went wrong!" })
+    })
 })
 
 router.post('/', isAuthenticated, (req, res) => {
