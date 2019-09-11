@@ -28,7 +28,15 @@ const adminBro = new AdminBro({
         }
       }
     },
-    Collaborator,
+    {
+      resource: Collaborator,
+      options: {
+        properties: {
+          githubId: { isVisible: { list: false, filter: false, show: true, edit: false } },
+          avatar_url: { isVisible: { list: false, filter: false, show: true, edit: false } },
+        }
+      }
+    },
   ],
   branding: {
     companyName: 'GitSupreme'

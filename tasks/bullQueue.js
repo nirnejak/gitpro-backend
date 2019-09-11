@@ -54,39 +54,62 @@ fetchCollaboratorDetailsQueue.process((job, done) => {
 
 fetchCollaboratorsQueue.process((job, done) => {
   console.log(chalk.yellow("🏃‍  Started Processing fetchCollaboratorsQueue"))
-  User.findOne({ login: job.data.login }, async (err, user) => {
+  Repository.find({ owner: job.data.login }, async (err, repositories) => {
     if (err) {
       console.log(chalk.red("❗️  User not found!"))
     } else {
       try {
-        for (let j = 0; j < user.repositories.length; j++) {
-          let res_collaborators = await axios.get(`https://api.github.com/repos/${user.login}/${user.repositories[j].name}/collaborators`, { headers: { Authorization: `Bearer ${user.token}`, } })
-          if (res_collaborators.data.length > 1) {
-            let collaborators = res_collaborators.data.filter(collaborator => collaborator.login !== user.login)
-            collaborators = collaborators.map(collaborator => ({
-              login: collaborator.login,
-              id: collaborator.id,
-              type: collaborator.type
-            }))
-            let user_collaborators = user.collaborators.map(collaborator => ({
-              login: collaborator.login,
-              id: collaborator.id,
-              type: collaborator.type
-            }))
-            collaborators = collaborators.filter(collaborator => !user_collaborators.includes(collaborators))
-            user.collaborators = [...user_collaborators, ...collaborators]
-            // console.log(JSON.stringify(user.collaborators, null, 4))
+        for (let i = 0; i < repositories.length; i++) {
+          let res = await axios.get(`https://api.github.com/repos/${job.data.login}/${repositories[i].name}/collaborators`, { headers: { Authorization: `Bearer ${job.data.token}`, } })
+          if (res.data.length > 1) {
+            // Removing Current user from the list of Collaborators for the Repo
+            let collaborators = res.data.filter(collaborator => collaborator.login !== job.data.login)
+
+            // TODO: Create or Update the Collaborator
+            collaborators.forEach((collaborator_res) => {
+              Collaborator.findOne({ githubId: collaborator_res.id }, (err, collaborator) => {
+                if (err) {
+                  console.log(chalk.red(err))
+                } else {
+                  if (collaborator) {
+                    // TODO: Update only if collaborator is older than 5 hours
+                    collaborator.owner = job.data.login
+                    collaborator.login = collaborator_res.login
+                    collaborator.type = collaborator_res.type
+                    collaborator.name = collaborator_res.name
+                    collaborator.avatar_url = collaborator_res.avatar_url
+                    collaborator.email = collaborator_res.email
+                    // TODO: Update Repositories
+                    collaborator.save()
+                      .then(collaborator => { })
+                      .catch(err => console.log(chalk.red(err)))
+                  } else {
+                    let collaborator = new Collaborator({
+                      owner: job.data.login,
+                      githubId: collaborator_res.id,
+                      login: collaborator_res.login,
+                      type: collaborator_res.type,
+                      name: collaborator_res.name,
+                      avatar_url: collaborator_res.avatar_url,
+                      email: collaborator_res.email,
+                    })
+                    // TODO: Add Current Repository
+                    collaborator.save()
+                      .then(collaborator => { })
+                      .catch(err => console.log(chalk.red(err)))
+                  }
+                }
+              })
+            })
           }
-          // Saving instance on the last iteration
-          if (j === user.repositories.length - 1) {
-            saved_user = await user.save()
-            console.log(chalk.yellow("✅  Completed worker fetchCollaborators"))
+          if (i === repositories.length - 1) {
+            console.log(chalk.yellow("✅  Completed worker fetchCollaborators, Tasks Processing Asynchronously"))
             fetchCollaboratorDetailsQueue.add(job.data)
-            done(null, saved_user)
+            done()
           }
         }
 
-        if (user.repositories.length === 0) {
+        if (repositories.length === 0) {
           console.log(chalk.yellow("✅  Completed worker fetchCollaborators, No Repositories"))
           fetchCollaboratorDetailsQueue.add(job.data)
           done()
@@ -97,7 +120,6 @@ fetchCollaboratorsQueue.process((job, done) => {
       }
     }
   })
-
 })
 
 fetchRepositoriesQueue.process((job, done) => {
@@ -116,7 +138,7 @@ fetchRepositoriesQueue.process((job, done) => {
             console.log(chalk.red(err))
           } else {
             if (repository) {
-              // TODO: If repo is older than 5 hours then only Update
+              // TODO: Update only if repository is older than 5 hours
               repository.owner = job.data.login
               repository.node_id = repo.node_id
               repository.name = repo.name
@@ -160,7 +182,6 @@ mongoose.connect(config.MONGO_URI, { useNewUrlParser: true })
         console.log(chalk.red("❗️  Users not found!"))
       } else {
         users.forEach(user => {
-          console.log(user.token)
           fetchRepositoriesQueue.add({ login: user.login, token: user.token })
         })
       }

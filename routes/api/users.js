@@ -13,14 +13,18 @@ router.get('/', isAuthenticated, (req, res) => {
 router.get('/:login', isAuthenticated, (req, res) => {
   User.findOne({ login: req.params.login }, (err, user) => {
     if (err) {
-      res.status(404).json({ message: "User not Found" })
+      res.status(500).json({ message: "Something went wrong!" })
     } else {
-      let data = {
-        total_repositories: user.repositories.length,
-        total_collaborators: user.collaborators.length
+      if (user) {
+        let data = {
+          total_repositories: user.repositories.length,
+          total_collaborators: user.collaborators.length
+        }
+        data = { ...data, ...user._doc }
+        res.json(data)
+      } else {
+        res.status(404).json({ message: "User not Found" })
       }
-      data = { ...data, ...user._doc }
-      res.json(data)
     }
   })
 })
