@@ -1,36 +1,49 @@
 const express = require('express')
+const chalk = require('chalk')
 
 const isAuthenticated = require('../../middlewares/auth')
 
-const User = require('../../models/user')
 const Repository = require('../../models/repository')
+const Collaborator = require('../../models/collaborator')
 
 const router = express.Router();
 
 router.get('/', isAuthenticated, (req, res) => {
-  User.findOne({ login: req.user.login }, (err, user) => {
-    if (err) {
-      res.status(404).json({ message: "User not Found" })
-    } else {
-      res.json(user.repositories)
-    }
-  })
+  Repository.find({ owner: req.user.login })
+    .then(repositories => {
+      res.json(repositories)
+    })
+    .catch(err => {
+      console.log(chalk.red(err))
+      res.status(500).json({ message: "Something went wrong!" })
+    })
 })
 
 router.get('/:name', isAuthenticated, (req, res) => {
-  User.findOne({ login: req.user.login }, (err, user) => {
-    if (err) {
-      res.status(404).json({ message: "User not Found" })
-    } else {
-      let repository = user.repositories.filter(repository => repository.name === req.params.name)
-      if (repository.length >= 1) {
-        repository = repository[0]
-        res.json(repository)
-      } else {
+  Repository.findOne({ owner: req.user.login, name: req.params.name })
+    .then(repository => {
+      if (repository) {
+        Collaborator.find({ repositories: repository.id })
+          .then(collaborators => {
+            if (collaborators) {
+              res.json({ repository, collaborators })
+            } else {
+              res.json({ repository })
+            }
+          })
+          .catch(err => {
+            console.log(chalk.red(err))
+            res.status(500).json({ message: "Something went wrong!" })
+          })
+      }
+      else {
         res.status(404).json({ message: "Repository not found" })
       }
-    }
-  })
+    })
+    .catch(err => {
+      console.log(chalk.red(err))
+      res.status(500).json({ message: "Something went wrong!" })
+    })
 })
 
 router.post('/', isAuthenticated, (req, res) => {

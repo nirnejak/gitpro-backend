@@ -6,8 +6,8 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "task": "node tasks/bullQueue.js",
-    "task-dev": "nodemon tasks/bullQueue.js"
+    "task": "node tasks/index.js",
+    "task-dev": "nodemon tasks/index.js"
   },
   "repository": {
     "type": "git",

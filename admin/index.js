@@ -20,8 +20,23 @@ const adminBro = new AdminBro({
         }
       }
     },
-    Collaborator,
-    Repository
+    {
+      resource: Repository,
+      options: {
+        properties: {
+          node_id: { isVisible: { list: false, filter: false, show: true, edit: false } },
+        }
+      }
+    },
+    {
+      resource: Collaborator,
+      options: {
+        properties: {
+          githubId: { isVisible: { list: false, filter: false, show: true, edit: false } },
+          avatar_url: { isVisible: { list: false, filter: false, show: true, edit: false } },
+        }
+      }
+    },
   ],
   branding: {
     companyName: 'GitSupreme'

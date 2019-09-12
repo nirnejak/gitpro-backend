@@ -9,7 +9,16 @@ const repositoriesSchema = mongoose.Schema({
   private: { type: Boolean },
   description: { type: String },
   language: { type: String },
-  collaborators: [{ login: String }]
+  
+  collaborators: [{ login: String }],
+
+  created_at: { type: Date, default: Date.now() },
+  updated_at: { type: Date, default: Date.now() }
+})
+
+repositoriesSchema.pre('save', function (next) {
+  this.updated_at = Date.now()
+  next()
 })
 
 module.exports = Repository = mongoose.model('Repository', repositoriesSchema);

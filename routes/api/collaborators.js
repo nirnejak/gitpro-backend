@@ -1,6 +1,8 @@
 const express = require('express')
+const chalk = require('chalk')
 
 const isAuthenticated = require('../../middlewares/auth')
+const Queue = require('../../tasks')
 
 const User = require('../../models/user')
 const Collaborator = require('../../models/collaborator')
@@ -9,29 +11,27 @@ const router = express.Router();
 
 router.get('/', isAuthenticated, (req, res) => {
   // console.log(req.query.name)
-  User.findOne({ login: req.user.login }, (err, user) => {
-    if (err) {
-      res.status(404).json({ message: "User not Found" })
-    } else {
-      res.json(user.collaborators)
-    }
-  })
+  Collaborator.find({ owner: req.user.login })
+    .then(collaborators => {
+      res.json(collaborators)
+    })
+    .catch(err => {
+      console.log(chalk.red(err))
+      res.status(500).json({ message: "Something went wrong" })
+    })
 })
 
 router.get('/:login', isAuthenticated, (req, res) => {
-  User.findOne({ login: req.user.login }, (err, user) => {
-    if (err) {
-      res.status(404).json({ message: "User not Found" })
-    } else {
-      let collaborator = user.collaborators.filter(collaborator => collaborator.login === req.params.login)
-      if (collaborator.length >= 1) {
-        collaborator = collaborator[0]
-        res.json(collaborator)
-      } else {
-        res.status(404).json({ message: "Collaborator not found" })
-      }
-    }
-  })
+  Collaborator.findOne({ owner: req.user.login, login: req.params.login })
+    .populate("repositories")
+    .then(collaborator => {
+      if (collaborator) res.json(collaborator)
+      else res.status(404).json({ message: "Collaborator not found" })
+    })
+    .catch(err => {
+      console.log(chalk.red(err))
+      res.status(500).json({ message: "Something went wrong" })
+    })
 })
 
 router.post('/', isAuthenticated, (req, res) => {
@@ -39,7 +39,17 @@ router.post('/', isAuthenticated, (req, res) => {
 })
 
 router.put('/:login', isAuthenticated, (req, res) => {
-  res.status(501) / send("Update a Collaborator")
+  if (req.query.repo) {
+    Queue.removeCollaboratorFromRepoQueue.add({
+      owner: req.user.login,
+      token: req.user.token,
+      username: req.params.login,
+      repo: req.query.repo,
+    })
+    res.json({ message: "Removing Collaborator from Repository" })
+  } else {
+    res.status(501).send("Update a Collaborator")
+  }
 })
 
 router.delete('/:login', isAuthenticated, (req, res) => {
