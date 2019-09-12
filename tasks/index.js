@@ -31,7 +31,7 @@ removeCollaboratorFromRepoQueue.process((job, done) => {
           // collaborator.repositories
           Repository.findOne({ name: job.data.repo })
             .then(repository => {
-              collaborator.repositories = collaborator.repositories.filter(repo => repo !== repository.id)
+              collaborator.repositories = collaborator.repositories.filter(repo => repo.id !== repository.id)
               collaborator.save()
                 .then(collaborator => {
                   console.log(chalk.yellow("✅  Completed worker removeCollaboratorFromRepoQueue"))
