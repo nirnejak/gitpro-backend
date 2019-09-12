@@ -198,9 +198,25 @@ if (require.main === module) {
         if (err) {
           console.log(chalk.red("❗️  Users not found!"))
         } else {
-          users.forEach(user => {
-            fetchRepositoriesQueue.add({ login: user.login, token: user.token })
-          })
+          if (process.argv.length > 2) {
+            if (process.argv[2] === 'repository') {
+              users.forEach(user => {
+                fetchRepositoriesQueue.add({ login: user.login, token: user.token })
+              })
+            } else if (process.argv[2] === 'collaborator') {
+              users.forEach(user => {
+                fetchCollaboratorsQueue.add({ login: user.login, token: user.token })
+              })
+            } else if (process.argv[2] === 'collaborator_details') {
+              users.forEach(user => {
+                fetchCollaboratorDetailsQueue.add({ login: user.login, token: user.token })
+              })
+            }
+          } else {
+            users.forEach(user => {
+              fetchRepositoriesQueue.add({ login: user.login, token: user.token })
+            })
+          }
         }
       })
     })
