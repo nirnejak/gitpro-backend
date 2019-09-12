@@ -169,6 +169,12 @@ fetchRepositoriesQueue.process((job, done) => {
           }
         })
       })
+
+      if (repositories.length === 0) {
+        console.log(chalk.yellow("✅  Completed Processing fetchRepositoriesQueue, No Repositories"))
+        fetchCollaboratorsQueue.add(job.data)
+        done()
+      }
     })
     .catch(err => console.log(chalk.red.inverse(err)))
 })
@@ -189,8 +195,8 @@ mongoose.connect(config.MONGO_URI, { useNewUrlParser: true })
   })
   .catch(err => console.log(chalk.red(err)))
 
-// module.exports = {
-//   fetchRepositoriesQueue,
-//   fetchCollaboratorsQueue,
-//   fetchCollaboratorDetailsQueue
-// }
+module.exports = {
+  fetchRepositoriesQueue,
+  fetchCollaboratorsQueue,
+  fetchCollaboratorDetailsQueue
+}

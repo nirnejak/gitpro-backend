@@ -10,7 +10,7 @@ const Repository = require('../../models/repository')
 const router = express.Router();
 
 router.get('/', isAuthenticated, (req, res) => {
-  User.find({})
+  User.find({ status: "active" })
     .then(users => res.json(users))
     .catch(err => {
       console.log(chalk.red(err))
@@ -19,7 +19,7 @@ router.get('/', isAuthenticated, (req, res) => {
 })
 
 router.get('/:login', isAuthenticated, (req, res) => {
-  User.findOne({ login: req.params.login })
+  User.findOne({ login: req.params.login, status: "active" })
     .then(user => {
       if (user) {
         if (req.query.stats) {
@@ -53,6 +53,20 @@ router.post('/', isAuthenticated, (req, res) => {
 
 router.put('/:login', isAuthenticated, (req, res) => {
   res.status(501).send("Update a User")
+})
+
+router.put('/:login/deactivate', isAuthenticated, (req, res) => {
+  User.findOne({ login: req.params.login, status: "active" })
+    .then(user => {
+      user.status = "deactive"
+      user.save(user => {
+        res.json({ message: "Account Deactivated Successfully" })
+      })
+    })
+    .catch(err => {
+      console.log(chalk.red(err))
+      res.status(500).json({ message: "Something went wrong!" })
+    })
 })
 
 router.delete('/:login', isAuthenticated, (req, res) => {

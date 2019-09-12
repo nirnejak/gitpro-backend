@@ -8,33 +8,8 @@ const userSchema = mongoose.Schema({
   created_at: { type: Date, default: Date.now() },
   updated_at: { type: Date, default: Date.now() },
   avatar_url: { type: String },
-  meta: {
-    includePublic: { type: Boolean, default: false },
-    active: { type: Boolean, default: true }
-  },
-  // TODO: Create a Reference to Collaborator Collection
-  collaborators: [
-    {
-      id: { type: Number },
-      login: { type: String },
-      type: { type: String },
-      name: { type: String },
-      avatar_url: { type: String },
-      email: { type: String },
-      repositories: []
-    }
-  ],
-  // TODO: Create a Reference to Repository Collection
-  repositories: [
-    {
-      id: { type: Number },
-      node_id: { type: String },
-      name: { type: String },
-      private: { type: Boolean },
-      description: { type: String },
-      language: { type: String }
-    }
-  ]
+  includePublic: { type: Boolean, default: true },
+  status: { type: String, default: 'active' }
 });
 
 userSchema.pre('save', function (next) {
