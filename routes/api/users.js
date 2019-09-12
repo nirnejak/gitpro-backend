@@ -4,6 +4,8 @@ const chalk = require('chalk')
 const isAuthenticated = require('../../middlewares/auth')
 
 const User = require('../../models/user')
+const Collaborator = require('../../models/collaborator')
+const Repository = require('../../models/repository')
 
 const router = express.Router();
 
@@ -20,12 +22,21 @@ router.get('/:login', isAuthenticated, (req, res) => {
   User.findOne({ login: req.params.login })
     .then(user => {
       if (user) {
-        let data = {
-          total_repositories: user.repositories.length,
-          total_collaborators: user.collaborators.length
+        if (req.query.stats) {
+          let data = {}
+          Collaborator.find({ owner: req.params.login })
+            .then(collaborators => {
+              data["total_collaborators"] = collaborators.length
+              Repository.find({ owner: req.params.login })
+                .then(repositories => {
+                  data["total_repositories"] = repositories.length
+                  data = { ...data, ...user._doc }
+                  res.json(data)
+                })
+            })
+        } else {
+          res.json(user)
         }
-        data = { ...data, ...user._doc }
-        res.json(data)
       } else {
         res.status(404).json({ message: "User not Found" })
       }
