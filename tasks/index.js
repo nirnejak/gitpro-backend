@@ -20,6 +20,30 @@ const queueConfig = {
 const fetchRepositoriesQueue = new Queue('fetchRepositoriesQueue', queueConfig);
 const fetchCollaboratorsQueue = new Queue('fetchCollaboratorsQueue', queueConfig);
 const fetchCollaboratorDetailsQueue = new Queue('fetchCollaboratorDetailsQueue', queueConfig);
+const removeCollaboratorFromRepoQueue = new Queue('removeCollaboratorFromRepoQueue', queueConfig);
+
+removeCollaboratorFromRepoQueue.process((job, done) => {
+  console.log(chalk.yellow("🏃‍  Started Processing removeCollaboratorFromRepoQueue"))
+  axios.delete(`https://api.github.com/repos/${job.data.owner}/${job.data.repo}/collaborators/${job.data.username}`, { headers: { Authorization: `Bearer ${job.data.token}`, } })
+    .then(res => {
+      Collaborator.findOne({ login: job.data.username })
+        .then(collaborator => {
+          // collaborator.repositories
+          Repository.findOne({ name: job.data.repo })
+            .then(repository => {
+              collaborator.repositories = collaborator.repositories.filter(repo => repo !== repository.id)
+              collaborator.save()
+                .then(collaborator => {
+                  console.log(chalk.yellow("✅  Completed worker removeCollaboratorFromRepoQueue"))
+                  done()
+                })
+                .catch(err => console.log(chalk.red(err)))
+            })
+        })
+        .catch(err => console.log(chalk.red(err)))
+    })
+    .catch(err => console.log(chalk.red(err)))
+})
 
 
 fetchCollaboratorDetailsQueue.process((job, done) => {
@@ -226,5 +250,6 @@ if (require.main === module) {
 module.exports = {
   fetchRepositoriesQueue,
   fetchCollaboratorsQueue,
-  fetchCollaboratorDetailsQueue
+  fetchCollaboratorDetailsQueue,
+  removeCollaboratorFromRepoQueue
 }
