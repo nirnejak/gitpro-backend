@@ -1,13 +1,12 @@
 const express = require('express')
 const passport = require('passport')
 const jwt = require('jsonwebtoken')
-const url = require('url')
 
 const config = require('../../config')
 
 const User = require('../../models/user')
+const Queue = require('../../tasks')
 const fetchData = require('../../tasks/fetchData')
-const Queue = require('../../tasks/bullQueue')
 
 const router = express.Router();
 
