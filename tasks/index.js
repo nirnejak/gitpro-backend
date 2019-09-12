@@ -83,9 +83,12 @@ fetchCollaboratorsQueue.process((job, done) => {
                     collaborator.login = collaborator_res.login
                     collaborator.type = collaborator_res.type
                     collaborator.avatar_url = collaborator_res.avatar_url
-                    
+
+                    if (!collaborator.repositories.includes(repositories[i].id)) {
+                      collaborator.repositories.push(repositories[i].id)
+                    }
                     // TODO: Update Repositories Reference Array
-                    
+
                     collaborator.save()
                       .then(collaborator => { })
                       .catch(err => console.log(chalk.red(err)))
@@ -97,7 +100,7 @@ fetchCollaboratorsQueue.process((job, done) => {
                       type: collaborator_res.type,
                       avatar_url: collaborator_res.avatar_url,
                     })
-                    
+
                     // TODO: Add Current Repository in Collaborator's Reference Array
 
                     collaborator.save()

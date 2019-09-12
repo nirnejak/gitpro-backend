@@ -22,7 +22,7 @@ router.get('/', isAuthenticated, (req, res) => {
 
 router.get('/:login', isAuthenticated, (req, res) => {
   Collaborator.findOne({ owner: req.user.login, login: req.params.login })
-    .populate("repo")
+    .populate("repositories")
     .then(collaborator => {
       if (collaborator) res.json(collaborator)
       else res.status(404).json({ message: "Collaborator not found" })
