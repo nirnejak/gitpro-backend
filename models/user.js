@@ -7,8 +7,10 @@ const userSchema = mongoose.Schema({
   githubId: { type: String },
   avatar_url: { type: String },
   email: { type: String },
+
   includePublic: { type: Boolean, default: true },
   status: { type: String, default: 'active' },
+  isAdmin: { type: Boolean, default: false },
 
   created_at: { type: Date, default: Date.now() },
   updated_at: { type: Date, default: Date.now() },

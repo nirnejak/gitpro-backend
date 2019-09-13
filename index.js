@@ -37,6 +37,7 @@ app.use('/api/collaborators', require('./routes/api/collaborators'))
 app.use('/api/repositories', require('./routes/api/repositories'))
 app.use('/auth', require('./routes/api/auth'))
 app.use('/admin', require('./admin/'))
+app.use('/arena', require('./tasks/arenaAdminPanel'))
 
 app.get('*', function (req, res) {
   res.status(404).json({ error: true, message: 'Not Found' });
