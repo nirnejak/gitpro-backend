@@ -17,6 +17,22 @@ const queueConfig = {
   }
 }
 
+// INFO: Axios Debug Console
+// require('axios-debug-log')({
+//   request: (debug, config) => {
+//     debug(config)
+//   },
+//   response: (debug, response) => {
+//     debug(
+//       'Response with ' + response.headers['Content-Type'],
+//       'from ' + response.config.url
+//     )
+//   },
+//   error: (debug, response) => {
+//     debug('Boom')
+//   }
+// })
+
 const fetchRepositoriesQueue = new Queue('fetchRepositoriesQueue', queueConfig);
 const fetchCollaboratorsQueue = new Queue('fetchCollaboratorsQueue', queueConfig);
 const fetchCollaboratorDetailsQueue = new Queue('fetchCollaboratorDetailsQueue', queueConfig);
@@ -25,7 +41,7 @@ const sendInvitationToCollaborateQueue = new Queue('sendInvitationToCollaborateQ
 
 sendInvitationToCollaborateQueue.process((job, done) => {
   console.log(chalk.yellow("🏃‍  Started Processing sendInvitationToCollaborateQueue"))
-  axios.delete(`https://api.github.com/repos/${job.data.owner}/${job.data.repo}/collaborators/${job.data.username}`, { headers: { Authorization: `Bearer ${job.data.token}`, } })
+  axios.put(`https://api.github.com/repos/${job.data.owner}/${job.data.repo}/collaborators/${job.data.username}?permission=push`, {}, { headers: { Authorization: `Bearer ${job.data.token}` } })
     .then(res => {
       console.log(chalk.yellow("✅  Completed worker sendInvitationToCollaborateQueue"))
       done()
@@ -35,7 +51,7 @@ sendInvitationToCollaborateQueue.process((job, done) => {
 
 removeCollaboratorFromRepoQueue.process((job, done) => {
   console.log(chalk.yellow("🏃‍  Started Processing removeCollaboratorFromRepoQueue"))
-  axios.delete(`https://api.github.com/repos/${job.data.owner}/${job.data.repo}/collaborators/${job.data.username}`, { headers: { Authorization: `Bearer ${job.data.token}`, } })
+  axios.delete(`https://api.github.com/repos/${job.data.owner}/${job.data.repo}/collaborators/${job.data.username}`, { headers: { Authorization: `Bearer ${job.data.token}` } })
     .then(res => {
       Collaborator.findOne({ login: job.data.username })
         .then(collaborator => {
@@ -65,7 +81,7 @@ fetchCollaboratorDetailsQueue.process((job, done) => {
     } else {
       try {
         for (let i = 0; i < collaborators.length; i++) {
-          let res = await axios.get(`https://api.github.com/users/${collaborators[i].login}`, { headers: { Authorization: `Bearer ${job.data.token}`, } })
+          let res = await axios.get(`https://api.github.com/users/${collaborators[i].login}`, { headers: { Authorization: `Bearer ${job.data.token}` } })
           Collaborator.findOne({ githubId: collaborators[i].githubId }, async (err, collaborator) => {
             if (err) {
               console.log(chalk.red(err))
@@ -102,7 +118,7 @@ fetchCollaboratorsQueue.process((job, done) => {
     } else {
       try {
         for (let i = 0; i < repositories.length; i++) {
-          let res = await axios.get(`https://api.github.com/repos/${job.data.login}/${repositories[i].name}/collaborators`, { headers: { Authorization: `Bearer ${job.data.token}`, } })
+          let res = await axios.get(`https://api.github.com/repos/${job.data.login}/${repositories[i].name}/collaborators`, { headers: { Authorization: `Bearer ${job.data.token}` } })
           if (res.data.length > 1) {
             // Removing Current user from the list of Collaborators for the Repo
             let collaborators = res.data.filter(collaborator => collaborator.login !== job.data.login)
@@ -168,7 +184,7 @@ fetchCollaboratorsQueue.process((job, done) => {
 
 fetchRepositoriesQueue.process((job, done) => {
   console.log(chalk.yellow("🏃‍  Started Processing fetchRepositoriesQueue"))
-  axios.get("https://api.github.com/user/repos?per_page=100", { headers: { Authorization: `Bearer ${job.data.token}`, } })
+  axios.get("https://api.github.com/user/repos?per_page=100", { headers: { Authorization: `Bearer ${job.data.token}` } })
     .then(res => {
       // Filtering User's repositories only, omitting repositories shared with him/her
       let repositories = res.data.filter(repo => repo.owner.login === job.data.login)
