@@ -1,5 +1,6 @@
 const express = require('express')
 const passport = require('passport')
+const chalk = require('chalk')
 const jwt = require('jsonwebtoken')
 
 const config = require('../../config')
@@ -27,27 +28,27 @@ passport.use(new GitHubStrategy(githubConfig, (accessToken, refreshToken, profil
       done(err)
     } else {
       if (databaseUser) {
-        let { _id, login, token, githubId, refreshToken } = databaseUser
-        done(null, { _id, login, token, githubId, refreshToken })
+        databaseUser.token = accessToken
+        databaseUser.save()
+          .then(saved_user => {
+            let { _id, login, token, githubId } = saved_user
+            done(null, { _id, login, token, githubId })
+          })
+          .catch(err => console.log(chalk.red(err)))
       } else {
         let user = new User({
           name: profile.displayName,
           login: profile.username,
           token: accessToken,
-          refreshToken: refreshToken,
           githubId: profile.id,
           avatar_url: profile._json.avatar_url,
           email: profile.email
         })
         user.save()
           .then(saved_user => {
-            Queue.fetchRepositoriesQueue.add({
-              login: saved_user.login,
-              token: saved_user.token,
-              refreshToken: saved_user.refreshToken
-            })
-            let { _id, login, token, githubId, refreshToken } = saved_user
-            done(null, { _id, login, token, githubId, refreshToken })
+            Queue.fetchRepositoriesQueue.add({ login: saved_user.login, token: saved_user.token })
+            let { _id, login, token, githubId } = saved_user
+            done(null, { _id, login, token, githubId })
           })
           .catch(err => done(err))
       }
