@@ -6,8 +6,8 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "task": "node tasks/index.js",
-    "task-dev": "nodemon tasks/index.js"
+    "task": "node tasks/process.js",
+    "task-dev": "nodemon tasks/process.js"
   },
   "repository": {
     "type": "git",
