@@ -6,7 +6,6 @@ const config = require('../../config')
 
 const User = require('../../models/user')
 const Queue = require('../../tasks')
-const fetchData = require('../../tasks/fetchData')
 
 const router = express.Router();
 
