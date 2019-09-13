@@ -5,11 +5,12 @@ const userSchema = mongoose.Schema({
   login: { type: String, required: true },
   token: { type: String, required: true },
   githubId: { type: String },
-  created_at: { type: Date, default: Date.now() },
-  updated_at: { type: Date, default: Date.now() },
   avatar_url: { type: String },
   includePublic: { type: Boolean, default: true },
-  status: { type: String, default: 'active' }
+  status: { type: String, default: 'active' },
+  
+  created_at: { type: Date, default: Date.now() },
+  updated_at: { type: Date, default: Date.now() },
 });
 
 userSchema.pre('save', function (next) {

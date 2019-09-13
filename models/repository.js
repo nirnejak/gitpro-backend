@@ -9,8 +9,6 @@ const repositoriesSchema = mongoose.Schema({
   private: { type: Boolean },
   description: { type: String },
   language: { type: String },
-  
-  collaborators: [{ login: String }],
 
   created_at: { type: Date, default: Date.now() },
   updated_at: { type: Date, default: Date.now() }
