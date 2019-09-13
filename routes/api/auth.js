@@ -42,7 +42,7 @@ passport.use(new GitHubStrategy(githubConfig, (accessToken, refreshToken, profil
           token: accessToken,
           githubId: profile.id,
           avatar_url: profile._json.avatar_url,
-          email: profile.email
+          email: profile.emails[0].value
         })
         user.save()
           .then(saved_user => {
