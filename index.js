@@ -47,10 +47,8 @@ mongoose.connect(config.MONGO_URI, { useNewUrlParser: true })
   .then(() => console.log(chalk.green('🔥  MongoDB Connected...')))
   .catch(err => console.log(chalk.red(err)))
 
-// const boot = require('./tasks')
-// const processQueue = require('./tasks/queue')
 app.listen(config.PORT, () => {
-  // boot()
-  // processQueue()
   console.log(chalk.green(`👍  Server started at PORT: ${config.PORT}`))
 })
+
+module.exports = app
