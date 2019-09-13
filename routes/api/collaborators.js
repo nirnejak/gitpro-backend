@@ -47,6 +47,16 @@ router.put('/:login', isAuthenticated, (req, res) => {
       repo: req.query.repo,
     })
     res.json({ message: "Removing Collaborator from Repository" })
+  } else if (req.body.selectedRepositories) {
+    req.body.selectedRepositories.map(repo => {
+      Queue.sendInvitationToCollaborateQueue.add({
+        repo,
+        owner: req.user.login,
+        username: req.params.login,
+        token: req.user.token,
+      })
+    })
+    res.json({ message: "Adding Collaborator to Repositories" })
   } else {
     res.status(501).send("Update a Collaborator")
   }
