@@ -22,29 +22,32 @@ const githubConfig = {
 }
 
 passport.use(new GitHubStrategy(githubConfig, (accessToken, refreshToken, profile, done) => {
-  User.findOne({ githubId: profile.id }, (err, db_user) => {
+  User.findOne({ githubId: profile.id }, (err, databaseUser) => {
     if (err) {
       done(err)
     } else {
-      if (db_user) {
-        let { _id, login, token, githubId } = db_user
-        done(null, { _id, login, token, githubId })
+      if (databaseUser) {
+        let { _id, login, token, githubId, refreshToken } = databaseUser
+        done(null, { _id, login, token, githubId, refreshToken })
       } else {
         let user = new User({
           name: profile.displayName,
           login: profile.username,
           token: accessToken,
+          refreshToken: refreshToken,
           githubId: profile.id,
           avatar_url: profile._json.avatar_url,
           email: profile.email
         })
         user.save()
           .then(saved_user => {
-            // TODO: Add Queue for Fetching Data
-            Queue.fetchRepositoriesQueue.add({ login: saved_user.login, token: saved_user.token })
-            // fetchData(saved_user)
-            let { _id, login, token, githubId } = saved_user
-            done(null, { _id, login, token, githubId })
+            Queue.fetchRepositoriesQueue.add({
+              login: saved_user.login,
+              token: saved_user.token,
+              refreshToken: saved_user.refreshToken
+            })
+            let { _id, login, token, githubId, refreshToken } = saved_user
+            done(null, { _id, login, token, githubId, refreshToken })
           })
           .catch(err => done(err))
       }

@@ -252,20 +252,36 @@ if (require.main === module) {
           if (process.argv.length > 2) {
             if (process.argv[2] === 'repository') {
               users.forEach(user => {
-                fetchRepositoriesQueue.add({ login: user.login, token: user.token })
+                fetchRepositoriesQueue.add({
+                  login: user.login,
+                  token: user.token,
+                  refreshToken: user
+                })
               })
             } else if (process.argv[2] === 'collaborator') {
               users.forEach(user => {
-                fetchCollaboratorsQueue.add({ login: user.login, token: user.token })
+                fetchCollaboratorsQueue.add({
+                  login: user.login,
+                  token: user.token,
+                  refreshToken: user
+                })
               })
             } else if (process.argv[2] === 'collaborator_details') {
               users.forEach(user => {
-                fetchCollaboratorDetailsQueue.add({ login: user.login, token: user.token })
+                fetchCollaboratorDetailsQueue.add({
+                  login: user.login,
+                  token: user.token,
+                  refreshToken: user
+                })
               })
             }
           } else {
             users.forEach(user => {
-              fetchRepositoriesQueue.add({ login: user.login, token: user.token })
+              fetchRepositoriesQueue.add({
+                login: user.login,
+                token: user.token,
+                refreshToken: user
+              })
             })
           }
         }
