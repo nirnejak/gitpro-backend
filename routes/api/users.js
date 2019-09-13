@@ -55,7 +55,7 @@ router.put('/:login', isAuthenticated, (req, res) => {
   res.status(501).send("Update a User")
 })
 
-router.put('/:login/deactivate', isAuthenticated, (req, res) => {
+router.delete('/:login', isAuthenticated, (req, res) => {
   User.findOne({ login: req.params.login, status: "active" })
     .then(user => {
       user.status = "deactive"
@@ -67,10 +67,6 @@ router.put('/:login/deactivate', isAuthenticated, (req, res) => {
       console.log(chalk.red(err))
       res.status(500).json({ message: "Something went wrong!" })
     })
-})
-
-router.delete('/:login', isAuthenticated, (req, res) => {
-  res.status(501).send("Delete a User")
 })
 
 module.exports = router
