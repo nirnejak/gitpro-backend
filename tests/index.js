@@ -8,7 +8,7 @@ describe('Connection', () => {
   it('it should connect to mongoDB Server', (done) => {
     mongoose.connect(config.MONGO_URI, { useNewUrlParser: true })
       .then(() => done())
-      .catch(err => console.log(err))
+      .catch(err => done(err))
   })
 
   // TEST: Redis Connection
