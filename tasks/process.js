@@ -37,7 +37,7 @@ sendInvitationToCollaborateQueue.process((job, done) => {
   console.log(chalk.yellow("🏃‍  Started Processing sendInvitationToCollaborateQueue"))
   axios.put(`https://api.github.com/repos/${job.data.owner}/${job.data.repo}/collaborators/${job.data.username}?permission=push`, {}, { headers: { Authorization: `Bearer ${job.data.token}` } })
     .then(res => {
-      console.log(chalk.yellow("✅  Completed worker sendInvitationToCollaborateQueue"))
+      console.log(chalk.yellow("✅  Completed Processing sendInvitationToCollaborateQueue"))
       done()
     })
     .catch(err => console.log(chalk.red(err)))
@@ -56,10 +56,10 @@ removeCollaboratorFromRepoQueue.process((job, done) => {
                 .then(collaborator => {
                   if (job.data.last) {
                     collaborator.remove()
-                    console.log(chalk.yellow("✅  Completed worker removeCollaboratorFromRepoQueue"))
+                    console.log(chalk.yellow("✅  Completed Processing removeCollaboratorFromRepoQueue"))
                     done()
                   } else {
-                    console.log(chalk.yellow("✅  Completed worker removeCollaboratorFromRepoQueue"))
+                    console.log(chalk.yellow("✅  Completed Processing removeCollaboratorFromRepoQueue"))
                     done()
                   }
                 })
@@ -92,7 +92,7 @@ fetchCollaboratorDetailsQueue.process((job, done) => {
 
               // Completing the Worker on last iteration
               if (i === collaborators.length - 1) {
-                console.log(chalk.yellow("✅  Completed worker fetchCollaboratorDetails"))
+                console.log(chalk.yellow("✅  Completed Processing fetchCollaboratorDetails"))
                 done()
               }
             }
@@ -100,7 +100,7 @@ fetchCollaboratorDetailsQueue.process((job, done) => {
         }
 
         if (collaborators.length === 0) {
-          console.log(chalk.yellow("✅  Completed worker fetchCollaboratorDetails, No Collaborators"))
+          console.log(chalk.yellow("✅  Completed Processing fetchCollaboratorDetails, No Collaborators"))
         }
       } catch (err) {
         console.log(chalk.red(err))
@@ -162,14 +162,14 @@ fetchCollaboratorsQueue.process((job, done) => {
             })
           }
           if (i === repositories.length - 1) {
-            console.log(chalk.yellow("✅  Completed worker fetchCollaborators, Tasks Processing Asynchronously"))
+            console.log(chalk.yellow("✅  Completed Processing fetchCollaborators, Tasks Processing Asynchronously"))
             fetchCollaboratorDetailsQueue.add(job.data)
             done()
           }
         }
 
         if (repositories.length === 0) {
-          console.log(chalk.yellow("✅  Completed worker fetchCollaborators, No Repositories"))
+          console.log(chalk.yellow("✅  Completed Processing fetchCollaborators, No Repositories"))
           fetchCollaboratorDetailsQueue.add(job.data)
           done()
         }
