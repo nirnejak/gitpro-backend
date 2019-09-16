@@ -63,6 +63,7 @@ router.put('/:login', isAuthenticated, (req, res) => {
 })
 
 router.delete('/:login', isAuthenticated, (req, res) => {
+  // TODO: Implement Delete Collaborator
   res.status(501).send("Delete a Collaborator")
 })
 

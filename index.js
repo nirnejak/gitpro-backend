@@ -35,6 +35,7 @@ app.get('/', (req, res) => {
 app.use('/api/users', require('./routes/api/users'))
 app.use('/api/collaborators', require('./routes/api/collaborators'))
 app.use('/api/repositories', require('./routes/api/repositories'))
+app.use('/api/fetch', require('./routes/api/fetch'))
 app.use('/auth', require('./routes/api/auth'))
 app.use('/admin', require('./admin/'))
 app.use('/arena', require('./tasks/arenaAdminPanel'))
