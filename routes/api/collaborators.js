@@ -49,7 +49,7 @@ router.post('/', isAuthenticated, (req, res) => {
         })
         collaborator.save()
           .then(collaborator => {
-            req.body.selectedRepositories.map(repo => {
+            req.body.repositories.forEach(repo => {
               Queue.sendInvitationToCollaborateQueue.add({
                 owner: req.user.login,
                 token: req.user.token,
@@ -57,7 +57,7 @@ router.post('/', isAuthenticated, (req, res) => {
                 repo,
               })
             })
-            res.json(collaborator)
+            res.json({ success: true, message: "Collaborator created successfully", collaborator })
           })
           .catch(err => {
             console.log(chalk.red(err))
@@ -96,15 +96,19 @@ router.delete('/:login', isAuthenticated, (req, res) => {
     .populate("repositories")
     .then(collaborator => {
       if (collaborator) {
-        collaborator.repositories.forEach((repo, index) => {
-          Queue.removeCollaboratorFromRepoQueue.add({
-            owner: req.user.login,
-            token: req.user.token,
-            username: req.params.login,
-            repo: repo.name,
-            last: index === collaborator.repositories.length - 1
+        if (collaborator.repositories.length === 0) {
+          collaborator.remove()
+        } else {
+          collaborator.repositories.forEach((repo, index) => {
+            Queue.removeCollaboratorFromRepoQueue.add({
+              owner: req.user.login,
+              token: req.user.token,
+              username: req.params.login,
+              repo: repo.name,
+              last: index === collaborator.repositories.length - 1
+            })
           })
-        })
+        }
         res.json({ message: "Removing Collaborator" })
       } else {
         res.status(404).json({ message: "Collaborator not found" })
