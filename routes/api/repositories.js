@@ -60,6 +60,16 @@ router.put('/:name', isAuthenticated, (req, res) => {
       repo: req.params.name,
     })
     res.json({ message: "Removing Collaborator from Repository" })
+  } else if (req.body.selectedCollaborators) {
+    req.body.selectedCollaborators.forEach(collaborator => {
+      Queue.sendInvitationToCollaborateQueue.add({
+        repo: req.params.name,
+        owner: req.user.login,
+        username: collaborator,
+        token: req.user.token,
+      })
+    })
+    res.json({ message: "Sending Invitation to Collaborators" })
   } else {
     res.status(501).send("Update a Repository")
   }
