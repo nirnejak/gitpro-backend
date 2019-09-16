@@ -47,11 +47,11 @@ removeCollaboratorFromRepoQueue.process((job, done) => {
   console.log(chalk.yellow("🏃‍  Started Processing removeCollaboratorFromRepoQueue"))
   axios.delete(`https://api.github.com/repos/${job.data.owner}/${job.data.repo}/collaborators/${job.data.username}`, { headers: { Authorization: `Bearer ${job.data.token}` } })
     .then(res => {
-      Collaborator.findOne({ login: job.data.username })
+      Collaborator.findOne({ login: job.data.username }).populate('repositories')
         .then(collaborator => {
           Repository.findOne({ name: job.data.repo })
             .then(repository => {
-              collaborator.repositories = collaborator.repositories.filter(repo => repo.id !== repository.id)
+              collaborator.repositories = collaborator.repositories.filter(repo => repo.githubId !== repository.githubId)
               collaborator.save()
                 .then(collaborator => {
                   if (job.data.last) {
@@ -134,10 +134,10 @@ fetchCollaboratorsQueue.process((job, done) => {
                     collaborator.type = collaborator_res.type
                     collaborator.avatar_url = collaborator_res.avatar_url
 
+                    // TODO: Update Repositories Reference Array
                     if (!collaborator.repositories.includes(repositories[i].id)) {
                       collaborator.repositories.push(repositories[i].id)
                     }
-                    // TODO: Update Repositories Reference Array
 
                     collaborator.save()
                       .then(collaborator => { })
