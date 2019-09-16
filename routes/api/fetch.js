@@ -28,7 +28,7 @@ router.get('/users', isAuthenticated, (req, res) => {
     const url = `https://api.github.com/search/users?q=${req.query.q}`
     axios.get(url, { headers: { Authorization: `Bearer ${req.user.token}` } })
       .then(response => {
-        res.json(response.data.items)
+        res.json(response.data.items.filter(user => user.login !== req.user.login))
       })
       .catch(err => {
         console.log(chalk.red(err))
