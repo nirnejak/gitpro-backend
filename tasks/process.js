@@ -49,14 +49,19 @@ removeCollaboratorFromRepoQueue.process((job, done) => {
     .then(res => {
       Collaborator.findOne({ login: job.data.username })
         .then(collaborator => {
-          // collaborator.repositories
           Repository.findOne({ name: job.data.repo })
             .then(repository => {
               collaborator.repositories = collaborator.repositories.filter(repo => repo.id !== repository.id)
               collaborator.save()
                 .then(collaborator => {
-                  console.log(chalk.yellow("✅  Completed worker removeCollaboratorFromRepoQueue"))
-                  done()
+                  if (job.data.last) {
+                    collaborator.remove()
+                    console.log(chalk.yellow("✅  Completed worker removeCollaboratorFromRepoQueue"))
+                    done()
+                  } else {
+                    console.log(chalk.yellow("✅  Completed worker removeCollaboratorFromRepoQueue"))
+                    done()
+                  }
                 })
                 .catch(err => console.log(chalk.red(err)))
             })

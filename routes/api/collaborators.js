@@ -63,8 +63,28 @@ router.put('/:login', isAuthenticated, (req, res) => {
 })
 
 router.delete('/:login', isAuthenticated, (req, res) => {
-  // TODO: Implement Delete Collaborator
-  res.status(501).send("Delete a Collaborator")
+  Collaborator.findOne({ owner: req.user.login, login: req.params.login })
+    .populate("repositories")
+    .then(collaborator => {
+      if (collaborator) {
+        collaborator.repositories.forEach((repo, index) => {
+          Queue.removeCollaboratorFromRepoQueue.add({
+            owner: req.user.login,
+            token: req.user.token,
+            username: req.params.login,
+            repo: repo.name,
+            last: index === collaborator.repositories.length - 1
+          })
+        })
+        res.json({ message: "Removing Collaborator" })
+      } else {
+        res.status(404).json({ message: "Collaborator not found" })
+      }
+    })
+    .catch(err => {
+      console.log(chalk.red(err))
+      res.status(500).json({ message: "Something went wrong" })
+    })
 })
 
 module.exports = router
