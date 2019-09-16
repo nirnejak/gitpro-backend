@@ -1,5 +1,6 @@
 const express = require('express')
 const chalk = require('chalk')
+const axios = require('axios')
 
 const isAuthenticated = require('../../middlewares/auth')
 const Queue = require('../../tasks')
@@ -20,6 +21,22 @@ router.get('/collaborators', isAuthenticated, (req, res) => {
     token: req.user.token,
   })
   res.json({ message: "Fetching Collaborators" })
+})
+
+router.get('/users', isAuthenticated, (req, res) => {
+  if (req.query.q) {
+    const url = `https://api.github.com/search/users?q=${req.query.q}`
+    axios.get(url, { headers: { Authorization: `Bearer ${req.user.token}` } })
+      .then(response => {
+        res.json(response.data.items)
+      })
+      .catch(err => {
+        console.log(chalk.red(err))
+        res.status(500).json({ message: "Something went wrong" })
+      })
+  } else {
+    res.json([])
+  }
 })
 
 module.exports = router
