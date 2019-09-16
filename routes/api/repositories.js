@@ -2,6 +2,7 @@ const express = require('express')
 const chalk = require('chalk')
 
 const isAuthenticated = require('../../middlewares/auth')
+const Queue = require('../../tasks')
 
 const Repository = require('../../models/repository')
 const Collaborator = require('../../models/collaborator')
@@ -51,7 +52,17 @@ router.post('/', isAuthenticated, (req, res) => {
 })
 
 router.put('/:name', isAuthenticated, (req, res) => {
-  res.status(501).send("Update a Repository")
+  if (req.query.collaborator) {
+    Queue.removeCollaboratorFromRepoQueue.add({
+      owner: req.user.login,
+      token: req.user.token,
+      username: req.query.collaborator,
+      repo: req.params.name,
+    })
+    res.json({ message: "Removing Collaborator from Repository" })
+  } else {
+    res.status(501).send("Update a Repository")
+  }
 })
 
 router.delete('/:name', isAuthenticated, (req, res) => {
