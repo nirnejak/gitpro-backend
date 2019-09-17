@@ -4,6 +4,7 @@ const axios = require('axios')
 
 const isAuthenticated = require('../../middlewares/auth')
 const Queue = require('../../tasks')
+const getDiffs = require('../../utils/git')
 
 const router = express.Router();
 
@@ -37,6 +38,16 @@ router.get('/users', isAuthenticated, (req, res) => {
   } else {
     res.json([])
   }
+})
+
+router.get('/activity', isAuthenticated, (req, res) => {
+  getDiffs({
+    owner: req.user.login,
+    author: 'nirnejak',
+    repoName: 'graphql-app',
+    after: '2019-08-16',
+    before: '2019-09-17'
+  })
 })
 
 module.exports = router

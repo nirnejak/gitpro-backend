@@ -29,7 +29,7 @@
   },
   "homepage": "https://github.com/nirnejak/github-supreme#readme",
   "devDependencies": {
-    "nodemon": "^1.19.1"
+    "nodemon": "^1.19.2"
   },
   "dependencies": {
     "admin-bro": "^1.1.4",
@@ -52,8 +52,10 @@
     "moment": "^2.24.0",
     "mongoose": "^5.6.11",
     "node-resque": "^5.5.5",
+    "nodegit": "^0.26.0",
     "passport": "^0.4.0",
     "passport-github2": "^0.1.11",
+    "redis": "^2.8.0",
     "socket.io": "^2.2.0"
   }
 }
