@@ -45,16 +45,29 @@ async function processRepository(params) {
 }
 
 function getDiffs(params) {
-  const { owner, author, repository, after, before } = params
+  const { owner, author, repository, after, before, token } = params
 
-  const url = `https://github.com/${owner}/${repository}`
+  const url = `https://${owner}:${token}@github.com/${owner}/${repository}.git`
 
-  return executeSystemCommand(`mkdir temp/${owner} && cd temp/${owner} && git clone ${url}`)
+  return executeSystemCommand(`mkdir -p temp/${owner} && cd temp/${owner} && git clone ${url} || true`)
     .then(res => processRepository(params))
-    .catch(async (error) => {
+    .catch((error) => {
       if (error.message.includes('File exists')) {
-        const res = await executeSystemCommand(`rm -rf temp/${owner} && mkdir temp/${owner} && cd temp/${owner} && git clone ${url}`)
-        return processRepository(params)
+        return executeSystemCommand(`rm -rf temp/${owner}`)
+          .then(res => {
+            executeSystemCommand(`mkdir -p temp/${owner} && cd temp/${owner} && git clone ${url} || true`)
+              .then(res => {
+                return processRepository(params)
+              })
+              .catch(error => {
+                console.log(chalk.red(error))
+                return error
+              })
+          })
+          .catch(error => {
+            console.log(chalk.red(error))
+            return error
+          })
       } else {
         console.log(chalk.red(error))
         return error

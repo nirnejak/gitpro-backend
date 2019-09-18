@@ -8,7 +8,7 @@
   },
   "scripts": {
     "start": "node index.js",
-    "dev": "nodemon index.js",
+    "dev": "nodemon index.js --ignore temp/",
     "task": "node tasks/process.js",
     "task-dev": "nodemon tasks/process.js",
     "test": "mocha tests/index.js -timeout=10000"
