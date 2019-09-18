@@ -1,4 +1,4 @@
-const mongoose = require('mongoose'); // Install it from Package.json
+const mongoose = require('mongoose');
 
 
 const repositoriesSchema = mongoose.Schema({

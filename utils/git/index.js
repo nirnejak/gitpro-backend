@@ -21,9 +21,9 @@ function executeSystemCommand(command) {
 
 
 async function processRepository(params) {
-  const { owner, author, repoName, after, before } = params
+  const { owner, author, repository, after, before } = params
 
-  const getCommitsSha = `cd temp/${owner}/${repoName} && git log --all --no-merges --author=${author} --after=${after} --before=${before} --pretty=format:"%H"`
+  const getCommitsSha = `cd temp/${owner}/${repository} && git log --all --no-merges --author=${author} --after=${after} --before=${before} --pretty=format:"%H"`
 
   let commitHashes = await executeSystemCommand(getCommitsSha)
   commitHashes = commitHashes.split('\n')
@@ -34,27 +34,20 @@ async function processRepository(params) {
   } else {
     let diffsArray = []
     commitHashes.forEach((commitHash, index) => {
-      diffsArray.push(executeSystemCommand(`cd temp/${owner}/${repoName} && git show ${commitHash}`))
+      diffsArray.push(executeSystemCommand(`cd temp/${owner}/${repository} && git show ${commitHash}`))
     })
 
     const commitDiffs = await Promise.all(diffsArray)
-    /* TODO: Store to MongoDB instead of Redis
-      With these fields
-      owner
-      repo
-      author
-      date
-      diffs
-      */
-    client.set(`${owner}:${repoName}:${author}`, JSON.stringify(commitDiffs))
+    // TODO: Store to MongoDB instead of Redis
+    client.set(`${owner}:${repository}:${author}`, JSON.stringify(commitDiffs))
     return commitDiffs
   }
 }
 
 function getDiffs(params) {
-  const { owner, author, repoName, after, before } = params
+  const { owner, author, repository, after, before } = params
 
-  const url = `https://github.com/${owner}/${repoName}`
+  const url = `https://github.com/${owner}/${repository}`
 
   return executeSystemCommand(`mkdir temp/${owner} && cd temp/${owner} && git clone ${url}`)
     .then(res => processRepository(params))
@@ -73,7 +66,7 @@ if (require.main === module) {
   let data = {
     owner: 'nirnejak',
     author: 'nirnejak',
-    repoName: 'graphql-app',
+    repository: 'graphql-app',
     after: '2019-08-16',
     before: '2019-09-17'
   }

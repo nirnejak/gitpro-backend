@@ -4,7 +4,6 @@ const axios = require('axios')
 
 const isAuthenticated = require('../../middlewares/auth')
 const Queue = require('../../tasks')
-const getDiffs = require('../../utils/git')
 
 const router = express.Router();
 
@@ -40,23 +39,5 @@ router.get('/users', isAuthenticated, (req, res) => {
   }
 })
 
-router.get('/activity', isAuthenticated, (req, res) => {
-  /* TODO: Search in DB for Diff
-  if it exists return to the user
-  if it doesn't start the process and send the data to the user also store in the database
-  */
-  getDiffs({
-    owner: req.user.login,
-    author: req.query.author,
-    repoName: req.query.repo,
-    after: req.query.after,
-    before: req.query.before
-  })
-    .then(diffs => res.json(diffs))
-    .catch(err => {
-      console.log(chalk.red(err))
-      res.status(500).json({ message: "Something went wrong" })
-    })
-})
 
 module.exports = router

@@ -11,9 +11,7 @@ const router = express.Router();
 
 router.get('/', isAuthenticated, (req, res) => {
   Repository.find({ owner: req.user.login })
-    .then(repositories => {
-      res.json(repositories)
-    })
+    .then(repositories => res.json(repositories))
     .catch(err => {
       console.log(chalk.red(err))
       res.status(500).json({ message: "Something went wrong!" })

@@ -12,9 +12,7 @@ const router = express.Router();
 router.get('/', isAuthenticated, (req, res) => {
   // console.log(req.query.name)
   Collaborator.find({ owner: req.user.login })
-    .then(collaborators => {
-      res.json(collaborators)
-    })
+    .then(collaborators => res.json(collaborators))
     .catch(err => {
       console.log(chalk.red(err))
       res.status(500).json({ message: "Something went wrong" })
