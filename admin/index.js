@@ -6,6 +6,7 @@ const chalk = require('chalk')
 const User = require('../models/user')
 const Collaborator = require('../models/collaborator')
 const Repository = require('../models/repository')
+const Activity = require('../models/activity')
 
 AdminBro.registerAdapter(AdminBroMongoose)
 const adminBro = new AdminBro({
@@ -38,6 +39,14 @@ const adminBro = new AdminBro({
         }
       }
     },
+    {
+      resource: Activity,
+      options: {
+        properties: {
+          diffs: { isVisible: { list: false, filter: false, show: true, edit: false } },
+        }
+      }
+    }
   ],
   branding: {
     companyName: 'GitSupreme'
