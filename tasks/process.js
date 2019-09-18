@@ -130,25 +130,18 @@ fetchCollaboratorsQueue.process((job, done) => {
             let collaborators = res.data.filter(collaborator => collaborator.login !== job.data.login)
 
             collaborators.forEach((collaborator_res) => {
-              Collaborator.findOne({ githubId: collaborator_res.id }, (err, collaborator) => {
-                if (err) {
-                  console.log(chalk.red(err))
-                } else {
+              Collaborator.findOne({ githubId: collaborator_res.id })
+                .then(collaborator => {
                   if (collaborator) {
-                    // TODO: Update only if collaborator is older than 5 hours
                     collaborator.owner = job.data.login
                     collaborator.login = collaborator_res.login
                     collaborator.type = collaborator_res.type
                     collaborator.avatar_url = collaborator_res.avatar_url
-
                     // TODO: Update Repositories Reference Array
                     if (!collaborator.repositories.includes(repositories[i].id)) {
                       collaborator.repositories.push(repositories[i].id)
                     }
-
-                    collaborator.save()
-                      .then(collaborator => { })
-                      .catch(err => console.log(chalk.red(err)))
+                    return collaborator.save()
                   } else {
                     let collaborator = new Collaborator({
                       owner: job.data.login,
@@ -157,15 +150,12 @@ fetchCollaboratorsQueue.process((job, done) => {
                       type: collaborator_res.type,
                       avatar_url: collaborator_res.avatar_url,
                     })
-
-                    // TODO: Add Current Repository in Collaborator's Reference Array
-
-                    collaborator.save()
-                      .then(collaborator => { })
-                      .catch(err => console.log(chalk.red(err)))
+                    collaborator.repositories.push(repositories[i].id)
+                    return collaborator.save()
                   }
-                }
-              })
+                })
+                .then(collaborator => { })
+                .catch(err => console.log(chalk.red(err)))
             })
           }
           if (i === repositories.length - 1) {
