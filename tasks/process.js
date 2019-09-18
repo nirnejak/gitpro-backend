@@ -96,14 +96,14 @@ fetchCollaboratorDetailsQueue.process((job, done) => {
           })
           .then(collaborator => {
             if (i === collaborators.length - 1) {
-              console.log(chalk.yellow("✅  Completed Processing fetchCollaboratorDetails"))
+              console.log(chalk.yellow("✅  Completed Processing fetchCollaboratorDetailsQueue"))
               done()
             }
           })
           .catch(err => console.log(chalk.red(err)))
       }
       if (collaborators.length === 0) {
-        console.log(chalk.yellow("✅  Completed Processing fetchCollaboratorDetails, No Collaborators"))
+        console.log(chalk.yellow("✅  Completed Processing fetchCollaboratorDetailsQueue, No Collaborators"))
       }
     })
     .catch(err => console.log(chalk.red(err)))
@@ -153,14 +153,14 @@ fetchCollaboratorsQueue.process((job, done) => {
             })
           }
           if (i === repositories.length - 1) {
-            console.log(chalk.yellow("✅  Completed Processing fetchCollaborators, Tasks Processing Asynchronously"))
+            console.log(chalk.yellow("✅  Completed Processing fetchCollaboratorsQueue, Tasks Processing Asynchronously"))
             fetchCollaboratorDetailsQueue.add(job.data)
             done()
           }
         }
 
         if (repositories.length === 0) {
-          console.log(chalk.yellow("✅  Completed Processing fetchCollaborators, No Repositories"))
+          console.log(chalk.yellow("✅  Completed Processing fetchCollaboratorsQueue, No Repositories"))
           fetchCollaboratorDetailsQueue.add(job.data)
           done()
         }
