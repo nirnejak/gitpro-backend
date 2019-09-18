@@ -202,41 +202,29 @@ fetchRepositoriesQueue.process((job, done) => {
         return { githubId: id, node_id, name, private, description, language }
       })
       repositories.forEach((repo, index) => {
-        Repository.findOne({ githubId: repo.githubId }, (err, repository) => {
-          if (err) {
-            console.log(chalk.red(err))
-          } else {
+        Repository.findOne({ githubId: repo.githubId })
+          .then(repository => {
             if (repository) {
-              // TODO: Update only if repository is older than 5 hours
               repository.owner = job.data.login
               repository.node_id = repo.node_id
               repository.name = repo.name
               repository.private = repo.private
               repository.description = repo.description
               repository.language = repo.language
-              repository.save()
-                .then(repository => {
-                  if (index === repositories.length - 1) {
-                    console.log(chalk.yellow("✅  Completed Processing fetchRepositoriesQueue"))
-                    fetchCollaboratorsQueue.add(job.data)
-                    done()
-                  }
-                })
-                .catch(err => console.log(chalk.red(err)))
+              return repository.save()
             } else {
               let repository = new Repository({ ...repo, owner: job.data.login })
-              repository.save()
-                .then(repository => {
-                  if (index === repositories.length - 1) {
-                    console.log(chalk.yellow("✅  Completed Processing fetchRepositoriesQueue"))
-                    fetchCollaboratorsQueue.add(job.data)
-                    done()
-                  }
-                })
-                .catch(err => console.log(chalk.red(err)))
+              return repository.save()
             }
-          }
-        })
+          })
+          .then(repository => {
+            if (index === repositories.length - 1) {
+              console.log(chalk.yellow("✅  Completed Processing fetchRepositoriesQueue"))
+              fetchCollaboratorsQueue.add(job.data)
+              done()
+            }
+          })
+          .catch(err => console.log(chalk.red(err)))
       })
 
       if (repositories.length === 0) {
