@@ -35,7 +35,11 @@ const {
 
 sendInvitationToCollaborateQueue.process((job, done) => {
   console.log(chalk.yellow("🏃‍  Started Processing sendInvitationToCollaborateQueue"))
-  axios.put(`https://api.github.com/repos/${job.data.owner}/${job.data.repo}/collaborators/${job.data.username}?permission=push`, {}, { headers: { Authorization: `Bearer ${job.data.token}` } })
+
+  const URL = `https://api.github.com/repos/${job.data.owner}/${job.data.repo}/collaborators/${job.data.username}?permission=push`
+  const headers = { Authorization: `Bearer ${job.data.token}` }
+
+  axios.put(URL, {}, { headers })
     .then(res => {
       console.log(chalk.yellow("✅  Completed Processing sendInvitationToCollaborateQueue"))
       done()
@@ -45,28 +49,29 @@ sendInvitationToCollaborateQueue.process((job, done) => {
 
 removeCollaboratorFromRepoQueue.process((job, done) => {
   console.log(chalk.yellow("🏃‍  Started Processing removeCollaboratorFromRepoQueue"))
-  axios.delete(`https://api.github.com/repos/${job.data.owner}/${job.data.repo}/collaborators/${job.data.username}`, { headers: { Authorization: `Bearer ${job.data.token}` } })
-    .then(res => {
-      Collaborator.findOne({ login: job.data.username }).populate('repositories')
-        .then(collaborator => {
-          Repository.findOne({ name: job.data.repo })
-            .then(repository => {
-              collaborator.repositories = collaborator.repositories.filter(repo => repo.githubId !== repository.githubId)
-              collaborator.save()
-                .then(collaborator => {
-                  if (job.data.last) {
-                    collaborator.remove()
-                    console.log(chalk.yellow("✅  Completed Processing removeCollaboratorFromRepoQueue"))
-                    done()
-                  } else {
-                    console.log(chalk.yellow("✅  Completed Processing removeCollaboratorFromRepoQueue"))
-                    done()
-                  }
-                })
-                .catch(err => console.log(chalk.red(err)))
-            })
+
+  const URL = `https://api.github.com/repos/${job.data.owner}/${job.data.repo}/collaborators/${job.data.username}`
+  const headers = { Authorization: `Bearer ${job.data.token}` }
+
+  axios.delete(URL, { headers })
+    .then(res => Collaborator.findOne({ login: job.data.username }).populate('repositories'))
+    .then(collaborator => {
+      return Repository.findOne({ name: job.data.repo })
+        .then(repository => {
+          collaborator.repositories = collaborator.repositories.filter(repo => repo.githubId !== repository.githubId)
+          return collaborator.save()
         })
         .catch(err => console.log(chalk.red(err)))
+    })
+    .then(collaborator => {
+      if (job.data.last) {
+        collaborator.remove()
+        console.log(chalk.yellow("✅  Completed Processing removeCollaboratorFromRepoQueue"))
+        done()
+      } else {
+        console.log(chalk.yellow("✅  Completed Processing removeCollaboratorFromRepoQueue"))
+        done()
+      }
     })
     .catch(err => console.log(chalk.red(err)))
 })
@@ -79,8 +84,9 @@ fetchCollaboratorDetailsQueue.process((job, done) => {
       console.log(chalk.red("❗️  User not found!"))
     } else {
       try {
+        const headers = { Authorization: `Bearer ${job.data.token}` }
         for (let i = 0; i < collaborators.length; i++) {
-          let res = await axios.get(`https://api.github.com/users/${collaborators[i].login}`, { headers: { Authorization: `Bearer ${job.data.token}` } })
+          let res = await axios.get(`https://api.github.com/users/${collaborators[i].login}`, { headers })
           Collaborator.findOne({ githubId: collaborators[i].githubId }, async (err, collaborator) => {
             if (err) {
               console.log(chalk.red(err))
@@ -116,8 +122,9 @@ fetchCollaboratorsQueue.process((job, done) => {
       console.log(chalk.red("❗️  User not found!"))
     } else {
       try {
+        const headers = { Authorization: `Bearer ${job.data.token}` }
         for (let i = 0; i < repositories.length; i++) {
-          let res = await axios.get(`https://api.github.com/repos/${job.data.login}/${repositories[i].name}/collaborators`, { headers: { Authorization: `Bearer ${job.data.token}` } })
+          let res = await axios.get(`https://api.github.com/repos/${job.data.login}/${repositories[i].name}/collaborators`, { headers })
           if (res.data.length > 1) {
             // Removing Current user from the list of Collaborators for the Repo
             let collaborators = res.data.filter(collaborator => collaborator.login !== job.data.login)
@@ -183,7 +190,10 @@ fetchCollaboratorsQueue.process((job, done) => {
 
 fetchRepositoriesQueue.process((job, done) => {
   console.log(chalk.yellow("🏃‍  Started Processing fetchRepositoriesQueue"))
-  axios.get("https://api.github.com/user/repos?per_page=100", { headers: { Authorization: `Bearer ${job.data.token}` } })
+
+  const headers = { Authorization: `Bearer ${job.data.token}` }
+
+  axios.get("https://api.github.com/user/repos?per_page=100", { headers })
     .then(res => {
       // Filtering User's repositories only, omitting repositories shared with him/her
       let repositories = res.data.filter(repo => repo.owner.login === job.data.login)
@@ -241,6 +251,7 @@ fetchRepositoriesQueue.process((job, done) => {
 // Call the Worker if file is executed directly
 if (require.main === module) {
   console.log(chalk.blue.inverse('----------- Started Processing Queue -----------'))
+
   mongoose.connect(config.MONGO_URI, { useNewUrlParser: true })
     .then(() => {
       console.log(chalk.green('🔥  MongoDB Connected...'))
