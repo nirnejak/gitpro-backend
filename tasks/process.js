@@ -79,40 +79,34 @@ removeCollaboratorFromRepoQueue.process((job, done) => {
 
 fetchCollaboratorDetailsQueue.process((job, done) => {
   console.log(chalk.yellow("🏃‍  Started Processing fetchCollaboratorDetailsQueue"))
-  Collaborator.find({ owner: job.data.login }, async (err, collaborators) => {
-    if (err) {
-      console.log(chalk.red("❗️  User not found!"))
-    } else {
+  Collaborator.find({ owner: job.data.login })
+    .then(async (collaborators) => {
       try {
         const headers = { Authorization: `Bearer ${job.data.token}` }
         for (let i = 0; i < collaborators.length; i++) {
           let res = await axios.get(`https://api.github.com/users/${collaborators[i].login}`, { headers })
-          Collaborator.findOne({ githubId: collaborators[i].githubId }, async (err, collaborator) => {
-            if (err) {
-              console.log(chalk.red(err))
-            } else {
+          Collaborator.findOne({ githubId: collaborators[i].githubId })
+            .then(collaborator => {
               collaborator.name = res.data.name
               collaborator.avatar_url = res.data.avatar_url
               collaborator.email = res.data.email
-              let updated_collaborator = await collaborator.save()
-
-              // Completing the Worker on last iteration
+              return collaborator.save()
+            })
+            .then(collaborator => {
               if (i === collaborators.length - 1) {
                 console.log(chalk.yellow("✅  Completed Processing fetchCollaboratorDetails"))
                 done()
               }
-            }
-          })
+            })
         }
-
         if (collaborators.length === 0) {
           console.log(chalk.yellow("✅  Completed Processing fetchCollaboratorDetails, No Collaborators"))
         }
       } catch (err) {
         console.log(chalk.red(err))
       }
-    }
-  })
+    })
+    .catch(err => console.log(chalk.red(err)))
 })
 
 fetchCollaboratorsQueue.process((job, done) => {
