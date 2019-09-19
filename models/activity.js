@@ -5,8 +5,8 @@ const activitySchema = mongoose.Schema({
   owner: { type: String },
   repository: { type: String },
   author: { type: String },
-  after: { type: Date },
-  before: { type: Date },
+  after: { type: String },
+  before: { type: String },
   diffs: [{ type: String }],
 
   created_at: { type: Date, default: Date.now() },

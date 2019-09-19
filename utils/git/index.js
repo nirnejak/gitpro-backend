@@ -1,10 +1,7 @@
 const exec = require('child_process').exec;
 const chalk = require('chalk')
-const redis = require('redis')
 
-const config = require('../../config')
-
-const client = redis.createClient(config.REDIS_PORT, config.REDIS_HOST)
+const Activity = require('../../models/activity')
 
 // Wrapper of the exec function with Promise
 function executeSystemCommand(command) {
@@ -28,7 +25,12 @@ async function processRepository(params) {
 
   if (!commitHashes) {
     // No commits by the user on selected day on this repository
-    return []
+    return executeSystemCommand(`cd temp/${owner} && rm -rf /${repository}`)
+      .then(res => [])
+      .catch(err => {
+        console.log(chalk.red(err))
+        return err
+      })
   } else {
     commitHashes = commitHashes.split('\n')
     let diffsArray = []
@@ -37,9 +39,14 @@ async function processRepository(params) {
     })
 
     const commitDiffs = await Promise.all(diffsArray)
-    // TODO: Store to MongoDB instead of Redis
-    client.set(`${owner}:${repository}:${author}`, JSON.stringify(commitDiffs))
-    return commitDiffs
+
+    let activityData = { ...params, diffs: commitDiffs }
+    let activity = Activity(activityData)
+    activity.save()
+      .then(activity => executeSystemCommand(`cd temp/${owner} && rm -rf /${repository}`))
+      .then(res => console.log("Activity Stored and Repository Deleted"))
+      .catch(err => console.log(chalk.red(err)))
+    return activityData
   }
 }
 

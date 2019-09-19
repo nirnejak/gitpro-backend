@@ -27,7 +27,6 @@ router.get('/', isAuthenticated, (req, res) => {
 router.get('/:author', isAuthenticated, (req, res) => {
   const options = {
     owner: req.user.login,
-    token: req.user.token,
     author: req.params.author,
     repository: req.query.repository,
     after: req.query.after,
@@ -37,7 +36,7 @@ router.get('/:author', isAuthenticated, (req, res) => {
     .then(activity => {
       if (activity) res.json(activity)
       else {
-        getDiffs(options)
+        getDiffs({ ...options, token: req.user.token, })
           .then(diffs => res.json(diffs))
           .catch(err => {
             console.log(chalk.red(err))
