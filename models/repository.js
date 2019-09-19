@@ -9,6 +9,7 @@ const repositoriesSchema = mongoose.Schema({
   private: { type: Boolean },
   description: { type: String },
   language: { type: String },
+  isFavourite: { type: Boolean, default: false },
 
   created_at: { type: Date, default: Date.now() },
   updated_at: { type: Date, default: Date.now() }

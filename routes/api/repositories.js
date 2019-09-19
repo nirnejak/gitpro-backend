@@ -69,7 +69,20 @@ router.put('/:name', isAuthenticated, (req, res) => {
     })
     res.json({ message: "Sending Invitation to Collaborators" })
   } else {
-    res.status(501).send("Update a Repository")
+    Repository.findOne({ owner: req.user.login, name: req.params.name })
+      .then(repository => {
+        if (repository) {
+          repository.isFavourite = req.body.isFavourite
+          return repository.save()
+        } else {
+          return { message: "Repository not found" }
+        }
+      })
+      .then(response => res.json(response))
+      .catch(err => {
+        console.log(chalk.red(err))
+        res.status(500).json({ message: "Something went wrong!" })
+      })
   }
 })
 
