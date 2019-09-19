@@ -37,7 +37,6 @@ async function processRepository(params) {
     })
 
     const commitDiffs = await Promise.all(diffsArray)
-    console.log(commitDiffs)
     // TODO: Store to MongoDB instead of Redis
     client.set(`${owner}:${repository}:${author}`, JSON.stringify(commitDiffs))
     return commitDiffs
@@ -49,13 +48,13 @@ function getDiffs(params) {
 
   const url = `https://${owner}:${token}@github.com/${owner}/${repository}.git`
 
-  return executeSystemCommand(`mkdir -p temp/${owner} && cd temp/${owner} && git clone ${url} || true`)
+  return executeSystemCommand(`mkdir -p temp/${owner} && cd temp/${owner} && git clone ${url}`)
     .then(res => processRepository(params))
     .catch((error) => {
-      if (error.message.includes('File exists')) {
+      if (error.message.includes('File exists') || error.message.includes('already exists and is not an empty directory.')) {
         return executeSystemCommand(`rm -rf temp/${owner}`)
           .then(res => {
-            executeSystemCommand(`mkdir -p temp/${owner} && cd temp/${owner} && git clone ${url} || true`)
+            executeSystemCommand(`mkdir -p temp/${owner} && cd temp/${owner} && git clone ${url}`)
               .then(res => {
                 return processRepository(params)
               })
