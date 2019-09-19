@@ -1,20 +1,8 @@
-const exec = require('child_process').exec;
 const chalk = require('chalk')
 
-const Activity = require('../../models/activity')
+const Activity = require('../models/activity')
 
-// Wrapper of the exec function with Promise
-function executeSystemCommand(command) {
-  return new Promise((resolve, reject) => {
-    exec(command, (error, stdout, stderr) => {
-      if (error) {
-        return reject(error)
-      } else {
-        return resolve(stdout)
-      }
-    })
-  })
-}
+const executeSystemCommand = require('./exec')
 
 
 async function processRepository(params) {
@@ -26,11 +14,8 @@ async function processRepository(params) {
   if (!commitHashes) {
     // No commits by the user on selected day on this repository
     return executeSystemCommand(`cd temp/${owner} && rm -rf /${repository}`)
-      .then(res => [])
-      .catch(err => {
-        console.log(chalk.red(err))
-        return err
-      })
+      .then(res => ({ ...params, diffs: [] }))
+      .catch(err => Promise.reject(err))
   } else {
     commitHashes = commitHashes.split('\n')
     let diffsArray = []
@@ -46,7 +31,7 @@ async function processRepository(params) {
       .then(activity => executeSystemCommand(`cd temp/${owner} && rm -rf /${repository}`))
       .then(res => console.log("Activity Stored and Repository Deleted"))
       .catch(err => console.log(chalk.red(err)))
-    return activityData
+    return Promise.resolve(activityData)
   }
 }
 
@@ -60,23 +45,11 @@ function getDiffs(params) {
     .catch((error) => {
       if (error.message.includes('File exists') || error.message.includes('already exists and is not an empty directory.')) {
         return executeSystemCommand(`rm -rf temp/${owner}`)
-          .then(res => {
-            executeSystemCommand(`mkdir -p temp/${owner} && cd temp/${owner} && git clone ${url}`)
-              .then(res => {
-                return processRepository(params)
-              })
-              .catch(error => {
-                console.log(chalk.red(error))
-                return error
-              })
-          })
-          .catch(error => {
-            console.log(chalk.red(error))
-            return error
-          })
+          .then(res => executeSystemCommand(`mkdir -p temp/${owner} && cd temp/${owner} && git clone ${url}`))
+          .then(res => processRepository(params))
+          .catch(error => Promise.reject(error))
       } else {
-        console.log(chalk.red(error))
-        return error
+        return Promise.reject(error)
       }
     })
 }
