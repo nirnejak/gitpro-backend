@@ -35,7 +35,7 @@ async function processRepository(params) {
   }
 }
 
-function getDiffs(params) {
+function getActivity(params) {
   const { owner, author, repository, after, before, token } = params
 
   const url = `https://${owner}:${token}@github.com/${owner}/${repository}.git`
@@ -63,7 +63,7 @@ if (require.main === module) {
     before: '2019-09-17'
   }
 
-  getDiffs(data).then(diffs => console.log(diffs))
+  getActivity(data).then(diffs => console.log(diffs))
 }
 
-module.exports = getDiffs
+module.exports = getActivity

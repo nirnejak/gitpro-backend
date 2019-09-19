@@ -4,7 +4,7 @@ const chalk = require('chalk')
 const isAuthenticated = require('../../middlewares/auth')
 const Activity = require('../../models/activity')
 
-const getDiffs = require('../../utils/git')
+const getActivity = require('../../utils/git')
 
 const router = express.Router();
 
@@ -34,16 +34,10 @@ router.get('/:author', isAuthenticated, (req, res) => {
   }
   Activity.findOne(options)
     .then(activity => {
-      if (activity) res.json(activity)
-      else {
-        getDiffs({ ...options, token: req.user.token, })
-          .then(diffs => res.json(diffs))
-          .catch(err => {
-            console.log(chalk.red(err))
-            res.status(500).json({ message: "Something went wrong" })
-          })
-      }
+      if (activity) return activity
+      else return getActivity({ ...options, token: req.user.token, })
     })
+    .then(activity => res.json(activity))
     .catch(err => {
       console.log(chalk.red(err))
       res.status(500).json({ message: "Something went wrong" })
