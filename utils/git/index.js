@@ -6,7 +6,7 @@ const config = require('../../config')
 
 const client = redis.createClient(config.REDIS_PORT, config.REDIS_HOST)
 
-// Wrapper of the exec function with Promises
+// Wrapper of the exec function with Promise
 function executeSystemCommand(command) {
   return new Promise((resolve, reject) => {
     exec(command, (error, stdout, stderr) => {
@@ -24,20 +24,20 @@ async function processRepository(params) {
   const { owner, author, repository, after, before } = params
 
   const getCommitsSha = `cd temp/${owner}/${repository} && git log --all --no-merges --author=${author} --after=${after} --before=${before} --pretty=format:"%H"`
-
   let commitHashes = await executeSystemCommand(getCommitsSha)
-  commitHashes = commitHashes.split('\n')
 
-  if (commitHashes.length === 0) {
-    // No commits by the user on selected day
+  if (!commitHashes) {
+    // No commits by the user on selected day on this repository
     return []
   } else {
+    commitHashes = commitHashes.split('\n')
     let diffsArray = []
     commitHashes.forEach((commitHash, index) => {
       diffsArray.push(executeSystemCommand(`cd temp/${owner}/${repository} && git show ${commitHash}`))
     })
 
     const commitDiffs = await Promise.all(diffsArray)
+    console.log(commitDiffs)
     // TODO: Store to MongoDB instead of Redis
     client.set(`${owner}:${repository}:${author}`, JSON.stringify(commitDiffs))
     return commitDiffs
