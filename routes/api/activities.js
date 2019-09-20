@@ -4,7 +4,7 @@ const chalk = require('chalk')
 const isAuthenticated = require('../../middlewares/auth')
 const Activity = require('../../models/activity')
 
-const getActivity = require('../../utils/git')
+const getActivity = require('../../utils/fetchActivities')
 
 const router = express.Router();
 
@@ -32,7 +32,7 @@ router.get('/:author', isAuthenticated, (req, res) => {
     after: req.query.after,
     before: req.query.before
   }
-  if (req.query.force) {
+  if (req.query.force === 'true') {
     getActivity({ ...options, token: req.user.token, })
       .then(activity => res.json(activity))
       .catch(err => {
