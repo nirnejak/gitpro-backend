@@ -32,16 +32,25 @@ router.get('/:author', isAuthenticated, (req, res) => {
     after: req.query.after,
     before: req.query.before
   }
-  Activity.findOne(options)
-    .then(activity => {
-      if (activity) return activity
-      else return getActivity({ ...options, token: req.user.token, })
-    })
-    .then(activity => res.json(activity))
-    .catch(err => {
-      console.log(chalk.red(err))
-      res.status(500).json({ message: "Something went wrong" })
-    })
+  if (req.query.force) {
+    getActivity({ ...options, token: req.user.token, })
+      .then(activity => res.json(activity))
+      .catch(err => {
+        console.log(chalk.red(err))
+        res.status(500).json({ message: "Something went wrong" })
+      })
+  } else {
+    Activity.findOne(options)
+      .then(activity => {
+        if (activity) return activity
+        else return getActivity({ ...options, token: req.user.token, })
+      })
+      .then(activity => res.json(activity))
+      .catch(err => {
+        console.log(chalk.red(err))
+        res.status(500).json({ message: "Something went wrong" })
+      })
+  }
 })
 
 module.exports = router
