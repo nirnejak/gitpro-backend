@@ -23,10 +23,8 @@ const githubConfig = {
 }
 
 passport.use(new GitHubStrategy(githubConfig, (accessToken, refreshToken, profile, done) => {
-  User.findOne({ githubId: profile.id }, (err, databaseUser) => {
-    if (err) {
-      done(err)
-    } else {
+  User.findOne({ githubId: profile.id })
+    .then(databaseUser => {
       if (databaseUser) {
         databaseUser.token = accessToken
         databaseUser.save()
@@ -52,8 +50,8 @@ passport.use(new GitHubStrategy(githubConfig, (accessToken, refreshToken, profil
           })
           .catch(err => done(err))
       }
-    }
-  })
+    })
+    .catch(err => done(err))
 }));
 
 router.get('/github', passport.authenticate('github', { scope: ['user:email', 'repo', 'admin'] }));
