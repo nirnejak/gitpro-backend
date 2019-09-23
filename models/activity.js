@@ -7,7 +7,11 @@ const activitySchema = mongoose.Schema({
   author: { type: String },
   after: { type: String },
   before: { type: String },
-  diffs: [{ type: String }],
+  contributions: [{
+    hash: { type: String },
+    commitMessage: { type: String },
+    diff: { type: String }
+  }],
 
   created_at: { type: Date, default: Date.now() },
   updated_at: { type: Date, default: Date.now() }

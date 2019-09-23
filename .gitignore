@@ -10,3 +10,5 @@ package-lock.json
 
 # Redis Dump 
 dump.rdb
+
+.DS_Store
