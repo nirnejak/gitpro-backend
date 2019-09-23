@@ -76,100 +76,95 @@ removeCollaboratorFromRepoQueue.process((job, done) => {
     .catch(err => console.log(chalk.red(err)))
 })
 
-fetchCollaboratorDetailsQueue.process((job, done) => {
+fetchCollaboratorDetailsQueue.process(async (job, done) => {
   console.log(chalk.yellow("🏃‍  Started Processing fetchCollaboratorDetailsQueue"))
 
   const headers = { Authorization: `Bearer ${job.data.token}` }
+  try {
+    let collaborators = await Collaborator.find({ owner: job.data.login })
 
-  Collaborator.find({ owner: job.data.login })
-    .then(collaborators => {
-      for (let i = 0; i < collaborators.length; i++) {
-        axios.get(`https://api.github.com/users/${collaborators[i].login}`, { headers })
-          .then(res => {
-            return Collaborator.findOne({ githubId: collaborators[i].githubId })
-              .then(collaborator => {
-                collaborator.name = res.data.name
-                collaborator.avatar_url = res.data.avatar_url
-                collaborator.email = res.data.email
-                return collaborator.save()
-              })
-          })
+    if (collaborators.length === 0) {
+      console.log(chalk.yellow("✅  Completed Processing fetchCollaboratorDetailsQueue, No Collaborators"))
+      done()
+    }
+
+    let requestPromises = []
+    for (let i = 0; i < collaborators.length; i++) {
+      requestPromises.push(axios.get(`https://api.github.com/users/${collaborators[i].login}`, { headers }))
+    }
+
+    Promise.all(requestPromises).then(responses => {
+      responses.forEach((res, i) => {
+        Collaborator.findOne({ githubId: collaborators[i].githubId })
           .then(collaborator => {
-            if (i === collaborators.length - 1) {
-              console.log(chalk.yellow("✅  Completed Processing fetchCollaboratorDetailsQueue"))
-              done()
-            }
+            collaborator.name = res.data.name
+            collaborator.avatar_url = res.data.avatar_url
+            collaborator.email = res.data.email
+            return collaborator.save()
           })
-          .catch(err => console.log(chalk.red(err)))
-      }
-      if (collaborators.length === 0) {
-        console.log(chalk.yellow("✅  Completed Processing fetchCollaboratorDetailsQueue, No Collaborators"))
-      }
+      })
+      console.log(chalk.yellow("✅  Completed Processing fetchCollaboratorDetailsQueue"))
+      done()
     })
-    .catch(err => console.log(chalk.red(err)))
+  } catch (err) { console.log(chalk.red(err)) }
 })
 
-fetchCollaboratorsQueue.process((job, done) => {
+fetchCollaboratorsQueue.process(async (job, done) => {
   console.log(chalk.yellow("🏃‍  Started Processing fetchCollaboratorsQueue"))
-  Repository.find({ owner: job.data.login }, async (err, repositories) => {
-    if (err) {
-      console.log(chalk.red("❗️  User not found!"))
-    } else {
-      try {
-        const headers = { Authorization: `Bearer ${job.data.token}` }
-        for (let i = 0; i < repositories.length; i++) {
-          let res = await axios.get(`https://api.github.com/repos/${job.data.login}/${repositories[i].name}/collaborators`, { headers })
-          if (res.data.length > 1) {
-            // Removing Current user from the list of Collaborators for the Repo
-            let collaborators = res.data.filter(collaborator => collaborator.login !== job.data.login)
+  try {
+    let repositories = await Repository.find({ owner: job.data.login })
+    const headers = { Authorization: `Bearer ${job.data.token}` }
+    for (let i = 0; i < repositories.length; i++) {
+      let res = await axios.get(`https://api.github.com/repos/${job.data.login}/${repositories[i].name}/collaborators`, { headers })
+      if (res.data.length > 1) {
+        // Removing Current user from the list of Collaborators for the Repo
+        let collaborators = res.data.filter(collaborator => collaborator.login !== job.data.login)
 
-            collaborators.forEach((collaborator_res) => {
-              Collaborator.findOne({ githubId: collaborator_res.id })
-                .then(collaborator => {
-                  if (collaborator) {
-                    collaborator.owner = job.data.login
-                    collaborator.login = collaborator_res.login
-                    collaborator.type = collaborator_res.type
-                    collaborator.avatar_url = collaborator_res.avatar_url
-                    // TODO: Update Repositories Reference Array
-                    if (!collaborator.repositories.includes(repositories[i].id)) {
-                      collaborator.repositories.push(repositories[i].id)
-                    }
-                    return collaborator.save()
-                  } else {
-                    let collaborator = new Collaborator({
-                      owner: job.data.login,
-                      githubId: collaborator_res.id,
-                      login: collaborator_res.login,
-                      type: collaborator_res.type,
-                      avatar_url: collaborator_res.avatar_url,
-                    })
-                    collaborator.repositories.push(repositories[i].id)
-                    return collaborator.save()
-                  }
+        collaborators.forEach((collaborator_res) => {
+          Collaborator.findOne({ githubId: collaborator_res.id })
+            .then(collaborator => {
+              if (collaborator) {
+                collaborator.owner = job.data.login
+                collaborator.login = collaborator_res.login
+                collaborator.type = collaborator_res.type
+                collaborator.avatar_url = collaborator_res.avatar_url
+                // TODO: Update Repositories Reference Array
+                if (!collaborator.repositories.includes(repositories[i].id)) {
+                  collaborator.repositories.push(repositories[i].id)
+                }
+                return collaborator.save()
+              } else {
+                let collaborator = new Collaborator({
+                  owner: job.data.login,
+                  githubId: collaborator_res.id,
+                  login: collaborator_res.login,
+                  type: collaborator_res.type,
+                  avatar_url: collaborator_res.avatar_url,
                 })
-                .then(collaborator => { })
-                .catch(err => console.log(chalk.red(err)))
+                collaborator.repositories.push(repositories[i].id)
+                return collaborator.save()
+              }
             })
-          }
-          if (i === repositories.length - 1) {
-            console.log(chalk.yellow("✅  Completed Processing fetchCollaboratorsQueue, Tasks Processing Asynchronously"))
-            fetchCollaboratorDetailsQueue.add(job.data)
-            done()
-          }
-        }
-
-        if (repositories.length === 0) {
-          console.log(chalk.yellow("✅  Completed Processing fetchCollaboratorsQueue, No Repositories"))
-          fetchCollaboratorDetailsQueue.add(job.data)
-          done()
-        }
-      } catch (err) {
-        console.log(chalk.red(err))
-        done(err)
+            .then(collaborator => { })
+            .catch(err => console.log(chalk.red(err)))
+        })
+      }
+      if (i === repositories.length - 1) {
+        console.log(chalk.yellow("✅  Completed Processing fetchCollaboratorsQueue, Tasks Processing Asynchronously"))
+        fetchCollaboratorDetailsQueue.add(job.data)
+        done()
       }
     }
-  })
+
+    if (repositories.length === 0) {
+      console.log(chalk.yellow("✅  Completed Processing fetchCollaboratorsQueue, No Repositories"))
+      fetchCollaboratorDetailsQueue.add(job.data)
+      done()
+    }
+  } catch (err) {
+    console.log(chalk.red(err))
+    done(err)
+  }
 })
 
 fetchRepositoriesQueue.process((job, done) => {
@@ -248,10 +243,10 @@ if (require.main === module) {
           } else {
             users.forEach(user => {
               fetchRepositoriesQueue.add({ login: user.login, token: user.token }, {
-                repeat: {
-                  every: 3600000,   // Repeat task every hour
-                  limit: 100
-                },
+                // repeat: {
+                //   every: 3600000,   // Repeat task every hour
+                //   limit: 100
+                // },
                 // repeat: { cron: '15 3 * * *' }  // Repeat once every day at 3:15
               })
             })
