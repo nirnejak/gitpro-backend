@@ -13,7 +13,7 @@ async function getActivity(params) {
     if (!activity) {
       activity = Activity({ owner, author, repository, after, before })
     }
-    
+
     await executeSystemCommand(`mkdir -p temp/${activity._id} && cd temp/${activity._id} && git clone ${cloneUrl} .`)
     // const getCommitsSha = `cd temp/${activity._id} && git log --all --no-merges --author=${author} --after=${after} --before=${before} --pretty=format:"%H"`
     const getCommitsSha = `cd temp/${activity._id} && git log --all --no-merges --author=nirnejak --after=${after} --before=${before} --pretty="oneline"`
@@ -30,10 +30,12 @@ async function getActivity(params) {
 
       let commitDiffsPromiseArray = []
       commits.forEach(commit => {
-        commitDiffsPromiseArray.push(executeSystemCommand(`cd temp/${activity._id} && git show ${commit.hash}`))
+        if (commit.hash.length)
+          commitDiffsPromiseArray.push(executeSystemCommand(`cd temp/${activity._id} && git show ${commit.hash}`))
       })
       const commitDiffs = await Promise.all(commitDiffsPromiseArray)
       for (let i = 0; i < commits.length; i++) commits[i].diff = commitDiffs[i]
+      commits = commits.filter(commit => commit.hash.length)
 
       activity.contributions = commits
       activity.save()
