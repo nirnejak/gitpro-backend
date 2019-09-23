@@ -4,90 +4,53 @@ const Activity = require('../models/activity')
 
 const executeSystemCommand = require('./exec')
 
-function getActivity(params) {
+async function getActivity(params) {
   const { owner, author, repository, after, before, token } = params
+  const cloneUrl = `https://${owner}:${token}@github.com/${owner}/${repository}.git`
 
-  const url = `https://${owner}:${token}@github.com/${owner}/${repository}.git`
+  try {
+    let activity = await Activity.findOne({ owner, author, repository, after, before })
+    if (!activity) {
+      activity = Activity({ owner, author, repository, after, before })
+    }
+    
+    await executeSystemCommand(`mkdir -p temp/${activity._id} && cd temp/${activity._id} && git clone ${cloneUrl} .`)
+    // const getCommitsSha = `cd temp/${activity._id} && git log --all --no-merges --author=${author} --after=${after} --before=${before} --pretty=format:"%H"`
+    const getCommitsSha = `cd temp/${activity._id} && git log --all --no-merges --author=nirnejak --after=${after} --before=${before} --pretty="oneline"`
 
-  return Activity.findOne({ owner, author, repository, after, before })
-    .then(async (activity) => {
-      if (activity) {
-        await executeSystemCommand(`mkdir -p temp/${activity._id} && cd temp/${activity._id} && git clone ${url} .`)
+    let commits = await executeSystemCommand(getCommitsSha)
+    if (commits) {
+      commits = commits.split('\n')
+      commits = commits.map(commit => {
+        commit = commit.split(" ")
+        let hash = commit.shift()
+        let commitMessage = commit.join(" ")
+        return { hash, commitMessage }
+      })
 
-        // const getCommitsSha = `cd temp/${activity._id} && git log --all --no-merges --author=${author} --after=${after} --before=${before} --pretty=format:"%H"`
-        const getCommitsSha = `cd temp/${activity._id} && git log --all --no-merges --author=nirnejak --after=${after} --before=${before} --pretty="oneline"`
+      let commitDiffsPromiseArray = []
+      commits.forEach(commit => {
+        commitDiffsPromiseArray.push(executeSystemCommand(`cd temp/${activity._id} && git show ${commit.hash}`))
+      })
+      const commitDiffs = await Promise.all(commitDiffsPromiseArray)
+      for (let i = 0; i < commits.length; i++) commits[i].diff = commitDiffs[i]
 
-        let commits = await executeSystemCommand(getCommitsSha)
+      activity.contributions = commits
+      activity.save()
+        .then(activity => executeSystemCommand(`cd temp/ && rm -rf ${activity._id}/`))
+        .then(res => console.log("Activity Stored and Repository Deleted"))
+        .catch(err => console.log(chalk.red(err)))
 
-        if (commits) {
-          commits = commits.split('\n')
-          commits = commits.map(commit => {
-            commit = commit.split(" ")
-            let hash = commit.shift()
-            let commitMessage = commit.join(" ")
-            return { hash, commitMessage }
-          })
-
-          let commitDiffsPromiseArray = []
-          commits.forEach(commit => {
-            commitDiffsPromiseArray.push(executeSystemCommand(`cd temp/${activity._id} && git show ${commit.hash}`))
-          })
-          const commitDiffs = await Promise.all(commitDiffsPromiseArray)
-          for (let i = 0; i < commits.length; i++) commits[i].diff = commitDiffs[i]
-
-          activity.contributions = commits
-          activity.save()
-            .then(activity => executeSystemCommand(`cd temp/ && rm -rf ${activity._id}/`))
-            .then(res => console.log("Activity Stored and Repository Deleted"))
-            .catch(err => console.log(chalk.red(err)))
-          return Promise.resolve({ ...params, contributions: commits })
-        } else {
-          // No commits by the user on selected day on this repository
-          const res = await executeSystemCommand(`cd temp/ && rm -rf ${activity._id}/`)
-          return { ...params, contributions: [] }
-        }
-      } else {
-        activity = Activity({ owner, author, repository, after, before })
-        await executeSystemCommand(`mkdir -p temp/${activity._id} && cd temp/${activity._id} && git clone ${url} .`)
-
-        // const getCommitsSha = `cd temp/${activity._id} && git log --all --no-merges --author=nirnejak --after=${after} --before=${before} --pretty=format:"%H"`
-        const getCommitsSha = `cd temp/${activity._id} && git log --all --no-merges --author=nirnejak --after=${after} --before=${before} --pretty="oneline"`
-
-        let commits = await executeSystemCommand(getCommitsSha)
-
-        if (commits) {
-          commits = commits.split('\n')
-          commits = commits.map(commit => {
-            commit = commit.split(" ")
-            let hash = commit.shift()
-            let commitMessage = commit.join(" ")
-            return { hash, commitMessage }
-          })
-          
-          let commitDiffsPromiseArray = []
-          commits.forEach(commit => {
-            commitDiffsPromiseArray.push(executeSystemCommand(`cd temp/${activity._id} && git show ${commit.hash}`))
-          })
-          const commitDiffs = await Promise.all(commitDiffsPromiseArray)
-          for (let i = 0; i < commits.length; i++) commits[i].diff = commitDiffs[i]
-
-          activity.contributions = commits
-          activity.save()
-            .then(activity => executeSystemCommand(`cd temp/ && rm -rf ${activity._id}/`))
-            .then(res => console.log("Activity Stored and Repository Deleted"))
-            .catch(err => console.log(chalk.red(err)))
-          return Promise.resolve({ ...params, contributions: commits })
-        } else {
-          // No commits by the user on selected day on this repository
-          const res = await executeSystemCommand(`cd temp/ && rm -rf ${activity._id}/`)
-          return { ...params, contributions: [] }
-        }
-      }
-    })
-    .catch(error => {
-      console.log(chalk.red(error))
-      return Promise.reject(error)
-    })
+      return Promise.resolve({ ...params, contributions: commits })
+    } else {
+      // No commits by the user on selected day on this repository
+      const res = await executeSystemCommand(`cd temp/ && rm -rf ${activity._id}/`)
+      return { ...params, contributions: [] }
+    }
+  } catch (error) {
+    console.log(chalk.red(error))
+    return Promise.reject(error)
+  }
 }
 
 if (require.main === module) {
