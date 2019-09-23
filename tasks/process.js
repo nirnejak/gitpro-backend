@@ -247,7 +247,13 @@ if (require.main === module) {
             }
           } else {
             users.forEach(user => {
-              fetchRepositoriesQueue.add({ login: user.login, token: user.token })
+              fetchRepositoriesQueue.add({ login: user.login, token: user.token }, {
+                repeat: {
+                  every: 3600000,   // Repeat task every hour
+                  limit: 100
+                },
+                // repeat: { cron: '15 3 * * *' }  // Repeat once every day at 3:15
+              })
             })
           }
         }
