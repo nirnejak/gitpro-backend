@@ -27,11 +27,12 @@ function getActivity(params) {
             let commitMessage = commit.join(" ")
             return { hash, commitMessage }
           })
-          let diffsPromiseArray = []
+
+          let commitDiffsPromiseArray = []
           commits.forEach(commit => {
-            diffsPromiseArray.push(executeSystemCommand(`cd temp/${activity._id} && git show ${commit.hash}`))
+            commitDiffsPromiseArray.push(executeSystemCommand(`cd temp/${activity._id} && git show ${commit.hash}`))
           })
-          const commitDiffs = await Promise.all(diffsPromiseArray)
+          const commitDiffs = await Promise.all(commitDiffsPromiseArray)
           for (let i = 0; i < commits.length; i++) commits[i].diff = commitDiffs[i]
 
           activity.contributions = commits
@@ -56,11 +57,18 @@ function getActivity(params) {
 
         if (commits) {
           commits = commits.split('\n')
-          let diffsPromiseArray = []
-          commits.forEach(commit => {
-            diffsPromiseArray.push(executeSystemCommand(`cd temp/${activity._id} && git show ${commit.hash}`))
+          commits = commits.map(commit => {
+            commit = commit.split(" ")
+            let hash = commit.shift()
+            let commitMessage = commit.join(" ")
+            return { hash, commitMessage }
           })
-          const commitDiffs = await Promise.all(diffsPromiseArray)
+          
+          let commitDiffsPromiseArray = []
+          commits.forEach(commit => {
+            commitDiffsPromiseArray.push(executeSystemCommand(`cd temp/${activity._id} && git show ${commit.hash}`))
+          })
+          const commitDiffs = await Promise.all(commitDiffsPromiseArray)
           for (let i = 0; i < commits.length; i++) commits[i].diff = commitDiffs[i]
 
           activity.contributions = commits
