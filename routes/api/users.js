@@ -30,6 +30,7 @@ router.get('/:login', isAuthenticated, (req, res) => {
               Repository.find({ owner: req.params.login })
                 .then(repositories => {
                   data["total_repositories"] = repositories.length
+                  data["favourite_repositories"] = repositories.filter(repo => repo.isFavourite)
                   data = { ...data, ...user._doc }
                   res.json(data)
                 })
