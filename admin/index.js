@@ -18,7 +18,6 @@ const adminBro = new AdminBro({
           token: { isVisible: { list: false, filter: false, show: true, edit: false } },
           avatar_url: { isVisible: { list: false, filter: false, show: true, edit: false } },
           githubId: { isVisible: { list: false, filter: false, show: true, edit: false } },
-          meta: { isVisible: { list: false, filter: false, show: true, edit: false } },
         }
       }
     },
@@ -27,6 +26,8 @@ const adminBro = new AdminBro({
       options: {
         properties: {
           node_id: { isVisible: { list: false, filter: false, show: true, edit: false } },
+          description: { isVisible: { list: false, filter: false, show: true, edit: false } },
+          githubId: { isVisible: { list: false, filter: false, show: true, edit: false } },
         }
       }
     },
@@ -42,14 +43,14 @@ const adminBro = new AdminBro({
     {
       resource: Activity,
       options: {
-        properties: {
-          diffs: { isVisible: { list: false, filter: false, show: true, edit: false } },
-        }
+        properties: {}
       }
     }
   ],
   branding: {
-    companyName: 'GitSupreme'
+    companyName: 'GitSupreme',
+    softwareBrothers: false,
+    // logo: "LOGO_URL"
   },
   rootPath: '/admin'
 })
