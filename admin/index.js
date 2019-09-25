@@ -50,7 +50,7 @@ const adminBro = new AdminBro({
   branding: {
     companyName: 'GitSupreme',
     softwareBrothers: false,
-    // logo: "LOGO_URL"
+    logo: 'https://www.inkoop.io/images/Inkoop_logo.jpeg'
   },
   rootPath: '/admin'
 })
