@@ -26,8 +26,9 @@ router.get('/', isAuthenticated, (req, res) => {
 
 router.get('/:author', isAuthenticated, (req, res) => {
   const options = {
-    owner: req.user.login,
+    user: req.user.login,
     author: req.params.author,
+    owner: req.query.owner,
     repository: req.query.repository,
     after: req.query.after,
     before: req.query.before

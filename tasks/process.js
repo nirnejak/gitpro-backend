@@ -112,10 +112,11 @@ fetchCollaboratorDetailsQueue.process(async (job, done) => {
 fetchCollaboratorsQueue.process(async (job, done) => {
   console.log(chalk.yellow("🏃‍  Started Processing fetchCollaboratorsQueue"))
   try {
-    let repositories = await Repository.find({ owner: job.data.login })
+    let repositories = await Repository.find({ user: job.data.login })
     const headers = { Authorization: `Bearer ${job.data.token}` }
     for (let i = 0; i < repositories.length; i++) {
-      let res = await axios.get(`https://api.github.com/repos/${job.data.login}/${repositories[i].name}/collaborators`, { headers })
+      // let res = await axios.get(`https://api.github.com/repos/${job.data.login}/${repositories[i].name}/collaborators`, { headers })
+      let res = await axios.get(`https://api.github.com/repos/${repositories[i].owner}/${repositories[i].name}/collaborators`, { headers })
       if (res.data.length > 1) {
         // Removing Current user from the list of Collaborators for the Repo
         let collaborators = res.data.filter(collaborator => collaborator.login !== job.data.login)
@@ -175,16 +176,18 @@ fetchRepositoriesQueue.process((job, done) => {
   axios.get("https://api.github.com/user/repos?per_page=100", { headers })
     .then(res => {
       // Filtering User's repositories only, omitting repositories shared with him/her
-      let repositories = res.data.filter(repo => repo.owner.login === job.data.login)
+      // let repositories = res.data.filter(repo => repo.owner.login === job.data.login)
+      let repositories = res.data
       repositories = repositories.map(repo => {
-        const { id, node_id, name, private, description, language } = repo;
-        return { githubId: id, node_id, name, private, description, language }
+        const { id, node_id, name, private, description, language, owner } = repo;
+        return { githubId: id, node_id, name, private, description, language, owner }
       })
       repositories.forEach((repo, index) => {
         Repository.findOne({ githubId: repo.githubId })
           .then(repository => {
             if (repository) {
-              repository.owner = job.data.login
+              repository.user = job.data.login
+              repository.owner = repo.owner.login
               repository.node_id = repo.node_id
               repository.name = repo.name
               repository.private = repo.private
@@ -192,7 +195,7 @@ fetchRepositoriesQueue.process((job, done) => {
               repository.language = repo.language
               return repository.save()
             } else {
-              let repository = new Repository({ ...repo, owner: job.data.login })
+              let repository = new Repository({ ...repo, user: job.data.login })
               return repository.save()
             }
           })

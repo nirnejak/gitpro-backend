@@ -5,8 +5,8 @@ const Activity = require('../models/activity')
 const executeSystemCommand = require('./exec')
 
 async function getActivity(params) {
-  const { owner, author, repository, after, before, token } = params
-  const cloneUrl = `https://${owner}:${token}@github.com/${owner}/${repository}.git`
+  const { user, owner, author, repository, after, before, token } = params
+  const cloneUrl = `https://${user}:${token}@github.com/${owner}/${repository}.git`
 
   try {
     let activity = await Activity.findOne({ owner, author, repository, after, before })
@@ -16,7 +16,7 @@ async function getActivity(params) {
 
     await executeSystemCommand(`mkdir -p temp/${activity._id} && cd temp/${activity._id} && git clone ${cloneUrl} .`)
     // const getCommitsSha = `cd temp/${activity._id} && git log --all --no-merges --author=${author} --after=${after} --before=${before} --pretty=format:"%H |%m| %B |%m| %ad"`
-    const getCommitsSha = `cd temp/${activity._id} && git log --all --no-merges --author=nirnejak --after=${after} --before=${before} --pretty="oneline"`
+    const getCommitsSha = `cd temp/${activity._id} && git log --all --no-merges --author=${author} --after=${after} --before=${before} --pretty="oneline"`
 
     let commits = await executeSystemCommand(getCommitsSha)
     if (commits) {
@@ -51,11 +51,11 @@ async function getActivity(params) {
         .then(res => console.log("Activity Stored and Repository Deleted"))
         .catch(err => console.log(chalk.red(err)))
 
-      return Promise.resolve({ ...params, contributions: commits })
+      return Promise.resolve({ owner, author, repository, after, before, contributions: commits })
     } else {
       // No commits by the user on selected day on this repository
       const res = await executeSystemCommand(`cd temp/ && rm -rf ${activity._id}/`)
-      return { ...params, contributions: [] }
+      return { owner, author, repository, after, before, contributions: [] }
     }
   } catch (error) {
     console.log(chalk.red(error))
