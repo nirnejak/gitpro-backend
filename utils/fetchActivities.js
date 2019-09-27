@@ -15,7 +15,7 @@ async function getActivity(params) {
     }
 
     await executeSystemCommand(`mkdir -p temp/${activity._id} && cd temp/${activity._id} && git clone ${cloneUrl} .`)
-    // const getCommitsSha = `cd temp/${activity._id} && git log --all --no-merges --author=${author} --after=${after} --before=${before} --pretty=format:"%H"`
+    // const getCommitsSha = `cd temp/${activity._id} && git log --all --no-merges --author=${author} --after=${after} --before=${before} --pretty=format:"%H |%m| %B |%m| %ad"`
     const getCommitsSha = `cd temp/${activity._id} && git log --all --no-merges --author=nirnejak --after=${after} --before=${before} --pretty="oneline"`
 
     let commits = await executeSystemCommand(getCommitsSha)
@@ -36,6 +36,14 @@ async function getActivity(params) {
       const commitDiffs = await Promise.all(commitDiffsPromiseArray)
       for (let i = 0; i < commits.length; i++) commits[i].diff = commitDiffs[i]
       commits = commits.filter(commit => commit.hash.length)
+
+      let commitInfoPromiseArray = []
+      commits.forEach(commit => {
+        commitInfoPromiseArray.push(executeSystemCommand(`cd temp/${activity._id} && git name-rev --name-only ${commit.hash}`))
+      })
+      let commitBranchNames = await Promise.all(commitInfoPromiseArray)
+      commitBranchNames = commitBranchNames.map(branchName => branchName.split('\n')[0])
+      for (let i = 0; i < commits.length; i++) commits[i].branch = commitBranchNames[i]
 
       activity.contributions = commits
       activity.save()

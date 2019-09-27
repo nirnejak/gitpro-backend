@@ -10,6 +10,8 @@ const activitySchema = mongoose.Schema({
   contributions: [{
     hash: { type: String },
     commitMessage: { type: String },
+    commitTime: { type: Date },
+    branch: { type: String },
     diff: { type: String }
   }],
 
