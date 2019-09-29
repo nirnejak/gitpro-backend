@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 
 
 const repositoriesSchema = mongoose.Schema({
+  user: { type: String },
   owner: { type: String },
   githubId: { type: Number },
   node_id: { type: String },

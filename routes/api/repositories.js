@@ -10,7 +10,7 @@ const Collaborator = require('../../models/collaborator')
 const router = express.Router();
 
 router.get('/', isAuthenticated, (req, res) => {
-  Repository.find({ owner: req.user.login })
+  Repository.find({ user: req.user.login })
     .then(repositories => res.json(repositories))
     .catch(err => {
       console.log(chalk.red(err))
@@ -18,8 +18,8 @@ router.get('/', isAuthenticated, (req, res) => {
     })
 })
 
-router.get('/:name', isAuthenticated, (req, res) => {
-  Repository.findOne({ owner: req.user.login, name: req.params.name })
+router.get('/:owner/:name', isAuthenticated, (req, res) => {
+  Repository.findOne({ user: req.user.login, name: req.params.name, owner: req.params.owner })
     .then(repository => {
       if (repository) {
         Collaborator.find({ repositories: repository.id })
@@ -69,7 +69,7 @@ router.put('/:name', isAuthenticated, (req, res) => {
     })
     res.json({ message: "Sending Invitation to Collaborators" })
   } else {
-    Repository.findOne({ owner: req.user.login, name: req.params.name })
+    Repository.findOne({ user: req.user.login, owner: req.query.owner,  name: req.params.name })
       .then(repository => {
         if (repository) {
           repository.isFavourite = req.body.isFavourite

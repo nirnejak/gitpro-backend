@@ -26,14 +26,14 @@ router.get('/', isAuthenticated, (req, res) => {
 
 router.get('/:author', isAuthenticated, (req, res) => {
   const options = {
-    owner: req.user.login,
     author: req.params.author,
+    owner: req.query.owner,
     repository: req.query.repository,
     after: req.query.after,
     before: req.query.before
   }
   if (req.query.force === 'true') {
-    getActivity({ ...options, token: req.user.token, })
+    getActivity({ ...options, user: req.user.login, token: req.user.token, })
       .then(activity => res.json(activity))
       .catch(err => {
         console.log(chalk.red(err))
