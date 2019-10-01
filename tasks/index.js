@@ -2,7 +2,7 @@ const Queue = require('bull')
 
 const config = require('../config')
 
-const queueConfig = config.REDIS_URL ? config.REDIS_URL : {
+const queueConfig = {
   redis: {
     host: config.REDIS_HOST,
     port: config.REDIS_PORT,

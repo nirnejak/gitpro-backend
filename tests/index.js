@@ -13,7 +13,7 @@ describe('Connection', () => {
 
   // TEST: Redis Connection
   it('it should connect to Redis Server', (done) => {
-    const redis = new Redis(config.REDIS_URL ? config.REDIS_URL : {
+    const redis = new Redis({
       host: config.REDIS_HOST,
       port: config.REDIS_PORT,
       user: config.REDIS_USER,
