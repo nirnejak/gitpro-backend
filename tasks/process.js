@@ -195,7 +195,16 @@ fetchRepositoriesQueue.process((job, done) => {
               repository.language = repo.language
               return repository.save()
             } else {
-              let repository = new Repository({ ...repo, user: job.data.login })
+              let repository = new Repository({
+                ...repo,
+                user: job.data.login,
+                owner: repo.owner.login,
+                node_id = repo.node_id,
+                name = repo.name,
+                private = repo.private,
+                description = repo.description,
+                language = repo.language
+              })
               return repository.save()
             }
           })
