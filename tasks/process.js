@@ -44,7 +44,10 @@ sendInvitationToCollaborateQueue.process((job, done) => {
       console.log(chalk.yellow("✅  Completed Processing sendInvitationToCollaborateQueue"))
       done()
     })
-    .catch(err => console.log(chalk.red(err)))
+    .catch(err => {
+      console.log(chalk.red(err))
+      done(err)
+    })
 })
 
 removeCollaboratorFromRepoQueue.process((job, done) => {
@@ -73,7 +76,10 @@ removeCollaboratorFromRepoQueue.process((job, done) => {
         done()
       }
     })
-    .catch(err => console.log(chalk.red(err)))
+    .catch(err => {
+      console.log(chalk.red(err))
+      done(err)
+    })
 })
 
 fetchCollaboratorDetailsQueue.process(async (job, done) => {
@@ -106,7 +112,10 @@ fetchCollaboratorDetailsQueue.process(async (job, done) => {
       console.log(chalk.yellow("✅  Completed Processing fetchCollaboratorDetailsQueue"))
       done()
     })
-  } catch (err) { console.log(chalk.red(err)) }
+  } catch (err) { 
+    console.log(chalk.red(err))
+    done(err)
+  }
 })
 
 fetchCollaboratorsQueue.process(async (job, done) => {
@@ -147,7 +156,10 @@ fetchCollaboratorsQueue.process(async (job, done) => {
               }
             })
             .then(collaborator => { })
-            .catch(err => console.log(chalk.red(err)))
+            .catch(err => {
+              console.log(chalk.red(err))
+              done(err)
+            })
         })
       }
       if (i === repositories.length - 1) {
@@ -206,7 +218,10 @@ fetchRepositoriesQueue.process((job, done) => {
               done()
             }
           })
-          .catch(err => console.log(chalk.red(err)))
+          .catch(err => {
+            console.log(chalk.red(err))
+            done(err)
+          })
       })
 
       if (repositories.length === 0) {
@@ -215,7 +230,10 @@ fetchRepositoriesQueue.process((job, done) => {
         done()
       }
     })
-    .catch(err => console.log(chalk.red.inverse(err)))
+    .catch(err => {
+      console.log(chalk.red.inverse(err))
+      done(err)
+    })
 })
 
 // Call the Worker if file is executed directly
@@ -257,5 +275,8 @@ if (require.main === module) {
         }
       })
     })
-    .catch(err => console.log(chalk.red(err)))
+    .catch(err => {
+      console.log(chalk.red(err))
+      done(err)
+    })
 }
