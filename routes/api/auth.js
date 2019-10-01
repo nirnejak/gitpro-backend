@@ -59,11 +59,7 @@ router.get('/github/callback', passport.authenticate('github', { failureRedirect
   let user = req.user;
   jwt.sign({ user }, config.JWT_TOKEN_SECRET, { expiresIn: '2 days' }, (err, token) => {
     user["jwtToken"] = token
-    if (config.NODE_ENV === 'production') {
-      res.redirect(`https://github-supreme.netlify.com/dashboard?token=${token}&login=${user.login}`)
-    } else {
-      res.redirect(`http://localhost:8080/dashboard?token=${token}&login=${user.login}`)
-    }
+    res.redirect(`${config.LOGIN_REDIRECT_URL}?token=${token}&login=${user.login}`)
   })
 });
 

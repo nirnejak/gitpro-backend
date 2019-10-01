@@ -10,6 +10,8 @@ module.exports = {
   GITHUB_CLIENT_SECRET: process.env.GITHUB_CLIENT_SECRET || 'ca52a60c219893f9f7500641549951812fc97bf8',
   GITHUB_CALLBACK_URL: process.env.GITHUB_CALLBACK_URL || 'http://127.0.0.1:5000/auth/github/callback',
 
+  LOGIN_REDIRECT_URL: process.env.LOGIN_REDIRECT_URL || 'http://localhost:8080/dashboard',
+
   REDIS_HOST: process.env.REDIS_HOST || '127.0.0.1',
   REDIS_PORT: process.env.REDIS_PORT || 6379,
   REDIS_USER: process.env.REDIS_USER || 6379,
