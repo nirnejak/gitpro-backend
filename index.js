@@ -33,6 +33,10 @@ app.get('/', (req, res) => {
   res.send("Welcome to GitSupreme API")
 })
 
+app.get('/debug-sentry', function mainHandler(req, res) {
+  throw new Error('My first Sentry error!');
+});
+
 // Using Routes for API
 app.use('/api/users', require('./routes/api/users'))
 app.use('/api/collaborators', require('./routes/api/collaborators'))
