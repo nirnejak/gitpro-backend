@@ -6,7 +6,7 @@ const config = require('../config')
 describe('Connection', () => {
   // TEST: MongoDB Connection
   it('it should connect to mongoDB Server', (done) => {
-    mongoose.connect(config.MONGO_URI, { useNewUrlParser: true })
+    mongoose.connect(config.MONGODB_URI, { useNewUrlParser: true })
       .then(() => done())
       .catch(err => done(err))
   })

@@ -44,7 +44,7 @@ app.get('*', function (req, res) {
   res.status(404).json({ error: true, message: 'Not Found' });
 });
 
-mongoose.connect(config.MONGO_URI, { useNewUrlParser: true })
+mongoose.connect(config.MONGODB_URI, { useNewUrlParser: true })
   .then(() => console.log(chalk.green('🔥  MongoDB Connected...')))
   .catch(err => console.log(chalk.red(err)))
 
