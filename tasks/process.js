@@ -250,7 +250,7 @@ if (require.main === module) {
                 //   every: 3600000,   // Repeat task every hour
                 //   limit: 100
                 // },
-                // repeat: { cron: '15 3 * * *' }  // Repeat once every day at 3:15
+                repeat: { cron: '00 1 * * *' }  // Repeat once every day at 1:00
               })
             })
           }
