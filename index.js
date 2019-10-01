@@ -5,14 +5,17 @@ const cookieParser = require('cookie-parser')
 const cors = require('cors')
 const mongoose = require('mongoose')
 const passport = require('passport')
+const Sentry = require('@sentry/node')
 
 const config = require('./config')
 
 const { logger } = require('./middlewares/logger')
 
 app = express()
+Sentry.init({ dsn: 'https://6b54e15a63de435681f11ef35cf13b10@sentry.io/1766629' });
 
 // Middlewares
+if (config.NODE_ENV === 'production') app.use(Sentry.Handlers.requestHandler())
 app.use(cors())
 app.use(logger)
 app.use(express.json())
@@ -43,6 +46,8 @@ app.use('/arena', require('./tasks/arenaAdminPanel'))
 app.get('*', function (req, res) {
   res.status(404).json({ error: true, message: 'Not Found' });
 });
+
+app.use(Sentry.Handlers.errorHandler());
 
 mongoose.connect(config.MONGODB_URI, { useNewUrlParser: true })
   .then(() => console.log(chalk.green('🔥  MongoDB Connected...')))
