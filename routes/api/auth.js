@@ -59,7 +59,7 @@ router.get('/github/callback', passport.authenticate('github', { failureRedirect
   let user = req.user;
   jwt.sign({ user }, config.JWT_TOKEN_SECRET, { expiresIn: '2 days' }, (err, token) => {
     user["jwtToken"] = token
-    res.redirect(`${config.LOGIN_REDIRECT_URL}?token=${token}&login=${user.login}`)
+    res.redirect(`${config.CLIENT_URL}dashboard?token=${token}&login=${user.login}`)
   })
 });
 

@@ -15,7 +15,10 @@ app = express()
 Sentry.init({ dsn: config.SENTRY_DSN })
 
 // Middlewares
-if (config.NODE_ENV === 'production') app.use(Sentry.Handlers.requestHandler())
+if (config.NODE_ENV === 'production') {
+  app.use(Sentry.Handlers.requestHandler())
+  app.use(cors({ origin: config.CLIENT_URL }))
+}
 app.use(cors())
 app.use(logger)
 app.use(express.json())

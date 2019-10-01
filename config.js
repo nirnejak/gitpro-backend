@@ -10,7 +10,7 @@ module.exports = {
   GITHUB_CLIENT_SECRET: process.env.GITHUB_CLIENT_SECRET || 'ca52a60c219893f9f7500641549951812fc97bf8',
   GITHUB_CALLBACK_URL: process.env.GITHUB_CALLBACK_URL || 'http://127.0.0.1:5000/auth/github/callback',
 
-  LOGIN_REDIRECT_URL: process.env.LOGIN_REDIRECT_URL || 'http://localhost:8080/dashboard',
+  CLIENT_URL: process.env.CLIENT_URL || 'http://localhost:8080/',
 
   SENTRY_DSN: process.env.SENTRY_DSN || '',
 
