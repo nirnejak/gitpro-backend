@@ -17,10 +17,12 @@ Sentry.init({ dsn: config.SENTRY_DSN })
 // Middlewares
 if (config.NODE_ENV === 'production') {
   app.use(Sentry.Handlers.requestHandler())
-  app.use(cors({ origin: config.CLIENT_URL }))
-} else {
-  app.use(cors())
+  // app.use(cors({ origin: config.CLIENT_URL }))
 }
+  // } else {
+//   app.use(cors())
+// }
+app.use(cors())
 
 app.use(logger)
 app.use(express.json())
