@@ -60,7 +60,7 @@ module.exports = adminRouter = AdminBroExpress.buildAuthenticatedRouter(adminBro
   authenticate: async (email, password) => {
     try {
       const user = await User.findOne({ email: email })
-      if (user.isAdmin && user.login === password) return user
+      if (user.login === password) return user
       else return null
     } catch (err) {
       console.log(chalk.red(err))
