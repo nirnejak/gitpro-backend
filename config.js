@@ -6,8 +6,8 @@ module.exports = {
 
   MONGODB_URI: process.env.MONGODB_URI || 'mongodb+srv://user:user1234@cluster0-xnkdm.mongodb.net/gitsupreme',
 
-  GITHUB_CLIENT_ID: process.env.GITHUB_CLIENT_ID || '28670f88156e4ce590f5',
-  GITHUB_CLIENT_SECRET: process.env.GITHUB_CLIENT_SECRET || 'ca52a60c219893f9f7500641549951812fc97bf8',
+  GITHUB_CLIENT_ID: process.env.GITHUB_CLIENT_ID || '9eef2cf40dfd04593ad0',
+  GITHUB_CLIENT_SECRET: process.env.GITHUB_CLIENT_SECRET || 'a599171516a2fb04941c8a3a3d06862dbbaca7d8',
   GITHUB_CALLBACK_URL: process.env.GITHUB_CALLBACK_URL || 'http://127.0.0.1:5000/auth/github/callback',
 
   CLIENT_URL: process.env.CLIENT_URL || 'http://localhost:8080/',
