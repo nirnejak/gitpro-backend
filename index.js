@@ -33,7 +33,7 @@ app.get('/', (req, res) => {
   res.send("Welcome to GitSupreme API")
 })
 
-app.get('/debug-sentry', function mainHandler(req, res) {
+app.get('/debug-sentry', (req, res) => {
   throw new Error('My first Sentry error!');
 });
 
