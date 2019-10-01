@@ -5,7 +5,7 @@ const router = express.Router()
 
 const config = require('../config')
 
-const redisConfig = {
+const redisConfig = config.REDIS_URL ? config.REDIS_URL : {
   redis: {
     host: config.REDIS_HOST,
     port: config.REDIS_PORT,
