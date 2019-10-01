@@ -44,10 +44,7 @@ sendInvitationToCollaborateQueue.process((job, done) => {
       console.log(chalk.yellow("✅  Completed Processing sendInvitationToCollaborateQueue"))
       done()
     })
-    .catch(err => {
-      console.log(chalk.red(err))
-      done(err)
-    })
+    .catch(err => console.log(chalk.red(err)))
 })
 
 removeCollaboratorFromRepoQueue.process((job, done) => {
@@ -76,10 +73,7 @@ removeCollaboratorFromRepoQueue.process((job, done) => {
         done()
       }
     })
-    .catch(err => {
-      console.log(chalk.red(err))
-      done(err)
-    })
+    .catch(err => console.log(chalk.red(err)))
 })
 
 fetchCollaboratorDetailsQueue.process(async (job, done) => {
@@ -112,10 +106,7 @@ fetchCollaboratorDetailsQueue.process(async (job, done) => {
       console.log(chalk.yellow("✅  Completed Processing fetchCollaboratorDetailsQueue"))
       done()
     })
-  } catch (err) { 
-    console.log(chalk.red(err))
-    done(err)
-  }
+  } catch (err) { console.log(chalk.red(err)) }
 })
 
 fetchCollaboratorsQueue.process(async (job, done) => {
@@ -156,10 +147,7 @@ fetchCollaboratorsQueue.process(async (job, done) => {
               }
             })
             .then(collaborator => { })
-            .catch(err => {
-              console.log(chalk.red(err))
-              done(err)
-            })
+            .catch(err => console.log(chalk.red(err)))
         })
       }
       if (i === repositories.length - 1) {
@@ -218,10 +206,7 @@ fetchRepositoriesQueue.process((job, done) => {
               done()
             }
           })
-          .catch(err => {
-            console.log(chalk.red(err))
-            done(err)
-          })
+          .catch(err => console.log(chalk.red(err)))
       })
 
       if (repositories.length === 0) {
@@ -230,10 +215,7 @@ fetchRepositoriesQueue.process((job, done) => {
         done()
       }
     })
-    .catch(err => {
-      console.log(chalk.red.inverse(err))
-      done(err)
-    })
+    .catch(err => console.log(chalk.red.inverse(err)))
 })
 
 // Call the Worker if file is executed directly
@@ -268,15 +250,12 @@ if (require.main === module) {
                 //   every: 3600000,   // Repeat task every hour
                 //   limit: 100
                 // },
-                repeat: { cron: '00 1 * * *' }  // Repeat once every day at 1:00
+                // repeat: { cron: '00 1 * * *' }  // Repeat once every day at 1:00
               })
             })
           }
         }
       })
     })
-    .catch(err => {
-      console.log(chalk.red(err))
-      done(err)
-    })
+    .catch(err => console.log(chalk.red(err)))
 }
