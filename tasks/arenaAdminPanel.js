@@ -9,6 +9,8 @@ const redisConfig = config.REDIS_URL ? config.REDIS_URL : {
   redis: {
     host: config.REDIS_HOST,
     port: config.REDIS_PORT,
+    user: config.REDIS_USER,
+    password: config.REDIS_PASSWORD,
     database: 0
   }
 }

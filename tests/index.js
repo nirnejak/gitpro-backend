@@ -16,6 +16,8 @@ describe('Connection', () => {
     const redis = new Redis(config.REDIS_URL ? config.REDIS_URL : {
       host: config.REDIS_HOST,
       port: config.REDIS_PORT,
+      user: config.REDIS_USER,
+      password: config.REDIS_PASSWORD,
       db: 0
     })
     done()
