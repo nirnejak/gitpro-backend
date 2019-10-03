@@ -199,11 +199,11 @@ fetchRepositoriesQueue.process((job, done) => {
                 ...repo,
                 user: job.data.login,
                 owner: repo.owner.login,
-                node_id = repo.node_id,
-                name = repo.name,
-                private = repo.private,
-                description = repo.description,
-                language = repo.language
+                node_id: repo.node_id,
+                name: repo.name,
+                private: repo.private,
+                description: repo.description,
+                language: repo.language
               })
               return repository.save()
             }
