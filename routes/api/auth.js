@@ -35,11 +35,11 @@ passport.use(new GitHubStrategy(githubConfig, (accessToken, refreshToken, profil
           .catch(err => console.log(chalk.red(err)))
       } else {
         let user = new User({
-          name: profile.displayName,
+          name: profile.displayName ? profile.displayName : '',
           login: profile.username,
           token: accessToken,
           githubId: profile.id,
-          avatar_url: profile._json.avatar_url,
+          avatar_url: profile._json.avatar_url ? profile._json.avatar_url : '',
           email: profile.emails ? profile.emails[0].value : ''
         })
         user.save()
