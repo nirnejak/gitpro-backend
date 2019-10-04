@@ -55,7 +55,7 @@ passport.use(new GitHubStrategy(githubConfig, (accessToken, refreshToken, profil
 }));
 
 router.get('/github', passport.authenticate('github', { scope: ['user:email', 'repo', 'admin'] }));
-router.get('/github/callback', passport.authenticate('github', { failureRedirect: '/login' }), (req, res) => {
+router.get('/github/callback', passport.authenticate('github', { failureRedirect: '/auth/github' }), (req, res) => {
   let user = req.user;
   jwt.sign({ user }, config.JWT_TOKEN_SECRET, { expiresIn: '2 days' }, (err, token) => {
     user["jwtToken"] = token
