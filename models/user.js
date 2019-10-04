@@ -11,6 +11,7 @@ const userSchema = mongoose.Schema({
   includePublic: { type: Boolean, default: true },
   status: { type: String, default: 'active' },
   isAdmin: { type: Boolean, default: false },
+  isFetchingData: { type: Boolean, default: false },
 
   created_at: { type: Date, default: Date.now() },
   updated_at: { type: Date, default: Date.now() },
