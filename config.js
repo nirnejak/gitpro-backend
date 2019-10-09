@@ -13,10 +13,6 @@ module.exports = {
   CLIENT_URL: process.env.CLIENT_URL || 'http://localhost:8080/',
 
   SENTRY_DSN: process.env.SENTRY_DSN || '',
-
-  REDIS_HOST: process.env.REDIS_HOST || '127.0.0.1',
-  REDIS_PORT: process.env.REDIS_PORT || 6379,
-  REDIS_USER: process.env.REDIS_USER || null,
-  REDIS_PASSWORD: process.env.REDIS_PASSWORD || null,
+  
   REDIS_URL: process.env.REDIS_URL || 'redis://127.0.0.1:6379'
 }

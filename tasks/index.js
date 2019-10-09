@@ -3,16 +3,14 @@ const Redis = require('ioredis')
 
 const config = require('../config')
 
-const redisConfig = config.REDIS_URL
-
-const client = new Redis(redisConfig)
-const subscriber = new Redis(redisConfig)
+const client = new Redis(config.REDIS_URL)
+const subscriber = new Redis(config.REDIS_URL)
 const queueConfig = {
   createClient: (type, config) => {
     switch (type) {
       case 'client': return client
       case 'subscriber': return subscriber
-      default: return new Redis(redisConfig)
+      default: return new Redis(config.REDIS_URL)
     }
   }
 }
