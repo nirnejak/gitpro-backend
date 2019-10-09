@@ -6,13 +6,7 @@ const router = express.Router()
 const config = require('../config')
 
 const redisConfig = {
-  redis: {
-    host: config.REDIS_HOST,
-    port: config.REDIS_PORT,
-    user: config.REDIS_USER,
-    password: config.REDIS_PASSWORD,
-    database: 0
-  }
+  redis: config.REDIS_URL
 }
 
 const arena = Arena({
