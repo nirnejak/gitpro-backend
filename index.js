@@ -17,11 +17,7 @@ Sentry.init({ dsn: config.SENTRY_DSN })
 // Middlewares
 if (config.NODE_ENV === 'production') {
   app.use(Sentry.Handlers.requestHandler())
-  // app.use(cors({ origin: config.CLIENT_URL }))
 }
-  // } else {
-//   app.use(cors())
-// }
 app.use(cors())
 
 app.use(logger)
@@ -60,7 +56,7 @@ app.get('*', function (req, res) {
 
 if (config.NODE_ENV === 'production') app.use(Sentry.Handlers.errorHandler())
 
-mongoose.connect(config.MONGODB_URI, { useNewUrlParser: true })
+mongoose.connect(config.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log(chalk.green('🔥  MongoDB Connected...')))
   .catch(err => console.log(chalk.red(err)))
 
