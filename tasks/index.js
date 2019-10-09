@@ -3,13 +3,15 @@ const Redis = require('ioredis')
 
 const config = require('../config')
 
-const redisConfig = {
+let redisConfig = {
   host: config.REDIS_HOST,
   port: config.REDIS_PORT,
   user: config.REDIS_USER,
   password: config.REDIS_PASSWORD,
   database: 0
 }
+
+redisConfig = config.REDIS_URL
 
 const client = new Redis(redisConfig)
 const subscriber = new Redis(redisConfig)
