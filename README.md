@@ -15,12 +15,12 @@ npm start
 npm run dev
 ```
 
-**Start Background Process**
+**Start Worker**
 ```sh
 npm run task
 ```
 
-**Start Background Process(in Development Mode)**
+**Start Worker(in Development Mode)**
 ```sh
 npm run task-dev
 ```
