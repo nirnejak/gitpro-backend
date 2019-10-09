@@ -33,7 +33,7 @@ app.use(passport.initialize())
 app.use(passport.session())
 
 app.get('/', (req, res) => {
-  res.send("Welcome to GitSupreme API")
+  res.send("Welcome to GitPro API")
 })
 
 app.get('/debug-sentry', (req, res) => {

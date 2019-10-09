@@ -231,7 +231,7 @@ fetchRepositoriesQueue.process((job, done) => {
 if (require.main === module) {
   console.log(chalk.blue.inverse('----------- Started Processing Queue -----------'))
 
-  mongoose.connect(config.MONGODB_URI, { useNewUrlParser: true })
+  mongoose.connect(config.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => {
       console.log(chalk.green('🔥  MongoDB Connected...'))
       User.find({ status: 'active' }, (err, users) => {

@@ -5,36 +5,32 @@ const router = express.Router()
 
 const config = require('../config')
 
-const redisConfig = {
-  redis: config.REDIS_URL
-}
-
 const arena = Arena({
   queues: [
     {
       name: 'fetchRepositoriesQueue',
       hostId: 'fetchRepositoriesQueue',
-      redis: redisConfig
+      redis: config.REDIS_URL
     },
     {
       name: 'fetchCollaboratorsQueue',
       hostId: 'fetchCollaboratorsQueue',
-      redis: redisConfig
+      redis: config.REDIS_URL
     },
     {
       name: 'fetchCollaboratorDetailsQueue',
       hostId: 'fetchCollaboratorDetailsQueue',
-      redis: redisConfig
+      redis: config.REDIS_URL
     },
     {
       name: 'removeCollaboratorFromRepoQueue',
       hostId: 'removeCollaboratorFromRepoQueue',
-      redis: redisConfig
+      redis: config.REDIS_URL
     },
     {
       name: 'sendInvitationToCollaborateQueue',
       hostId: 'sendInvitationToCollaborateQueue',
-      redis: redisConfig
+      redis: config.REDIS_URL
     }
   ]
 })

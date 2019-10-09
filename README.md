@@ -1,4 +1,6 @@
-# GitHub Supreme
+# GitPro
+
+[Check it out here](https://gitpro.app)
 
 **Install Dependencies**
 ```sh

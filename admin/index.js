@@ -48,7 +48,7 @@ const adminBro = new AdminBro({
     }
   ],
   branding: {
-    companyName: 'GitSupreme',
+    companyName: 'GitPro',
     softwareBrothers: false,
     logo: 'https://www.inkoop.io/images/Inkoop_logo.jpeg'
   },
