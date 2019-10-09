@@ -27,7 +27,7 @@ router.get('/:login', isAuthenticated, (req, res) => {
           Collaborator.find({ owner: req.params.login })
             .then(collaborators => {
               data["total_collaborators"] = collaborators.length
-              Repository.find({ owner: req.params.login })
+              Repository.find({ user: req.params.login })
                 .then(repositories => {
                   data["total_repositories"] = repositories.length
                   data["favourite_repositories"] = repositories.filter(repo => repo.isFavourite)
