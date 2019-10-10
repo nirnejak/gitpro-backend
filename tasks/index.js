@@ -1,16 +1,16 @@
 const Queue = require('bull')
 const Redis = require('ioredis')
 
-const config = require('../config')
+// const config = require('../config')
 
-const client = new Redis(config.REDIS_URL)
-const subscriber = new Redis(config.REDIS_URL)
+const client = new Redis(process.env.REDIS_URL)
+const subscriber = new Redis(process.env.REDIS_URL)
 const queueConfig = {
   createClient: (type, config) => {
     switch (type) {
       case 'client': return client
       case 'subscriber': return subscriber
-      default: return new Redis(config.REDIS_URL)
+      default: return new Redis(process.env.REDIS_URL)
     }
   }
 }
