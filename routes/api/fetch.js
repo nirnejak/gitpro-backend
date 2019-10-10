@@ -41,8 +41,4 @@ router.get('/users', isAuthenticated, (req, res) => {
 
 const config = require('../../config')
 
-router.get('/info', (req, res) => {
-  res.json(config)
-})
-
 module.exports = router
