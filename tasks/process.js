@@ -44,7 +44,16 @@ sendInvitationToCollaborateQueue.process((job, done) => {
       console.log(chalk.yellow("✅  Completed Processing sendInvitationToCollaborateQueue"))
       done()
     })
-    .catch(err => console.log(chalk.red(err)))
+    .catch(err => {
+      console.log(chalk.red(err))
+      if (err.response) {
+        if (err.response.status === 403) {
+          done()
+        }
+      } else {
+        done(err)
+      }
+    })
 })
 
 removeCollaboratorFromRepoQueue.process((job, done) => {
@@ -73,7 +82,16 @@ removeCollaboratorFromRepoQueue.process((job, done) => {
         done()
       }
     })
-    .catch(err => console.log(chalk.red(err)))
+    .catch(err => {
+      console.log(chalk.red(err))
+      if (err.response) {
+        if (err.response.status === 403) {
+          done()
+        }
+      } else {
+        done(err)
+      }
+    })
 })
 
 fetchCollaboratorDetailsQueue.process(async (job, done) => {
@@ -106,7 +124,16 @@ fetchCollaboratorDetailsQueue.process(async (job, done) => {
       console.log(chalk.yellow("✅  Completed Processing fetchCollaboratorDetailsQueue"))
       done()
     })
-  } catch (err) { console.log(chalk.red(err)) }
+  } catch (err) {
+    console.log(chalk.red(err))
+    if (err.response) {
+      if (err.response.status === 403) {
+        done()
+      }
+    } else {
+      done(err)
+    }
+  }
 })
 
 fetchCollaboratorsQueue.process(async (job, done) => {
@@ -164,7 +191,13 @@ fetchCollaboratorsQueue.process(async (job, done) => {
     }
   } catch (err) {
     console.log(chalk.red(err))
-    done(err)
+    if (err.response) {
+      if (err.response.status === 403) {
+        done()
+      }
+    } else {
+      done(err)
+    }
   }
 })
 
@@ -245,6 +278,11 @@ fetchRepositoriesQueue.process(async (job, done) => {
     }
   } catch (err) {
     console.log(chalk.red.inverse(err))
+    if (err.response) {
+      if (err.response.status === 403) {
+        done()
+      }
+    }
   }
 })
 
