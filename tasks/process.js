@@ -207,6 +207,8 @@ fetchRepositoriesQueue.process(async (job, done) => {
   const headers = { Authorization: `Bearer ${job.data.token}` }
 
   try {
+    const deletedRepos = await Repository.deleteMany({ user: job.data.login })
+
     let res = await axios.get("https://api.github.com/user/repos?per_page=20&page=1", { headers })
     let linkHeader = []
     if (res.headers.link) {
@@ -236,12 +238,15 @@ fetchRepositoriesQueue.process(async (job, done) => {
       })
     })
 
-    /*
-      For Filtering User's repositories only, omitting repositories shared with him/her
-      if (job.data.userReposOnly) {
-        let repositories = res.data.filter(repo => repo.owner.login === job.data.login)
-      }
-    */
+    // For Filtering User's repositories only, omitting repositories shared with him/her
+    if (job.data.userReposOnly) {
+      repositories = res.data.filter(repo => repo.owner.login === job.data.login)
+    }
+
+    // For Filtering Private Repositories Only
+    if (!job.data.includePublic) {
+      repositories = res.data.filter(repo => repo.private)
+    }
 
     if (repositories.length === 0) {
       console.log(chalk.yellow("✅  Completed Processing fetchRepositoriesQueue, No Repositories"))
@@ -302,37 +307,43 @@ if (require.main === module) {
   mongoose.connect(config.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => {
       console.log(chalk.green('🔥  MongoDB Connected...'))
-      User.find({ status: 'active' }, (err, users) => {
-        if (err) {
-          console.log(chalk.red("❗️  Users not found!"))
-        } else {
-          if (process.argv.length > 2) {
-            if (process.argv[2] === 'repository') {
+      User.find({ status: 'active' })
+        .then(users => {
+          if (users) {
+            if (process.argv.length > 2) {
+              if (process.argv[2] === 'repository') {
+                users.forEach(user => {
+                  fetchRepositoriesQueue.add({
+                    login: user.login,
+                    token: user.token,
+                    userReposOnly: user.userReposOnly,
+                    includePublic: user.includePublic
+                  })
+                })
+              } else if (process.argv[2] === 'collaborator') {
+                users.forEach(user => {
+                  fetchCollaboratorsQueue.add({ login: user.login, token: user.token })
+                })
+              } else if (process.argv[2] === 'collaborator_details') {
+                users.forEach(user => {
+                  fetchCollaboratorDetailsQueue.add({ login: user.login, token: user.token })
+                })
+              }
+            } else {
               users.forEach(user => {
-                fetchRepositoriesQueue.add({ login: user.login, token: user.token })
-              })
-            } else if (process.argv[2] === 'collaborator') {
-              users.forEach(user => {
-                fetchCollaboratorsQueue.add({ login: user.login, token: user.token })
-              })
-            } else if (process.argv[2] === 'collaborator_details') {
-              users.forEach(user => {
-                fetchCollaboratorDetailsQueue.add({ login: user.login, token: user.token })
+                fetchRepositoriesQueue.add({ login: user.login, token: user.token }, {
+                  // repeat: {
+                  //   every: 3600000,   // Repeat task every hour
+                  //   limit: 100
+                  // },
+                  // repeat: { cron: '00 1 * * *' }  // Repeat once every day at 1:00
+                })
               })
             }
           } else {
-            users.forEach(user => {
-              fetchRepositoriesQueue.add({ login: user.login, token: user.token }, {
-                // repeat: {
-                //   every: 3600000,   // Repeat task every hour
-                //   limit: 100
-                // },
-                // repeat: { cron: '00 1 * * *' }  // Repeat once every day at 1:00
-              })
-            })
+            console.log(chalk.red("❗️ Users not Found"))
           }
-        }
-      })
+        })
     })
     .catch(err => console.log(chalk.red(err)))
 }
