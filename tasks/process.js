@@ -214,6 +214,7 @@ fetchRepositoriesQueue.process(async (job, done) => {
     } else {
       console.log(res.status)
       console.log(res.data)
+      console.log(res.headers)
       done()
     }
     let lastLink = linkHeader.filter(link => link.includes("last"))[0]
