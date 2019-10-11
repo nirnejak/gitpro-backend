@@ -238,6 +238,7 @@ fetchRepositoriesQueue.process(async (job, done) => {
       })
     })
 
+    /*
     // For Filtering User's repositories only, omitting repositories shared with him/her
     if (job.data.userReposOnly) {
       repositories = res.data.filter(repo => repo.owner.login === job.data.login)
@@ -247,6 +248,8 @@ fetchRepositoriesQueue.process(async (job, done) => {
     if (!job.data.includePublic) {
       repositories = res.data.filter(repo => repo.private)
     }
+
+    */
 
     if (repositories.length === 0) {
       console.log(chalk.yellow("✅  Completed Processing fetchRepositoriesQueue, No Repositories"))
