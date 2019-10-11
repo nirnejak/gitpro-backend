@@ -7,6 +7,7 @@ const activitySchema = mongoose.Schema({
   author: { type: String },
   after: { type: String },
   before: { type: String },
+  tz: { type: String, default: 'IST' },
   contributions: [{
     hash: { type: String },
     commitMessage: { type: String },

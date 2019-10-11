@@ -15,6 +15,7 @@ router.get('/', isAuthenticated, (req, res) => {
   if (req.query.repository) query["repository"] = req.query.repository
   if (req.query.after) query["after"] = req.query.after
   if (req.query.before) query["before"] = req.query.before
+  if (req.query.tz) query["tz"] = req.query.tz
 
   Activity.find(query)
     .then(activities => res.json(activities))
@@ -30,7 +31,8 @@ router.get('/:author', isAuthenticated, (req, res) => {
     owner: req.query.owner,
     repository: req.query.repository,
     after: req.query.after,
-    before: req.query.before
+    before: req.query.before,
+    tz: req.query.tz
   }
   if (req.query.force === 'true') {
     getActivity({ ...options, user: req.user.login, token: req.user.token, })

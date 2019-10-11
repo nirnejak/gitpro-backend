@@ -5,7 +5,7 @@ const Activity = require('../models/activity')
 const executeSystemCommand = require('./exec')
 
 async function getActivity(params) {
-  const { user, owner, author, repository, after, before, token } = params
+  const { user, owner, author, repository, after, before, token, tz } = params
   const cloneUrl = `https://${user}:${token}@github.com/${owner}/${repository}.git`
 
   try {
@@ -16,7 +16,7 @@ async function getActivity(params) {
 
     await executeSystemCommand(`mkdir -p temp/${activity._id} && cd temp/${activity._id} && git clone ${cloneUrl} .`)
     // const getCommitsSha = `cd temp/${activity._id} && git log --all --no-merges --author=${author} --after=${after} --before=${before} --pretty=format:"%H |%m| %B |%m| %ad"`
-    const getCommitsSha = `cd temp/${activity._id} && git log --all --no-merges --author=${author.toLowerCase()} --after=${after} --before=${before} --pretty="oneline"`
+    const getCommitsSha = `cd temp/${activity._id} && git log --all --no-merges --author=${author.toLowerCase()} --after=${after} --before=${before} --TZ=${tz} --pretty="oneline"`
 
     let commits = await executeSystemCommand(getCommitsSha)
     if (commits) {
