@@ -161,7 +161,7 @@ fetchCollaboratorsQueue.process(async (job, done) => {
             })
             .catch(err => {
               console.log(chalk.red(err))
-              resolve([])
+              resolve({ data: [] })
             })
         })
       )
