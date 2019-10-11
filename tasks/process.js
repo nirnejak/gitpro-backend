@@ -153,7 +153,18 @@ fetchCollaboratorsQueue.process(async (job, done) => {
 
     let fetchCollaboratorsPromise = []
     repositories.forEach(repo => {
-      fetchCollaboratorsPromise.push(axios.get(`https://api.github.com/repos/${repo.owner}/${repo.name}/collaborators`, { headers }))
+      fetchCollaboratorsPromise.push(
+        new Promise((resolve, reject) => {
+          axios.get(`https://api.github.com/repos/${repo.owner}/${repo.name}/collaborators`, { headers })
+            .then(res => {
+              resolve(res)
+            })
+            .catch(err => {
+              console.log(chalk.red(err))
+              resolve([])
+            })
+        })
+      )
     })
     let collaborators_responses = await Promise.all(fetchCollaboratorsPromise)
     collaborators_responses = collaborators_responses.map(res => res.data)
