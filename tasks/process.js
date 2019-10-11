@@ -168,63 +168,79 @@ fetchCollaboratorsQueue.process(async (job, done) => {
   }
 })
 
-fetchRepositoriesQueue.process((job, done) => {
+fetchRepositoriesQueue.process(async (job, done) => {
   console.log(chalk.yellow("🏃‍  Started Processing fetchRepositoriesQueue"))
 
   const headers = { Authorization: `Bearer ${job.data.token}` }
 
-  axios.get("https://api.github.com/user/repos?per_page=100", { headers })
-    .then(res => {
-      // Filtering User's repositories only, omitting repositories shared with him/her
-      // let repositories = res.data.filter(repo => repo.owner.login === job.data.login)
-      let repositories = res.data
-      repositories = repositories.map(repo => {
-        const { id, node_id, name, private, description, language, owner } = repo;
-        return { githubId: id, node_id, name, private, description, language, owner }
-      })
-      repositories.forEach((repo, index) => {
-        Repository.findOne({ githubId: repo.githubId })
-          .then(repository => {
-            if (repository) {
-              repository.user = job.data.login
-              repository.owner = repo.owner.login
-              repository.node_id = repo.node_id
-              repository.name = repo.name
-              repository.private = repo.private
-              repository.description = repo.description
-              repository.language = repo.language
-              return repository.save()
-            } else {
-              let repository = new Repository({
-                ...repo,
-                user: job.data.login,
-                owner: repo.owner.login,
-                node_id: repo.node_id,
-                name: repo.name,
-                private: repo.private,
-                description: repo.description,
-                language: repo.language
-              })
-              return repository.save()
-            }
-          })
-          .then(repository => {
-            if (index === repositories.length - 1) {
-              console.log(chalk.yellow("✅  Completed Processing fetchRepositoriesQueue"))
-              fetchCollaboratorsQueue.add(job.data)
-              done()
-            }
-          })
-          .catch(err => console.log(chalk.red(err)))
-      })
+  try {
+    let res = await axios.get("https://api.github.com/user/repos?per_page=20&page=1", { headers })
+    let linkHeader = res.headers.link.split(',')
+    let lastLink = linkHeader.filter(link => link.includes("last"))[0]
+    let lastPage = lastLink.replace(' <https://api.github.com/user/repos?per_page=20&page=', '').replace('>; rel="last"', '')
+    let totalPages = parseInt(lastPage)
 
-      if (repositories.length === 0) {
-        console.log(chalk.yellow("✅  Completed Processing fetchRepositoriesQueue, No Repositories"))
-        fetchCollaboratorsQueue.add(job.data)
-        done()
-      }
+    let repositoryFetchPromises = []
+    for (let i = 1; i <= totalPages; i++) {
+      repositoryFetchPromises.push(axios.get(`https://api.github.com/user/repos?per_page=20&page=${i}`, { headers }))
+    }
+
+    const responses = await Promise.all(repositoryFetchPromises)
+    let repositories = responses.map(res => res.data).flat().map(repo => {
+      const { id, node_id, name, private, description, language, owner } = repo;
+      return { githubId: id, node_id, name, private, description, language, owner }
     })
-    .catch(err => console.log(chalk.red.inverse(err)))
+
+    /*
+      For Filtering User's repositories only, omitting repositories shared with him/her
+      if (job.data.userReposOnly) {
+        let repositories = res.data.filter(repo => repo.owner.login === job.data.login)
+      }
+    */
+    repositories.forEach((repo, index) => {
+      Repository.findOne({ githubId: repo.githubId })
+        .then(repository => {
+          if (repository) {
+            repository.user = job.data.login
+            repository.owner = repo.owner.login
+            repository.node_id = repo.node_id
+            repository.name = repo.name
+            repository.private = repo.private
+            repository.description = repo.description
+            repository.language = repo.language
+            return repository.save()
+          } else {
+            let repository = new Repository({
+              ...repo,
+              user: job.data.login,
+              owner: repo.owner.login,
+              node_id: repo.node_id,
+              name: repo.name,
+              private: repo.private,
+              description: repo.description,
+              language: repo.language
+            })
+            return repository.save()
+          }
+        })
+        .then(repository => {
+          if (index === repositories.length - 1) {
+            console.log(chalk.yellow("✅  Completed Processing fetchRepositoriesQueue"))
+            fetchCollaboratorsQueue.add(job.data)
+            done()
+          }
+        })
+        .catch(err => console.log(chalk.red(err)))
+    })
+
+    if (repositories.length === 0) {
+      console.log(chalk.yellow("✅  Completed Processing fetchRepositoriesQueue, No Repositories"))
+      fetchCollaboratorsQueue.add(job.data)
+      done()
+    }
+  } catch (err) {
+    console.log(chalk.red.inverse(err))
+  }
 })
 
 // Call the Worker if file is executed directly

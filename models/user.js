@@ -9,6 +9,7 @@ const userSchema = mongoose.Schema({
   email: { type: String },
 
   includePublic: { type: Boolean, default: true },
+  userReposOnly: { type: Boolean, default: false },
   status: { type: String, default: 'active' },
   isAdmin: { type: Boolean, default: false },
   isFetchingData: { type: Boolean, default: false },
