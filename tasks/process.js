@@ -226,7 +226,7 @@ fetchRepositoriesQueue.process(async (job, done) => {
       repositoryFetchPromises.push(axios.get(`https://api.github.com/user/repos?per_page=20&page=${i}`, { headers }))
     }
 
-    const responses = await Promise.all(repositoryFetchPromises)
+    let responses = await Promise.all(repositoryFetchPromises)
     let short_responses = responses.map(res => res.data)
     let repositories = []
     short_responses.forEach(res => {
@@ -242,47 +242,49 @@ fetchRepositoriesQueue.process(async (job, done) => {
         let repositories = res.data.filter(repo => repo.owner.login === job.data.login)
       }
     */
-    repositories.forEach((repo, index) => {
-      Repository.findOne({ githubId: repo.githubId })
-        .then(repository => {
-          if (repository) {
-            repository.user = job.data.login
-            repository.owner = repo.owner.login
-            repository.node_id = repo.node_id
-            repository.name = repo.name
-            repository.private = repo.private
-            repository.description = repo.description
-            repository.language = repo.language
-            return repository.save()
-          } else {
-            let repository = new Repository({
-              ...repo,
-              user: job.data.login,
-              owner: repo.owner.login,
-              node_id: repo.node_id,
-              name: repo.name,
-              private: repo.private,
-              description: repo.description,
-              language: repo.language
-            })
-            return repository.save()
-          }
-        })
-        .then(repository => {
-          if (index === repositories.length - 1) {
-            console.log(chalk.yellow("✅  Completed Processing fetchRepositoriesQueue"))
-            fetchCollaboratorsQueue.add(job.data)
-            done()
-          }
-        })
-        .catch(err => console.log(chalk.red(err)))
-    })
 
     if (repositories.length === 0) {
       console.log(chalk.yellow("✅  Completed Processing fetchRepositoriesQueue, No Repositories"))
       fetchCollaboratorsQueue.add(job.data)
       done()
     }
+
+    let findRepositoryPromise = []
+    repositories.forEach(repo => {
+      findRepositoryPromise.push(Repository.findOne({ githubId: repo.githubId }))
+    })
+    repositories_db = await Promise.all(findRepositoryPromise)
+
+    let saveRepositoryPromise = []
+    for (let i = 0; i < repositories_db.length; i++) {
+      if (repositories_db[i]) {
+        repositories_db[i].user = job.data.login
+        repositories_db[i].owner = repositories[i].owner.login
+        repositories_db[i].node_id = repositories[i].node_id
+        repositories_db[i].name = repositories[i].name
+        repositories_db[i].private = repositories[i].private
+        repositories_db[i].description = repositories[i].description
+        repositories_db[i].language = repositories[i].language
+        saveRepositoryPromise.push(repositories_db[i].save())
+      } else {
+        let repository = new Repository({
+          ...repositories[i],
+          user: job.data.login,
+          owner: repositories[i].owner.login,
+          node_id: repositories[i].node_id,
+          name: repositories[i].name,
+          private: repositories[i].private,
+          description: repositories[i].description,
+          language: repositories[i].language
+        })
+        saveRepositoryPromise.push(repository.save())
+      }
+    }
+
+    const saved_repositories = await Promise.all(saveRepositoryPromise)
+    console.log(chalk.yellow("✅  Completed Processing fetchRepositoriesQueue"))
+    fetchCollaboratorsQueue.add(job.data)
+    done()
   } catch (err) {
     console.log(chalk.red.inverse(err))
     if (err.response) {
