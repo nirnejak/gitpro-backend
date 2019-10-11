@@ -211,6 +211,9 @@ fetchRepositoriesQueue.process(async (job, done) => {
   const headers = { Authorization: `Bearer ${job.data.token}` }
 
   try {
+    let favouriteRepositories = await Repository.find({ user: job.data.login, isFavourite: true })
+    favouriteRepositories = favouriteRepositories.map(repo => repo.githubId)
+
     const deletedRepos = await Repository.deleteMany({ user: job.data.login })
 
     let res = await axios.get("https://api.github.com/user/repos?per_page=20&page=1", { headers })
@@ -261,37 +264,16 @@ fetchRepositoriesQueue.process(async (job, done) => {
       done()
     }
 
-    let findRepositoryPromise = []
-    repositories.forEach(repo => {
-      findRepositoryPromise.push(Repository.findOne({ githubId: repo.githubId }))
-    })
-    repositories_db = await Promise.all(findRepositoryPromise)
-
     let saveRepositoryPromise = []
-    for (let i = 0; i < repositories_db.length; i++) {
-      if (repositories_db[i]) {
-        repositories_db[i].user = job.data.login
-        repositories_db[i].owner = repositories[i].owner.login
-        repositories_db[i].node_id = repositories[i].node_id
-        repositories_db[i].name = repositories[i].name
-        repositories_db[i].private = repositories[i].private
-        repositories_db[i].description = repositories[i].description
-        repositories_db[i].language = repositories[i].language
-        saveRepositoryPromise.push(repositories_db[i].save())
-      } else {
-        let repository = new Repository({
-          ...repositories[i],
-          user: job.data.login,
-          owner: repositories[i].owner.login,
-          node_id: repositories[i].node_id,
-          name: repositories[i].name,
-          private: repositories[i].private,
-          description: repositories[i].description,
-          language: repositories[i].language
-        })
-        saveRepositoryPromise.push(repository.save())
-      }
-    }
+    repositories.forEach(repo => {
+      let repository = new Repository({
+        ...repo,
+        user: job.data.login,
+        owner: repo.owner.login,
+        isFavourite: favouriteRepositories.includes(repo.githubId)
+      })
+      saveRepositoryPromise.push(repository.save())
+    })
 
     const saved_repositories = await Promise.all(saveRepositoryPromise)
     console.log(chalk.yellow("✅  Completed Processing fetchRepositoriesQueue"))
