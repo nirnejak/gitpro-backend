@@ -186,9 +186,13 @@ fetchRepositoriesQueue.process(async (job, done) => {
     }
 
     const responses = await Promise.all(repositoryFetchPromises)
-    let repositories = responses.map(res => res.data).flat(1).map(repo => {
-      const { id, node_id, name, private, description, language, owner } = repo;
-      return { githubId: id, node_id, name, private, description, language, owner }
+    let short_responses = responses.map(res => res.data)
+    let repositories = []
+    short_responses.forEach(res => {
+      res.forEach(repo => {
+        const { id, node_id, name, private, description, language, owner } = repo;
+        repositories.push({ githubId: id, node_id, name, private, description, language, owner })
+      })
     })
 
     /*
