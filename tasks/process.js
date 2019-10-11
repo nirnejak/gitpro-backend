@@ -138,11 +138,15 @@ fetchCollaboratorDetailsQueue.process(async (job, done) => {
 
 fetchCollaboratorsQueue.process(async (job, done) => {
   console.log(chalk.yellow("🏃‍  Started Processing fetchCollaboratorsQueue"))
+
+  const headers = { Authorization: `Bearer ${job.data.token}` }
+
   try {
+    const deletedCollaborators = await Collaborator.deleteMany({ owner: job.data.login })
+
     let repositories = await Repository.find({ user: job.data.login })
-    const headers = { Authorization: `Bearer ${job.data.token}` }
+
     for (let i = 0; i < repositories.length; i++) {
-      // let res = await axios.get(`https://api.github.com/repos/${job.data.login}/${repositories[i].name}/collaborators`, { headers })
       let res = await axios.get(`https://api.github.com/repos/${repositories[i].owner}/${repositories[i].name}/collaborators`, { headers })
       if (res.data.length > 1) {
         // Removing Current user from the list of Collaborators for the Repo
