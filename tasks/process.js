@@ -208,11 +208,13 @@ fetchRepositoriesQueue.process(async (job, done) => {
 
   try {
     let res = await axios.get("https://api.github.com/user/repos?per_page=20&page=1", { headers })
+    let linkHeader = []
     if (res.headers.link) {
-      let linkHeader = res.headers.link.split(',')
+      linkHeader = res.headers.link.split(',')
     } else {
       console.log(res.status)
       console.log(res.data)
+      done()
     }
     let lastLink = linkHeader.filter(link => link.includes("last"))[0]
     let lastPage = lastLink.replace(' <https://api.github.com/user/repos?per_page=20&page=', '').replace('>; rel="last"', '')
