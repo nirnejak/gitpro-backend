@@ -145,54 +145,57 @@ fetchCollaboratorsQueue.process(async (job, done) => {
     const deletedCollaborators = await Collaborator.deleteMany({ owner: job.data.login })
 
     let repositories = await Repository.find({ user: job.data.login })
-
-    for (let i = 0; i < repositories.length; i++) {
-      let res = await axios.get(`https://api.github.com/repos/${repositories[i].owner}/${repositories[i].name}/collaborators`, { headers })
-      if (res.data.length > 1) {
-        // Removing Current user from the list of Collaborators for the Repo
-        let collaborators = res.data.filter(collaborator => collaborator.login !== job.data.login)
-
-        collaborators.forEach((collaborator_res) => {
-          Collaborator.findOne({ githubId: collaborator_res.id })
-            .then(collaborator => {
-              if (collaborator) {
-                collaborator.owner = job.data.login
-                collaborator.login = collaborator_res.login
-                collaborator.type = collaborator_res.type
-                collaborator.avatar_url = collaborator_res.avatar_url
-                // TODO: Update Repositories Reference Array
-                if (!collaborator.repositories.includes(repositories[i].id)) {
-                  collaborator.repositories.push(repositories[i].id)
-                }
-                return collaborator.save()
-              } else {
-                let collaborator = new Collaborator({
-                  owner: job.data.login,
-                  githubId: collaborator_res.id,
-                  login: collaborator_res.login,
-                  type: collaborator_res.type,
-                  avatar_url: collaborator_res.avatar_url,
-                })
-                collaborator.repositories.push(repositories[i].id)
-                return collaborator.save()
-              }
-            })
-            .then(collaborator => { })
-            .catch(err => console.log(chalk.red(err)))
-        })
-      }
-      if (i === repositories.length - 1) {
-        console.log(chalk.yellow("✅  Completed Processing fetchCollaboratorsQueue, Tasks Processing Asynchronously"))
-        fetchCollaboratorDetailsQueue.add(job.data)
-        done()
-      }
-    }
-
     if (repositories.length === 0) {
       console.log(chalk.yellow("✅  Completed Processing fetchCollaboratorsQueue, No Repositories"))
       fetchCollaboratorDetailsQueue.add(job.data)
       done()
     }
+
+    let fetchCollaboratorsPromise = []
+    repositories.forEach(repo => {
+      fetchCollaboratorsPromise.push(axios.get(`https://api.github.com/repos/${repo.owner}/${repo.name}/collaborators`, { headers }))
+    })
+    let collaborators_responses = await Promise.all(fetchCollaboratorsPromise)
+    collaborators_responses = collaborators_responses.map(res => res.data)
+
+    // Listing Unique Collaborators from all Repositories
+    let collaborators = []
+    collaborators_responses.forEach(collaborators_res => {
+      collaborators_res = collaborators_res.filter(collaborator => collaborator.login !== job.data.login)
+      collaborators_res.forEach(collaborator => {
+        if (collaborators.filter(collab => collab.login === collaborator.login).length === 0)
+          collaborators.push(collaborator)
+      })
+    })
+
+    // Creating Collaborators
+    let collaboratorSavePromise = []
+    collaborators.forEach(collaborator_res => {
+      let collaborator = new Collaborator({
+        owner: job.data.login,
+        githubId: collaborator_res.id,
+        login: collaborator_res.login,
+        type: collaborator_res.type,
+        avatar_url: collaborator_res.avatar_url,
+      })
+      collaboratorSavePromise.push(collaborator.save())
+    })
+    const saved_collaborators = await Promise.all(collaboratorSavePromise)
+
+    // Assigning Repositories to Collaborators
+    let updateCollaboratorSavePromise = []
+    saved_collaborators.forEach(collaborator => {
+      for (let i = 0; i < repositories.length; i++) {
+        if (collaborators_responses[i].filter(collab => collab.login === collaborator.login).length > 0) {
+          collaborator.repositories.push(repositories[i].id)
+        }
+      }
+      updateCollaboratorSavePromise.push(collaborator.save())
+    })
+    const updated_collaborators = await Promise.all(updateCollaboratorSavePromise)
+    console.log(chalk.yellow("✅  Completed Processing fetchCollaboratorsQueue"))
+    fetchCollaboratorDetailsQueue.add(job.data)
+    done()
   } catch (err) {
     console.log(chalk.red(err))
     if (err.response) {
