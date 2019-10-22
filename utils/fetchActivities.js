@@ -1,4 +1,5 @@
 const chalk = require('chalk')
+const fs = require('fs')
 
 const Activity = require('../models/activity')
 
@@ -31,9 +32,16 @@ async function getActivity(params) {
       let commitDiffsPromiseArray = []
       commits.forEach(commit => {
         if (commit.hash.length)
-          commitDiffsPromiseArray.push(executeSystemCommand(`cd temp/${activity._id} && git show ${commit.hash}`))
+          commitDiffsPromiseArray.push(executeSystemCommand(`cd temp/${activity._id} && git show ${commit.hash} > ${commit.hash}.txt`))
       })
-      const commitDiffs = await Promise.all(commitDiffsPromiseArray)
+      await Promise.all(commitDiffsPromiseArray)
+
+      let commitDiffs = []
+      commits.forEach(commit => {
+        if (commit.hash.length)
+          commitDiffs.push(fs.readFileSync(`temp/${activity._id}/${commit.hash}.txt`))
+      })
+
       for (let i = 0; i < commits.length; i++) commits[i].diff = commitDiffs[i]
       commits = commits.filter(commit => commit.hash.length)
 
