@@ -38,8 +38,14 @@ async function getActivity(params) {
 
       let commitDiffs = []
       commits.forEach(commit => {
-        if (commit.hash.length)
-          commitDiffs.push(fs.readFileSync(`temp/${activity._id}/${commit.hash}.txt`))
+        if (commit.hash.length) {
+          const stats = fs.statSync(`temp/${activity._id}/${commit.hash}.txt`)
+          if (stats["size"] / 1024 > 512) {
+            commitDiffs.push("Error:Diff is too large")
+          } else {
+            commitDiffs.push(fs.readFileSync(`temp/${activity._id}/${commit.hash}.txt`))
+          }
+        }
       })
 
       for (let i = 0; i < commits.length; i++) commits[i].diff = commitDiffs[i]
