@@ -12,7 +12,7 @@ router.get('/repositories', isAuthenticated, (req, res) => {
     login: req.user.login,
     token: req.user.token,
   })
-  res.json({ message: "Fetching Repositories" })
+  res.json({ message: "Syncing repositories and their collaborators in background" })
 })
 
 router.get('/collaborators', isAuthenticated, (req, res) => {
@@ -20,7 +20,7 @@ router.get('/collaborators', isAuthenticated, (req, res) => {
     login: req.user.login,
     token: req.user.token,
   })
-  res.json({ message: "Fetching Collaborators" })
+  res.json({ message: "Syncing collaborators in the background" })
 })
 
 router.get('/users', isAuthenticated, (req, res) => {
