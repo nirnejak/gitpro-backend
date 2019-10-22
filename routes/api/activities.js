@@ -43,7 +43,7 @@ router.get('/:author', isAuthenticated, (req, res) => {
       })
   } else {
     Activity.findOne(options)
-      .then(activity => activity ? activity : getActivity({ ...options, token: req.user.token, }))
+      .then(activity => activity ? activity : getActivity({ ...options, user: req.user.login, token: req.user.token, }))
       .then(activity => res.json(activity))
       .catch(err => {
         console.log(chalk.red(err))
