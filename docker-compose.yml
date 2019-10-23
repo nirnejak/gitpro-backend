@@ -2,8 +2,9 @@ version: '3',
 services:
   web:
     build: .
+    command: npm start
     ports: 
-    - "5000:5000"
+    - "3000:3000"
     volumes:
     - .:/usr/src/app
     - logvolume01:/var/log
@@ -11,6 +12,7 @@ services:
     - redis
   worker:
     build: .
+    command: npm run task
     volumes:
     - .:/usr/src/app
     links:

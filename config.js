@@ -1,6 +1,6 @@
 module.exports = {
   NODE_ENV: process.env.NODE_ENV || 'dev',
-  PORT: process.env.PORT || 5000,
+  PORT: process.env.PORT || 80,
   SESSION_SECRET: process.env.SESSION_SECRET || '894f40f9ee92e4c4c7ffd56d781f4167',
   JWT_TOKEN_SECRET: process.env.JWT_TOKEN_SECRET || 'f0156fab3daf3c5228447fda0e191b01',
 
