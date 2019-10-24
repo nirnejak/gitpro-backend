@@ -241,8 +241,12 @@ fetchRepositoriesQueue.process(async (job, done) => {
       done()
     }
     let lastLink = linkHeader.filter(link => link.includes("last"))[0]
-    let lastPage = lastLink.replace(' <https://api.github.com/user/repos?per_page=20&page=', '').replace('>; rel="last"', '')
-    let totalPages = parseInt(lastPage)
+    let totalPages = 1
+
+    if (lastLink) {
+      let lastPage = lastLink.replace(' <https://api.github.com/user/repos?per_page=20&page=', '').replace('>; rel="last"', '')
+      totalPages = parseInt(lastPage)
+    }
 
     let repositoryFetchPromises = []
     for (let i = 1; i <= totalPages; i++) {
