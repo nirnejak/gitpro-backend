@@ -65,7 +65,7 @@ async function getActivity(params) {
         .then(res => console.log("Activity Stored and Repository Deleted"))
         .catch(err => console.log(chalk.red(err)))
 
-      return Promise.resolve({ owner, author, repository, after, before, contributions: commits })
+      return Promise.resolve(activity)
     } else {
       // No commits by the user on selected day on this repository
       const res = await executeSystemCommand(`cd temp/ && rm -rf ${activity._id}/`)
