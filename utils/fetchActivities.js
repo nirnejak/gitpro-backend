@@ -70,6 +70,7 @@ async function getActivity(params) {
       // No commits by the user on selected day on this repository
 
       // TODO: Fetch the list of contributors for that day
+      // Try with %aN instead of $an
       const contributors = await executeSystemCommand(`cd temp/${activity._id} && git log --all --no-merges --after=${after} --before=${before} --pretty="format:%an"`)
 
       const res = await executeSystemCommand(`cd temp/ && rm -rf ${activity._id}/`)
