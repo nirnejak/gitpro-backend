@@ -68,8 +68,12 @@ async function getActivity(params) {
       return Promise.resolve(activity)
     } else {
       // No commits by the user on selected day on this repository
+
+      // TODO: Fetch the list of contributors for that day
+      const contributors = await executeSystemCommand(`cd temp/${activity._id} && git log --all --no-merges --after=${after} --before=${before} --pretty="format:%an"`)
+
       const res = await executeSystemCommand(`cd temp/ && rm -rf ${activity._id}/`)
-      return { owner, author, repository, after, before, contributions: [] }
+      return { owner, author, repository, after, before, contributions: [], contributors }
     }
   } catch (error) {
     console.log(chalk.red(error))
