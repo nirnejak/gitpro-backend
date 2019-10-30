@@ -20,7 +20,7 @@ const activitySchema = mongoose.Schema({
   updated_at: { type: Date, default: Date.now() }
 })
 
-activitySchema.pre('save', function (next) {
+activitySchema.pre('save', next => {
   this.updated_at = Date.now()
   next()
 })

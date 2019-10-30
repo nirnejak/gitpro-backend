@@ -17,7 +17,7 @@ async function getActivity(params) {
 
     await executeSystemCommand(`mkdir -p temp/${activity._id} && cd temp/${activity._id} && git clone ${cloneUrl} .`)
     // const getCommitsSha = `cd temp/${activity._id} && git log --all --no-merges --author=${author} --after=${after} --before=${before} --pretty=format:"%H |%m| %B |%m| %ad"`
-    const getCommitsSha = `cd temp/${activity._id} && TZ=${tz} git log --all --no-merges --author=${author.toLowerCase()} --after=${after} --before=${before} --pretty="oneline"`
+    const getCommitsSha = `cd temp/${activity._id} && TZ=${tz} git log --all --no-merges --author=${author.includes(" ") ? '"' + author + '"' : author.toLowerCase()} --after=${after} --before=${before} --pretty="oneline"`
 
     let commits = await executeSystemCommand(getCommitsSha)
     if (commits) {
@@ -68,25 +68,27 @@ async function getActivity(params) {
       return Promise.resolve(activity)
     } else {
       // No commits by the user on selected day on this repository
+
+      // INFO: Try with %aN instead of $an
+      let contributors = await executeSystemCommand(`cd temp/${activity._id} && git log --all --no-merges --after=${after} --before=${before} --pretty="format:%aN"`)
+
+      let unique_contributors = []
+      if (contributors) {
+        contributors = contributors.split('\n')
+        contributors.forEach(contributor => {
+          if (!unique_contributors.includes(contributor)) {
+            unique_contributors.push(contributor)
+          }
+        })
+      }
+
       const res = await executeSystemCommand(`cd temp/ && rm -rf ${activity._id}/`)
-      return { owner, author, repository, after, before, contributions: [] }
+      return { owner, author, repository, after, before, contributions: [], contributors: unique_contributors }
     }
   } catch (error) {
     console.log(chalk.red(error))
     return Promise.reject(error)
   }
-}
-
-if (require.main === module) {
-  let data = {
-    owner: 'nirnejak',
-    author: 'nirnejak',
-    repository: 'graphql-app',
-    after: '2019-08-16',
-    before: '2019-09-17'
-  }
-
-  getActivity(data).then(diffs => console.log(diffs))
 }
 
 module.exports = getActivity

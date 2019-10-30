@@ -16,7 +16,7 @@ const repositoriesSchema = mongoose.Schema({
   updated_at: { type: Date, default: Date.now() }
 })
 
-repositoriesSchema.pre('save', function (next) {
+repositoriesSchema.pre('save', next => {
   this.updated_at = Date.now()
   next()
 })
