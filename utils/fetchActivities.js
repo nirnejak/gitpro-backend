@@ -69,12 +69,21 @@ async function getActivity(params) {
     } else {
       // No commits by the user on selected day on this repository
 
-      // TODO: Fetch the list of contributors for that day
-      // Try with %aN instead of $an
+      // INFO: Try with %aN instead of $an
       const contributors = await executeSystemCommand(`cd temp/${activity._id} && git log --all --no-merges --after=${after} --before=${before} --pretty="format:%an"`)
 
+      let unique_contributors = []
+      if (contributors) {
+        contributors = contributors.split('\n')
+        contributors.forEach(contributor => {
+          if (!unique_contributors.includes(contributor)) {
+            unique_contributors.push(contributor)
+          }
+        })
+      }
+
       const res = await executeSystemCommand(`cd temp/ && rm -rf ${activity._id}/`)
-      return { owner, author, repository, after, before, contributions: [], contributors }
+      return { owner, author, repository, after, before, contributions: [], contributors: unique_contributors }
     }
   } catch (error) {
     console.log(chalk.red(error))
