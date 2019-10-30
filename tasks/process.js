@@ -1,6 +1,7 @@
 const chalk = require('chalk')
 const axios = require('axios')
 const mongoose = require('mongoose')
+const Sentry = require('@sentry/node')
 
 const config = require('../config')
 
@@ -32,6 +33,7 @@ const {
 //   }
 // })
 
+Sentry.init({ dsn: config.SENTRY_DSN })
 
 sendInvitationToCollaborateQueue.process((job, done) => {
   console.log(chalk.yellow(`🏃‍  Started Processing sendInvitationToCollaborateQueue for ${job.data.login}`))
