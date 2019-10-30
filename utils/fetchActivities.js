@@ -17,7 +17,7 @@ async function getActivity(params) {
 
     await executeSystemCommand(`mkdir -p temp/${activity._id} && cd temp/${activity._id} && git clone ${cloneUrl} .`)
     // const getCommitsSha = `cd temp/${activity._id} && git log --all --no-merges --author=${author} --after=${after} --before=${before} --pretty=format:"%H |%m| %B |%m| %ad"`
-    const getCommitsSha = `cd temp/${activity._id} && TZ=${tz} git log --all --no-merges --author="${author.toLowerCase()}" --after=${after} --before=${before} --pretty="oneline"`
+    const getCommitsSha = `cd temp/${activity._id} && TZ=${tz} git log --all --no-merges --author=${author.includes(" ") ? '"' + author + '"' : author.toLowerCase()} --after=${after} --before=${before} --pretty="oneline"`
 
     let commits = await executeSystemCommand(getCommitsSha)
     if (commits) {
@@ -89,18 +89,6 @@ async function getActivity(params) {
     console.log(chalk.red(error))
     return Promise.reject(error)
   }
-}
-
-if (require.main === module) {
-  let data = {
-    owner: 'nirnejak',
-    author: 'nirnejak',
-    repository: 'graphql-app',
-    after: '2019-08-16',
-    before: '2019-09-17'
-  }
-
-  getActivity(data).then(diffs => console.log(diffs))
 }
 
 module.exports = getActivity
