@@ -237,15 +237,12 @@ fetchRepositoriesQueue.process(async (job, done) => {
     if (res.headers.link) {
       linkHeader = res.headers.link.split(',')
     } else {
-      console.log(res.status)
-      console.log(res.data)
-      console.log(res.headers)
       done()
     }
     let lastLink = linkHeader.filter(link => link.includes("last"))[0]
     let totalPages = 1
 
-    if (lastLink) {
+    if (lastLink.length > 0) {
       let lastPage = lastLink.replace(' <https://api.github.com/user/repos?per_page=20&page=', '').replace('>; rel="last"', '')
       totalPages = parseInt(lastPage)
     }
@@ -319,36 +316,15 @@ if (require.main === module) {
       User.find({ status: 'active' })
         .then(users => {
           if (users) {
-            if (process.argv.length > 2) {
-              if (process.argv[2] === 'repository') {
-                users.forEach(user => {
-                  fetchRepositoriesQueue.add({
-                    login: user.login,
-                    token: user.token,
-                    userReposOnly: user.userReposOnly,
-                    includePublic: user.includePublic
-                  })
-                })
-              } else if (process.argv[2] === 'collaborator') {
-                users.forEach(user => {
-                  fetchCollaboratorsQueue.add({ login: user.login, token: user.token })
-                })
-              } else if (process.argv[2] === 'collaborator_details') {
-                users.forEach(user => {
-                  fetchCollaboratorDetailsQueue.add({ login: user.login, token: user.token })
-                })
-              }
-            } else {
-              users.forEach(user => {
-                fetchRepositoriesQueue.add({ login: user.login, token: user.token }, {
-                  // repeat: {
-                  //   every: 3600000,   // Repeat task every hour
-                  //   limit: 100
-                  // },
-                  // repeat: { cron: '00 1 * * *' }  // Repeat once every day at 1:00
-                })
+            users.forEach(user => {
+              fetchRepositoriesQueue.add({ login: user.login, token: user.token }, {
+                // repeat: {
+                //   every: 3600000,   // Repeat task every hour
+                //   limit: 100
+                // },
+                // repeat: { cron: '00 1 * * *' }  // Repeat once every day at 1:00
               })
-            }
+            })
           } else {
             console.log(chalk.red("❗️ Users not Found"))
           }
