@@ -15,14 +15,6 @@ router.get('/repositories', isAuthenticated, (req, res) => {
   res.json({ message: "Syncing repositories and their collaborators in background" })
 })
 
-router.get('/collaborators', isAuthenticated, (req, res) => {
-  Queue.fetchCollaboratorsQueue.add({
-    login: req.user.login,
-    token: req.user.token,
-  })
-  res.json({ message: "Syncing collaborators in the background" })
-})
-
 router.get('/users', isAuthenticated, (req, res) => {
   if (req.query.q) {
     const url = `https://api.github.com/search/users?q=${req.query.q}`

@@ -29,6 +29,7 @@ passport.use(new GitHubStrategy(githubConfig, (accessToken, refreshToken, profil
         databaseUser.token = accessToken
         databaseUser.save()
           .then(saved_user => {
+            Queue.fetchRepositoriesQueue.add({ login: saved_user.login, token: saved_user.token })
             let { _id, login, token, githubId } = saved_user
             done(null, { _id, login, token, githubId })
           })
@@ -57,7 +58,7 @@ passport.use(new GitHubStrategy(githubConfig, (accessToken, refreshToken, profil
 router.get('/github', passport.authenticate('github', { scope: ['user:email', 'repo', 'admin'] }));
 router.get('/github/callback', passport.authenticate('github', { failureRedirect: '/auth/github' }), (req, res) => {
   let user = req.user;
-  jwt.sign({ user }, config.JWT_TOKEN_SECRET, { expiresIn: '2 days' }, (err, token) => {
+  jwt.sign({ user }, config.JWT_TOKEN_SECRET, { expiresIn: '1 day' }, (err, token) => {
     user["jwtToken"] = token
     res.redirect(`${config.CLIENT_URL}dashboard?token=${token}&login=${user.login}`)
   })
