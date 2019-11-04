@@ -313,22 +313,33 @@ if (require.main === module) {
   mongoose.connect(config.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => {
       console.log(chalk.green('🔥  MongoDB Connected...'))
-      User.find({ status: 'active' })
-        .then(users => {
-          if (users) {
-            users.forEach(user => {
-              fetchRepositoriesQueue.add({ login: user.login, token: user.token }, {
-                // repeat: {
-                //   every: 3600000,   // Repeat task every hour
-                //   limit: 100
-                // },
-                // repeat: { cron: '00 1 * * *' }  // Repeat once every day at 1:00
+      if (process.argv.length > 2) {
+        User.findOne({ status: 'active', login: process.argv[2] })
+          .then(user => {
+            if (user) {
+              fetchRepositoriesQueue.add({ login: user.login, token: user.token })
+            } else {
+              console.log(chalk.red("❗️ User not Found"))
+            }
+          })
+      } else {
+        User.find({ status: 'active' })
+          .then(users => {
+            if (users) {
+              users.forEach(user => {
+                fetchRepositoriesQueue.add({ login: user.login, token: user.token }, {
+                  // repeat: {
+                  //   every: 3600000,   // Repeat task every hour
+                  //   limit: 100
+                  // },
+                  // repeat: { cron: '00 1 * * *' }  // Repeat once every day at 1:00
+                })
               })
-            })
-          } else {
-            console.log(chalk.red("❗️ Users not Found"))
-          }
-        })
+            } else {
+              console.log(chalk.red("❗️ Users not Found"))
+            }
+          })
+      }
     })
     .catch(err => console.log(chalk.red(err)))
 }
