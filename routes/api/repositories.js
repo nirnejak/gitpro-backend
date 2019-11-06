@@ -50,11 +50,12 @@ router.post('/', isAuthenticated, (req, res) => {
 })
 
 router.put('/:name', isAuthenticated, (req, res) => {
-  if (req.query.collaborator) {
+  if (req.query.collaborator && req.query.owner) {
     Queue.removeCollaboratorFromRepoQueue.add({
-      owner: req.user.login,
+      user: req.user.login,
       token: req.user.token,
       username: req.query.collaborator,
+      owner: req.query.owner,
       repo: req.params.name,
     })
     res.json({ message: "Removing Collaborator from Repository" })
@@ -69,7 +70,7 @@ router.put('/:name', isAuthenticated, (req, res) => {
     })
     res.json({ message: "Sending Invitation to Collaborators" })
   } else {
-    Repository.findOne({ user: req.user.login, owner: req.query.owner,  name: req.params.name })
+    Repository.findOne({ user: req.user.login, owner: req.query.owner, name: req.params.name })
       .then(repository => {
         if (repository) {
           repository.isFavourite = req.body.isFavourite

@@ -100,9 +100,10 @@ router.delete('/:login', isAuthenticated, (req, res) => {
         } else {
           collaborator.repositories.forEach((repo, index) => {
             Queue.removeCollaboratorFromRepoQueue.add({
-              owner: req.user.login,
+              user: req.user.login,
               token: req.user.token,
               username: req.params.login,
+              owner: repo.owner,
               repo: repo.name,
               last: index === collaborator.repositories.length - 1
             })
