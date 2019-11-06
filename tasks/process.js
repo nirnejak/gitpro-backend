@@ -59,7 +59,7 @@ sendInvitationToCollaborateQueue.process((job, done) => {
 })
 
 removeCollaboratorFromRepoQueue.process((job, done) => {
-  console.log(chalk.yellow(`🏃‍  Started Processing removeCollaboratorFromRepoQueue for ${job.data.login}`))
+  console.log(chalk.yellow(`🏃‍  Started Processing removeCollaboratorFromRepoQueue for ${job.data.username} from ${job.data.owner}/${job.data.repo}`))
 
   const URL = `https://api.github.com/repos/${job.data.owner}/${job.data.repo}/collaborators/${job.data.username}`
   const headers = { Authorization: `Bearer ${job.data.token}` }
@@ -77,10 +77,10 @@ removeCollaboratorFromRepoQueue.process((job, done) => {
     .then(collaborator => {
       if (job.data.last) {
         collaborator.remove()
-        console.log(chalk.yellow(`✅  Completed Processing removeCollaboratorFromRepoQueue for ${job.data.login}`))
+        console.log(chalk.yellow(`✅  Completed Processing removeCollaboratorFromRepoQueue for ${job.data.username} from ${job.data.owner}/${job.data.repo}`))
         done()
       } else {
-        console.log(chalk.yellow(`✅  Completed Processing removeCollaboratorFromRepoQueue for ${job.data.login}`))
+        console.log(chalk.yellow(`✅  Completed Processing removeCollaboratorFromRepoQueue for ${job.data.username} from ${job.data.owner}/${job.data.repo}`))
         done()
       }
     })

@@ -68,9 +68,10 @@ router.post('/', isAuthenticated, (req, res) => {
 router.put('/:login', isAuthenticated, (req, res) => {
   if (req.query.repo) {
     Queue.removeCollaboratorFromRepoQueue.add({
-      owner: req.user.login,
+      user: req.user.login,
       token: req.user.token,
       username: req.params.login,
+      owner: req.query.owner,
       repo: req.query.repo,
     })
     res.json({ message: "Removing Collaborator from Repository" })
