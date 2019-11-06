@@ -36,14 +36,14 @@ const {
 Sentry.init({ dsn: config.SENTRY_DSN })
 
 sendInvitationToCollaborateQueue.process((job, done) => {
-  console.log(chalk.yellow(`🏃‍  Started Processing sendInvitationToCollaborateQueue for ${job.data.login}`))
+  console.log(chalk.yellow(`🏃‍  Started Processing sendInvitationToCollaborateQueue for ${job.data.username} on ${job.data.owner}/${job.data.repo}`))
 
   const URL = `https://api.github.com/repos/${job.data.owner}/${job.data.repo}/collaborators/${job.data.username}?permission=push`
   const headers = { Authorization: `Bearer ${job.data.token}` }
 
   axios.put(URL, {}, { headers })
     .then(res => {
-      console.log(chalk.yellow(`✅  Completed Processing sendInvitationToCollaborateQueue for ${job.data.login}`))
+      console.log(chalk.yellow(`✅  Completed Processing sendInvitationToCollaborateQueue for ${job.data.username} on ${job.data.owner}/${job.data.repo}`))
       done()
     })
     .catch(err => {
