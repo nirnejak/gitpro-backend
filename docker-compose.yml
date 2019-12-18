@@ -17,7 +17,5 @@ services:
     - .:/usr/src/app
     links:
       - redis
-  redis:
-    image: redis
 volumes:
   logvolume01: {}
