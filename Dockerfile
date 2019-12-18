@@ -1,11 +1,7 @@
-FROM node:12
+FROM alpine
+COPY . /usr/src/app
 WORKDIR /usr/src/app
-COPY package*.json ./
-RUN npm install
 
-# FROM redis
-# COPY redis.conf /usr/local/etc/redis/redis.conf
-# CMD [ "redis-server", "/usr/local/etc/redis/redis.conf" ]
+RUN apk update && apk add git nodejs npm && npm install
 
-COPY . .
 EXPOSE 3000
