@@ -23,18 +23,18 @@ router.get('/:login', isAuthenticated, (req, res) => {
     .then(user => {
       if (user) {
         if (req.query.stats) {
-          let data = {}
-          Collaborator.find({ owner: req.params.login })
-            .then(collaborators => {
-              data["total_collaborators"] = collaborators.length
-              Repository.find({ user: req.params.login })
-                .then(repositories => {
-                  data["total_repositories"] = repositories.length
-                  data["favourite_repositories"] = repositories.filter(repo => repo.isFavourite)
-                  data = { ...data, ...user._doc }
-                  res.json(data)
-                })
+          let userDetailsPromises = []
+          userDetailsPromises.push(Collaborator.find({ owner: req.params.login }))
+          userDetailsPromises.push(Repository.find({ user: req.params.login }))
+
+          Promise.all(userDetailsPromises).then(([collaborators, repositories]) => {
+            res.json({
+              ...user._doc,
+              total_collaborators: collaborators.length,
+              total_repositories: repositories.length,
+              favourite_repositories = repositories.filter(repo => repo.isFavourite)
             })
+          })
         } else {
           res.json(user)
         }

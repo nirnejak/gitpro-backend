@@ -18,32 +18,35 @@ const {
 } = require('./index')
 
 // INFO: Axios Debug Console
-// require('axios-debug-log')({
-//   request: (debug, config) => {
-//     debug(config)
-//   },
-//   response: (debug, response) => {
-//     debug(
-//       'Response with ' + response.headers['Content-Type'],
-//       'from ' + response.config.url
-//     )
-//   },
-//   error: (debug, response) => {
-//     debug('Boom')
-//   }
-// })
+/*
+require('axios-debug-log')({
+  request: (debug, config) => {
+    debug(config)
+  },
+  response: (debug, response) => {
+    debug(
+      'Response with ' + response.headers['Content-Type'],
+      'from ' + response.config.url
+    )
+  },
+  error: (debug, response) => {
+    debug('Boom')
+  }
+})
+*/
 
 Sentry.init({ dsn: config.SENTRY_DSN })
 
 sendInvitationToCollaborateQueue.process((job, done) => {
-  console.log(chalk.yellow(`🏃‍  Started Processing sendInvitationToCollaborateQueue for ${job.data.username} on ${job.data.owner}/${job.data.repo}`))
+  const jobName = 'sendInvitationToCollaborateQueue'
+  console.log(chalk.yellow(`🏃‍  Started Processing ${jobName} for ${job.data.username} on ${job.data.owner}/${job.data.repo}`))
 
   const URL = `https://api.github.com/repos/${job.data.owner}/${job.data.repo}/collaborators/${job.data.username}?permission=push`
   const headers = { Authorization: `Bearer ${job.data.token}` }
 
   axios.put(URL, {}, { headers })
     .then(res => {
-      console.log(chalk.yellow(`✅  Completed Processing sendInvitationToCollaborateQueue for ${job.data.username} on ${job.data.owner}/${job.data.repo}`))
+      console.log(chalk.yellow(`✅  Completed Processing ${jobName} for ${job.data.username} on ${job.data.owner}/${job.data.repo}`))
       done()
     })
     .catch(err => {
@@ -59,7 +62,8 @@ sendInvitationToCollaborateQueue.process((job, done) => {
 })
 
 removeCollaboratorFromRepoQueue.process((job, done) => {
-  console.log(chalk.yellow(`🏃‍  Started Processing removeCollaboratorFromRepoQueue for ${job.data.username} from ${job.data.owner}/${job.data.repo}`))
+  const jobName = 'removeCollaboratorFromRepoQueue'
+  console.log(chalk.yellow(`🏃‍  Started Processing ${jobName} for ${job.data.username} from ${job.data.owner}/${job.data.repo}`))
 
   const URL = `https://api.github.com/repos/${job.data.owner}/${job.data.repo}/collaborators/${job.data.username}`
   const headers = { Authorization: `Bearer ${job.data.token}` }
@@ -77,10 +81,10 @@ removeCollaboratorFromRepoQueue.process((job, done) => {
     .then(collaborator => {
       if (job.data.last) {
         collaborator.remove()
-        console.log(chalk.yellow(`✅  Completed Processing removeCollaboratorFromRepoQueue for ${job.data.username} from ${job.data.owner}/${job.data.repo}`))
+        console.log(chalk.yellow(`✅  Completed Processing ${jobName} for ${job.data.username} from ${job.data.owner}/${job.data.repo}`))
         done()
       } else {
-        console.log(chalk.yellow(`✅  Completed Processing removeCollaboratorFromRepoQueue for ${job.data.username} from ${job.data.owner}/${job.data.repo}`))
+        console.log(chalk.yellow(`✅  Completed Processing ${jobName} for ${job.data.username} from ${job.data.owner}/${job.data.repo}`))
         done()
       }
     })
@@ -97,14 +101,15 @@ removeCollaboratorFromRepoQueue.process((job, done) => {
 })
 
 fetchCollaboratorDetailsQueue.process(async (job, done) => {
-  console.log(chalk.yellow(`🏃‍  Started Processing fetchCollaboratorDetailsQueue for ${job.data.login}`))
+  const jobName = 'fetchCollaboratorDetailsQueue'
+  console.log(chalk.yellow(`🏃‍  Started Processing ${jobName} for ${job.data.login}`))
 
   const headers = { Authorization: `Bearer ${job.data.token}` }
   try {
     let collaborators = await Collaborator.find({ owner: job.data.login })
 
     if (collaborators.length === 0) {
-      console.log(chalk.yellow(`✅  Completed Processing fetchCollaboratorDetailsQueue, No Collaborators for ${job.data.login}`))
+      console.log(chalk.yellow(`✅  Completed Processing ${jobName}, No Collaborators for ${job.data.login}`))
       done()
     }
 
@@ -123,7 +128,7 @@ fetchCollaboratorDetailsQueue.process(async (job, done) => {
             return collaborator.save()
           })
       })
-      console.log(chalk.yellow(`✅  Completed Processing fetchCollaboratorDetailsQueue for ${job.data.login}`))
+      console.log(chalk.yellow(`✅  Completed Processing ${jobName} for ${job.data.login}`))
       done()
     })
   } catch (err) {
@@ -139,7 +144,8 @@ fetchCollaboratorDetailsQueue.process(async (job, done) => {
 })
 
 fetchCollaboratorsQueue.process(async (job, done) => {
-  console.log(chalk.yellow(`🏃‍  Started Processing fetchCollaboratorsQueue for ${job.data.login}`))
+  const jobName = 'fetchCollaboratorsQueue'
+  console.log(chalk.yellow(`🏃‍  Started Processing ${jobName} for ${job.data.login}`))
 
   const headers = { Authorization: `Bearer ${job.data.token}` }
 
@@ -148,7 +154,7 @@ fetchCollaboratorsQueue.process(async (job, done) => {
 
     let repositories = await Repository.find({ user: job.data.login })
     if (repositories.length === 0) {
-      console.log(chalk.yellow(`✅  Completed Processing fetchCollaboratorsQueue, No Repositories for ${job.data.login}`))
+      console.log(chalk.yellow(`✅  Completed Processing ${jobName}, No Repositories for ${job.data.login}`))
       fetchCollaboratorDetailsQueue.add(job.data)
       done()
     }
@@ -206,7 +212,7 @@ fetchCollaboratorsQueue.process(async (job, done) => {
       updateCollaboratorSavePromise.push(collaborator.save())
     })
     const updated_collaborators = await Promise.all(updateCollaboratorSavePromise)
-    console.log(chalk.yellow("✅  Completed Processing fetchCollaboratorsQueue"))
+    console.log(chalk.yellow(`✅  Completed Processing ${jobName} for ${job.data.login}`))
     fetchCollaboratorDetailsQueue.add(job.data)
     done()
   } catch (err) {
@@ -222,7 +228,8 @@ fetchCollaboratorsQueue.process(async (job, done) => {
 })
 
 fetchRepositoriesQueue.process(async (job, done) => {
-  console.log(chalk.yellow(`🏃‍  Started Processing fetchRepositoriesQueue for ${job.data.login}`))
+  const jobName = 'fetchRepositoriesQueue'
+  console.log(chalk.yellow(`🏃‍  Started Processing ${jobName} for ${job.data.login}`))
 
   const headers = { Authorization: `Bearer ${job.data.token}` }
 
@@ -276,7 +283,7 @@ fetchRepositoriesQueue.process(async (job, done) => {
     */
 
     if (repositories.length === 0) {
-      console.log(chalk.yellow(`✅  Completed Processing fetchRepositoriesQueue, No Repositories for ${job.data.login}`))
+      console.log(chalk.yellow(`✅  Completed Processing ${jobName}, No Repositories for ${job.data.login}`))
       fetchCollaboratorsQueue.add(job.data)
       done()
     }
@@ -293,7 +300,7 @@ fetchRepositoriesQueue.process(async (job, done) => {
     })
 
     const saved_repositories = await Promise.all(saveRepositoryPromise)
-    console.log(chalk.yellow(`✅  Completed Processing fetchRepositoriesQueue for ${job.data.login}`))
+    console.log(chalk.yellow(`✅  Completed Processing ${jobName} for ${job.data.login}`))
     fetchCollaboratorsQueue.add(job.data)
     done()
   } catch (err) {
@@ -322,23 +329,6 @@ if (require.main === module) {
               console.log(chalk.red("❗️ User not Found"))
             }
           })
-        // } else {
-        //   User.find({ status: 'active' })
-        //     .then(users => {
-        //       if (users) {
-        //         users.forEach(user => {
-        //           fetchRepositoriesQueue.add({ login: user.login, token: user.token }, {
-        //             // repeat: {
-        //             //   every: 3600000,   // Repeat task every hour
-        //             //   limit: 100
-        //             // },
-        //             // repeat: { cron: '00 1 * * *' }  // Repeat once every day at 1:00
-        //           })
-        //         })
-        //       } else {
-        //         console.log(chalk.red("❗️ Users not Found"))
-        //       }
-        //     })
       }
     })
     .catch(err => console.log(chalk.red(err)))

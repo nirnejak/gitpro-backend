@@ -27,30 +27,23 @@ passport.use(new GitHubStrategy(githubConfig, (accessToken, refreshToken, profil
     .then(databaseUser => {
       if (databaseUser) {
         databaseUser.token = accessToken
-        databaseUser.save()
-          .then(saved_user => {
-            Queue.fetchRepositoriesQueue.add({ login: saved_user.login, token: saved_user.token })
-            let { _id, login, token, githubId } = saved_user
-            done(null, { _id, login, token, githubId })
-          })
-          .catch(err => console.log(chalk.red(err)))
+        return databaseUser.save()
       } else {
-        let user = new User({
-          name: profile.displayName ? profile.displayName : '',
+        const user = new User({
+          name: profile.displayName || '',
           login: profile.username,
           token: accessToken,
           githubId: profile.id,
-          avatar_url: profile._json.avatar_url ? profile._json.avatar_url : '',
-          email: profile.emails ? profile.emails[0].value : ''
+          avatar_url: profile._json.avatar_url || '',
+          email: profile.emails.length ? profile.emails[0].value : ''
         })
-        user.save()
-          .then(saved_user => {
-            Queue.fetchRepositoriesQueue.add({ login: saved_user.login, token: saved_user.token })
-            let { _id, login, token, githubId } = saved_user
-            done(null, { _id, login, token, githubId })
-          })
-          .catch(err => done(err))
+        return user.save()
       }
+    })
+    .then(user => {
+      const { _id, login, token, githubId } = user
+      Queue.fetchRepositoriesQueue.add({ login, token })
+      done(null, { _id, login, token, githubId })
     })
     .catch(err => done(err))
 }));

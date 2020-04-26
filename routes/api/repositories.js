@@ -20,25 +20,8 @@ router.get('/', isAuthenticated, (req, res) => {
 
 router.get('/:owner/:name', isAuthenticated, (req, res) => {
   Repository.findOne({ user: req.user.login, name: req.params.name, owner: req.params.owner })
-    .then(repository => {
-      if (repository) {
-        Collaborator.find({ repositories: repository.id })
-          .then(collaborators => {
-            if (collaborators) {
-              res.json({ repository, collaborators })
-            } else {
-              res.json({ repository })
-            }
-          })
-          .catch(err => {
-            console.log(chalk.red(err))
-            res.status(500).json({ message: "Something went wrong!" })
-          })
-      }
-      else {
-        res.status(404).json({ message: "Repository not found" })
-      }
-    })
+    .then(repository => repository ? Collaborator.find({ repositories: repository.id }) : res.status(404).json({ message: "Repository not found" }))
+    .then(collaborators => collaborators ? res.json({ repository, collaborators }) : res.json({ repository }))
     .catch(err => {
       console.log(chalk.red(err))
       res.status(500).json({ message: "Something went wrong!" })

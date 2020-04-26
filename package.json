@@ -29,7 +29,7 @@
   "bugs": {
     "url": "https://github.com/nirnejak/github-supreme/issues"
   },
-  "homepage": "https://github.com/nirnejak/github-supreme#readme",
+  "homepage": "https://gitpro.app/",
   "devDependencies": {
     "nodemon": "^1.19.2"
   },

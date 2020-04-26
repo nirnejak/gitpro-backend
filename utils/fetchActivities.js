@@ -24,8 +24,8 @@ async function getActivity(params) {
       commits = commits.split('\n')
       commits = commits.map(commit => {
         commit = commit.split(" ")
-        let hash = commit.shift()
-        let commitMessage = commit.join(" ")
+        const hash = commit.shift()
+        const commitMessage = commit.join(" ")
         return { hash, commitMessage }
       })
 

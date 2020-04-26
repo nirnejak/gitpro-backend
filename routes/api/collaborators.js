@@ -36,7 +36,7 @@ router.post('/', isAuthenticated, (req, res) => {
   Collaborator.findOne({ owner: req.user.login, login: req.body.login })
     .then(collaborator => {
       if (collaborator) {
-        res.json({ success: false, message: "Collaborator already exists" })
+        return res.json({ success: false, message: "Collaborator already exists" })
       } else {
         collaborator = Collaborator({
           owner: req.user.login,
@@ -45,23 +45,23 @@ router.post('/', isAuthenticated, (req, res) => {
           avatar_url: req.body.avatar_url,
           type: req.body.type
         })
-        collaborator.save()
-          .then(collaborator => {
-            req.body.repositories.forEach(repo => {
-              Queue.sendInvitationToCollaborateQueue.add({
-                owner: req.user.login,
-                token: req.user.token,
-                username: collaborator.login,
-                repo,
-              })
-            })
-            res.json({ success: true, message: "Collaborator created successfully", collaborator })
-          })
-          .catch(err => {
-            console.log(chalk.red(err))
-            res.status(500).json({ message: "Something went wrong" })
-          })
+        return collaborator.save()
       }
+    })
+    .then(collaborator => {
+      req.body.repositories.forEach(repo => {
+        Queue.sendInvitationToCollaborateQueue.add({
+          owner: req.user.login,
+          token: req.user.token,
+          username: collaborator.login,
+          repo,
+        })
+      })
+      res.json({ success: true, message: "Collaborator created successfully", collaborator })
+    })
+    .catch(err => {
+      console.log(chalk.red(err))
+      res.status(500).json({ message: "Something went wrong" })
     })
 })
 
