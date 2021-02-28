@@ -32,7 +32,7 @@ router.get('/:login', isAuthenticated, (req, res) => {
               ...user._doc,
               total_collaborators: collaborators.length,
               total_repositories: repositories.length,
-              favourite_repositories = repositories.filter(repo => repo.isFavourite)
+              favourite_repositories: repositories.filter(repo => repo.isFavourite)
             })
           })
         } else {

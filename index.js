@@ -48,7 +48,6 @@ app.use('/api/activities', require('./routes/api/activities'))
 app.use('/api/fetch', require('./routes/api/fetch'))
 app.use('/auth', require('./routes/api/auth'))
 app.use('/admin', require('./admin/'))
-app.use('/arena', require('./tasks/arenaAdminPanel'))
 
 app.get('*', function (req, res) {
   res.status(404).json({ error: true, message: 'Not Found' })
